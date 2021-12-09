@@ -1,0 +1,9 @@
+x= length
+
+cube vertices = 2(x^2) + (x-2)(4x - 4)
+
+
+
+avec x = polygone number = vertices - 1 :
+
+cubes vertices = 2((x + 1)^2) + ((x + 1)-2)(4(x + 1) - 4)
