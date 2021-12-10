@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioRandomizer : MonoBehaviour
 {
@@ -16,15 +17,18 @@ public class AudioRandomizer : MonoBehaviour
     [SerializeField, Tooltip("play only one song a time and disable multi song playing")]
     private bool playOneSongATime = false;
 
-    [SerializeField, Tooltip("if enabled, random will use smart algorithm to use veery song in list randomly without using 2 times the same.")]
+    [SerializeField, Tooltip("if enabled, random will use smart algorithm to use every song in list randomly without using 2 times the same.")]
     private bool useSmartRandomizer = true;
 
     [Header("")]
     [SerializeField, Tooltip("play a song from the randomizer(act like a button)")]
     private bool pickRandomClip = false;
+
+
     //PRIVATE VARIABLES______________________________________________________________________________
 
     private int _randomIndex = -1;
+
 
     private void Awake()
     {
@@ -36,14 +40,14 @@ public class AudioRandomizer : MonoBehaviour
     private void Update()
     {
         if(pickRandomClip)
-        {
             OnRandomizer();
-            pickRandomClip = false;
-        }
     }
 
     public void OnRandomizer()
     {
+        if (playOneSongATime)
+            _audioSource.Stop();
+
         if (_randomIndex < 0)
             _randomIndex = randomizerList.Count - 1;
 
@@ -53,14 +57,12 @@ public class AudioRandomizer : MonoBehaviour
         randomizerList.Remove(randomizerList[randomNumber]);
         randomizerList.Add(selectedClip);
 
-        if (playOneSongATime)
-            _audioSource.Stop();
-
         if(useSmartRandomizer)
             _audioSource.PlayOneShot(selectedClip);
         else
             _audioSource.PlayOneShot(randomizerList[Random.Range(0, randomizerList.Count)]);
 
+        pickRandomClip = false;
         _randomIndex--;
     }
 }
