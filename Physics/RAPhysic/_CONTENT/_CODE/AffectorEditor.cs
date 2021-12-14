@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -10,7 +8,11 @@ public class AffectorEditor : Editor
     {
         Affector myTarget = (Affector)target;
 
-        if(myTarget.DrawDefaultInspector)
+        if (!Application.isPlaying)
+            myTarget.InitVariables();
+
+
+        if (myTarget.DrawDefaultInspector)
             base.OnInspectorGUI();
         else
         {
@@ -20,6 +22,8 @@ public class AffectorEditor : Editor
         GUILayout.Label("PHYSIC____________________________________________________________________________________", EditorStyles.boldLabel);
         GUILayout.BeginVertical("helpBox");
         GUILayout.Space(20);
+        myTarget.Rb = (Rigidbody)EditorGUILayout.ObjectField("Rb", myTarget.Rb, typeof(Rigidbody), true);
+        myTarget.Collider = (Collider)EditorGUILayout.ObjectField("Collider", myTarget.Collider, typeof(Collider), true);
         myTarget.PhysicEnabled = EditorGUILayout.Toggle(new GUIContent("Physic Enabled", "determine if object is in the list and is detected"), myTarget.PhysicEnabled);
         myTarget.PhysicAffectorEnabled = EditorGUILayout.Toggle(new GUIContent("Physic Affector Enabled", "determine if object generate gravity and apply it to other object"), myTarget.PhysicAffectorEnabled);
         GUILayout.EndVertical();

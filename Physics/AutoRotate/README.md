@@ -1,23 +1,15 @@
-# Unity Personal Data Bank(UPDB)
-junior developper, personal library, mostly on unity, C#
+# AutoRotate
+automatic rotations for objects
 
-## Lib Main Info
+## packages used :
 
+- CoreModule
 
-- owner : VITIELLO Maximilien
-
-- birth date : 02/10/2002
-
-- experience : junior developper, montpellier, 4 years of code, 2 years of C#
-
-- creation date : 13/12/2021
+### creation date : 14/12/2021
 
 ## description :
 ```
-UPDB is a place where you can find every reusable code i've created, everything is 100% handmade and dailly updated.
-
-
-
+AutoRotate is a simple tool that make objects rotate, you can specify global or local rotations direction with 3 axis(or 2) and speed of each rotations, you can also specify how code interact with deltaTime.
 ```
 
 ## Links :
@@ -26,3 +18,6 @@ UPDB is a place where you can find every reusable code i've created, everything 
 ["GitHub Page"](https://github.com/Light974-M)
 
 ["Library GIT"](https://github.com/Light974-M/UnityPersonalDataBank)
+
+["AutoRotate GIT"](https://github.com/Light974-M/UnityPersonalDataBank/tree/main/Physics/AutoRotate)
+

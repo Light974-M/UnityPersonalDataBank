@@ -1,17 +1,15 @@
-# Vision
-Ai visual detection by raycasts
+# Smooth 2.5D Camera
+smooth camera using 3D Engine for 2D games
 
 ## packages used :
 
 - CoreModule
 
-- Physics
-
 ### creation date : 14/12/2021
 
 ## description :
 ```
-Vision is a program that you can use to implement dynamic AI Visual detection, using rayCasts, it can detect collisions and see everywhere in front of the AI.
+smooth 2.5D camera is a simple script that make an object follow another and look at him with smooth and juicy movements makes on translates.
 ```
 
 ## Links :

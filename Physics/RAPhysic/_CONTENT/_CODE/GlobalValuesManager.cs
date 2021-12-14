@@ -11,7 +11,13 @@ public class GlobalValuesManager : MonoBehaviour
 
     [SerializeField]
     [Tooltip("the list where this object will be stored and called(in a scriptableObject)")]
-    private AffectorsList affectorsList;    public AffectorsList AffectorsAsset => affectorsList;
+    private AffectorsList affectorsList;    
+    public AffectorsList AffectorsAsset
+    {
+        get { return affectorsList; }
+        set { affectorsList = value; }
+    }
+
 
     [SerializeField]
     [HideInInspector]
@@ -24,7 +30,7 @@ public class GlobalValuesManager : MonoBehaviour
 
     [SerializeField]
     [Tooltip("Gravitational scale for constant G, x means that a 1 meter object will render gravity as a x meter object VALUE 1 IS THE ACCURATE SIMULATION OF REAL WORLD")]
-    private float _gravityScale = 1000;    public float GravityScale => _gravityScale; 
+    private float _gravityScale = 1000000000;    public float GravityScale => _gravityScale;
 
     private void Awake()
     {

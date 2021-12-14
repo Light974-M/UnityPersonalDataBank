@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class AutoRotate : MonoBehaviour
 {
+    //variables you can see in the inspector
+    #region Serialized And Public Variables
+
     //SPEED MANAGER
 
     //notice : global and local rotations, direction, or speed, can add up each other
@@ -63,6 +66,7 @@ public class AutoRotate : MonoBehaviour
     //TIME
 
     //time used to render every movement, none means that it will call Rotate every frame depend on computer frame rate, noneFixed mean it will depends on timeStep, deltaTime mean it will move constantly trough real time, fixedDeltaTime mean it will be called in fixed but not depend of timeStep.
+   
     #region timeUsed
 
     [Header("TIME"), SerializeField, Tooltip("if enabled, game will make constant speed rotation trough real time, if disabled, game will use Physics Fixed Update value.")]
@@ -78,8 +82,9 @@ public class AutoRotate : MonoBehaviour
         noneFixed,
         deltaTime,
         fixedDeltaTime
-    } 
+    }
 
+    #endregion 
     #endregion
 
     //called every frame
