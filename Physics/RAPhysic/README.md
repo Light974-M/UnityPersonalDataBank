@@ -7,8 +7,3 @@ package content :
 
 THIS PROGRAM REPLACE RIGIDBODY'S GRAVITY, PLEASE DISABLE RIGIDBODY'S DEFAULT GRAVITY FIRSTLY.
 
-
-todo list :
-mode agglomération d'objet
-template de crash tests
-

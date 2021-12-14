@@ -1,1 +1,0 @@
-note : descente en dessous des 40 fps : liste de 100 000 elements ou plus, avec i7 GTX 9660, WIN1064b.
