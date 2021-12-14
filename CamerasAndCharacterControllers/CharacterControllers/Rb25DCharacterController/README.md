@@ -1,5 +1,5 @@
-# Vision
-Ai visual detection by raycasts
+# RigidBody 2.5D Character Controller
+2D characterController using RigidBody Physics
 
 ## packages used :
 
@@ -11,7 +11,7 @@ Ai visual detection by raycasts
 
 ## description :
 ```
-Vision is a program that you can use to implement dynamic AI Visual detection, using rayCasts, it can detect collisions and see everywhere in front of the AI.
+this character controller use RigidBody 3D and 3D objects moving on 2D
 ```
 
 ## Links :
@@ -21,4 +21,4 @@ Vision is a program that you can use to implement dynamic AI Visual detection, u
 
 ["Library GIT"](https://github.com/Light974-M/UnityPersonalDataBank)
 
-["Vision GIT"](https://github.com/Light974-M/UnityPersonalDataBank/tree/main/AI/Vision)
+["Smooth25DCamRender GIT"](https://github.com/Light974-M/UnityPersonalDataBank/tree/main/CamerasAndCharacterControllers/CharacterControllers/Rb25DCharacterController)

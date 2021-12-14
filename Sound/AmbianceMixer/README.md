@@ -1,23 +1,17 @@
-# Unity Personal Data Bank(UPDB)
-junior developper, personal library, mostly on unity, C#
+# AmbianceMixer
+audio randomizer applied to full 3D ambiance.
 
-## Lib Main Info
+## packages used :
 
+- CoreModule
 
-- owner : VITIELLO Maximilien
+- Audio
 
-- birth date : 02/10/2002
-
-- experience : junior developper, montpellier, 4 years of code, 2 years of C#
-
-- creation date : 13/12/2021
+### creation date : 14/12/2021
 
 ## description :
 ```
-UPDB is a place where you can find every reusable code i've created, everything is 100% handmade and dailly updated.
-
-
-
+AmbianceMixer is a AudioRandomizer used to render 3D fully procedural Audio engine.
 ```
 
 ## Links :
@@ -26,3 +20,5 @@ UPDB is a place where you can find every reusable code i've created, everything 
 ["GitHub Page"](https://github.com/Light974-M)
 
 ["Library GIT"](https://github.com/Light974-M/UnityPersonalDataBank)
+
+["Vision GIT"](https://github.com/Light974-M/UnityPersonalDataBank/tree/main/Sound/AmbianceMixer)

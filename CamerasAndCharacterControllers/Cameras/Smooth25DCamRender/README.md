@@ -19,4 +19,4 @@ smooth 2.5D camera is a simple script that make an object follow another and loo
 
 ["Library GIT"](https://github.com/Light974-M/UnityPersonalDataBank)
 
-["Vision GIT"](https://github.com/Light974-M/UnityPersonalDataBank/tree/main/AI/Vision)
+["Smooth25DCamRender GIT"](https://github.com/Light974-M/UnityPersonalDataBank/tree/main/CamerasAndCharacterControllers/Cameras/Smooth25DCamRender)
