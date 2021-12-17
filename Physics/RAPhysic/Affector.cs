@@ -303,7 +303,7 @@ namespace UPDB.physic.RAPhysic
 
             //globalValues Exceptions Manager
             if (_globalValues == null)
-                if (!UsableMethods.TryFindObjectOfType(out _globalValues))
+                if (!this.TryFindObjectOfType(out _globalValues))
                 {
                     //if there is no GlobalValuesManager usable in Scene.
                     _globalValues = new GameObject("GlobalValuesManager").AddComponent<GlobalValuesManager>();
