@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.Rb25DController
 {
-    public class CharacterController : MonoBehaviour
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/Rb25DController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/Rb25DController/Rigidbody 2.5D Controller")]
+    public class PlayerController : MonoBehaviour
     {
 
         #region SerializedVariable
