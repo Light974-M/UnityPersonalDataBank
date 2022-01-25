@@ -7,7 +7,7 @@ namespace UPDB.physic.RAPhysic
     /// main class of RAPhysic
     /// </summary>
     [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu("UPDB/Physics/RAPhysics/RAPhysics Affector")]
-    public class Affector : MonoBehaviour
+    public class Affector : UPDBBehaviour
     {
         #region Serialized And Public Variables
 
@@ -303,7 +303,7 @@ namespace UPDB.physic.RAPhysic
 
             //globalValues Exceptions Manager
             if (_globalValues == null)
-                if (!this.TryFindObjectOfType(out _globalValues))
+                if (!TryFindObjectOfType(out _globalValues))
                 {
                     //if there is no GlobalValuesManager usable in Scene.
                     _globalValues = new GameObject("GlobalValuesManager").AddComponent<GlobalValuesManager>();
@@ -379,7 +379,8 @@ namespace UPDB.physic.RAPhysic
                 if (physicEnabledSwitch)
                 {
                     //when physicEnabled comes to true, called one time, and add object to affector list
-                    listToChange.Add(this); physicEnabledSwitch = false;
+                    listToChange.Add(this); 
+                    physicEnabledSwitch = false;
                 }
             }
             else
@@ -387,7 +388,8 @@ namespace UPDB.physic.RAPhysic
                 if (!physicEnabledSwitch)
                 {
                     //when physicEnabled comes to false, called one time, and remove object of affector list
-                    listToChange.Remove(this); physicEnabledSwitch = true;
+                    listToChange.Remove(this); 
+                    physicEnabledSwitch = true;
                 }
             }
         }

@@ -1,22 +1,22 @@
 using UnityEngine;
-using UPDB.physic.RAPhysic;
 
 namespace UPDB
 {
-    /// <summary>
-    /// method bank that can be used everywhere
-    /// </summary>
-    public static class UsableMethods
+    ///<summary>
+    /// UPDB methods that does not use extensions, callable in every classes that derives from monoBehaviour
+    ///</summary>
+    public class UPDBBehaviour : MonoBehaviour
     {
         /// <summary>
         /// try to find Object, and, if not, let an exception parameter
         /// </summary>
         /// <param name="variable">variable that will assign the TryFindObjectOfType value</param>
         /// <returns></returns>
-        public static bool TryFindObjectOfType<T>(this Object owner, out T variable) where T : Object
+        public static bool TryFindObjectOfType<T>(out T variable) where T : Object
         {
-            variable = Object.FindObjectOfType<T>();
+            variable = FindObjectOfType<T>();
             return variable != null;
         }
+
     } 
 }

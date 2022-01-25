@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace UPDB.physic.AutoRotate
 {
+    /// <summary>
+    /// rotate constantly an object when instantiated
+    /// </summary>
     public class AutoRotate : MonoBehaviour
     {
         //variables you can see in the inspector
@@ -115,7 +118,6 @@ namespace UPDB.physic.AutoRotate
             //if enum is set to a delta time or fixed deltaTime, if not, _deltaTime will be set to 1
             if (_timeUsed == _timeUsedEnum.deltaTime || _timeUsed == _timeUsedEnum.fixedDeltaTime)
                 _deltaTime = deltaTimeUsed;
-            Debug.Log(_deltaTime);
 
             //rotate trough global axis
             transform.RotateAround(transform.position, _rotateDir, _rotateSpeed * _deltaTime);

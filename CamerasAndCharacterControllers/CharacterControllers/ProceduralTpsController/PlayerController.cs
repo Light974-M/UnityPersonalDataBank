@@ -1,9 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
 
-namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsController
+namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTpsController
 {
-    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/RbFpsController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/RbFpsController/Rigidbody FPS Controller")]
+    ///<summary>
+    /// 
+    ///</summary>
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/Procedural Tps Controller")]
     public class PlayerController : MonoBehaviour
     {
         #region Serialized And Public Variables
@@ -15,14 +19,26 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
         private Collider _collider;
 
         [SerializeField, Tooltip("speed of character movements")]
-        private float _speed = 0;
+        private float _speed = 1;
+
+        [SerializeField, Tooltip("speed of character movements")]
+        private float _smoothness = 1;
+
+        [SerializeField, Tooltip("camera pivot(at center of player)")]
+        private Transform _cameraPivot;
+
+        [SerializeField, Tooltip("camera")]
+        private Camera _camera;
+
+        [SerializeField, Tooltip("list of all points that can be moved for animation")]
+        private List<Transform> _meshList;
 
 
         #endregion
 
         #region Private Variables
 
-        
+
 
         #endregion
 
@@ -47,6 +63,24 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
             set { _speed = value; }
         }
 
+        public Transform CameraPivot
+        {
+            get { return _cameraPivot; }
+            set { _cameraPivot = value; }
+        }
+
+        public Camera Camera
+        {
+            get { return _camera; }
+            set { _camera = value; }
+        }
+
+        public List<Transform> MeshList
+        {
+            get { return _meshList; }
+            set { _meshList = value; }
+        }
+
         #endregion
 
 
@@ -65,7 +99,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
             else
                 Debug.LogWarning("warning : there is no rigidbody attached to this Component");
 
-             _rb.drag = Mathf.Clamp(_rb.drag, 0, 50);
+            AnimationMove();
         }
 
         public void InitVariables()
@@ -79,7 +113,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
                     _rb.angularDrag = 0;
                     _rb.drag = 10;
                 }
-                
+
             }
             GameObject camObject;
 
@@ -90,16 +124,36 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
                 camObject.transform.localPosition = new Vector3(0, 0.5f, 0.48f);
                 camObject.transform.localEulerAngles = Vector3.zero;
                 camObject.AddComponent<CameraController>();
+                camObject.AddComponent<AudioListener>();
             }
+
+            if (_cameraPivot == null)
+                if (!TryGetComponent(out _cameraPivot))
+                    _cameraPivot = Instantiate(new GameObject("_cameraPivot")).transform;
+
+            if (_camera == null)
+                if (!TryGetComponent(out _camera))
+                    _camera = gameObject.AddComponent<Camera>();
         }
 
         private void Move()
         {
+            _cameraPivot.eulerAngles = new Vector3(0, _cameraPivot.eulerAngles.y, 0);
             Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            Vector3 move = transform.right * input.x + transform.forward * input.y;
+            Vector3 move = (_cameraPivot.right * input.x + _cameraPivot.forward * input.y).normalized;
             float speedMultiplier = (_speed * 5000);
-            
+
             _rb.AddForce(move * speedMultiplier * Time.deltaTime);
+            _rb.AddForce(-_rb.velocity.x * _smoothness, 0, -_rb.velocity.z * _smoothness);
+
+            //_rb.drag = Mathf.Clamp(_rb.drag, 0, 50);
         }
-    }
+
+        private void AnimationMove()
+        {
+            _meshList[1].position = _meshList[0].position + _rb.velocity;
+            _meshList[0].LookAt(_meshList[1]);
+            _meshList[0].eulerAngles = new Vector3( 0, _meshList[0].eulerAngles.y, 0);
+        }
+    } 
 }

@@ -12,17 +12,20 @@ junior developper, personal library, mostly on unity, C#
 
 - creation date : 13/12/2021
 
+## Packages used :
+
+- CoreModule
+
+- Physics
+
+- Audio
+
 ## description :
-```
+
 UPDB is a place where you can find every reusable code i've created, everything is 100% handmade and dailly updated.
 
-
-
-```
 
 ## Links :
 ["Youtube Channel"](https://www.youtube.com/channel/UC-_DDdI316_BYs7HlO260OA)
 
-["GitHub Page"](https://github.com/Light974-M)
-
-["Library GIT"](https://github.com/Light974-M/UnityPersonalDataBank)
+["GitHub Main Page"](https://github.com/Light974-M)
