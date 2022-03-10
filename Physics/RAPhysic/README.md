@@ -17,7 +17,7 @@ THIS PROGRAM REPLACE RIGIDBODY'S GRAVITY, PLEASE DISABLE RIGIDBODY'S DEFAULT GRA
 ```
 
 
-TUTORIAL : 
+INSTALLATION : 
 
 
 -create object and ad the UPDB's RAPhysic script, it will automatically create colliders, rigidbody, and the global values manager with physic strength multiplier(G constant) and the scriptable where is stored every object detected by game, where you can delete an object you don't want to interact with RAPhysic, list delete and add automatically object when you load/unload them.
