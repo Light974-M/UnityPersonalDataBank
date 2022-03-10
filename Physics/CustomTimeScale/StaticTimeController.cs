@@ -4,14 +4,24 @@ using UnityEngine;
 namespace UPDB.physic.TimeController
 {
     ///<summary>
-    /// allow full control on time axis
+    /// allow full control on time axis, on every objects
     ///</summary>
-    [AddComponentMenu("Game/TimeController")]
-    public class TimeController : UPDBBehaviour
+    [AddComponentMenu("Game/StaticTimeController")]
+    public class StaticTimeController : UPDBBehaviour
     {
 
         [SerializeField, Tooltip("")]
         private Rigidbody _rb;
+
+        [SerializeField, HideInInspector]
+        private GameObject[] objectList;
+
+        [SerializeField, HideInInspector]
+        private List<Vector3>[] _posListArray;
+
+        [SerializeField, HideInInspector]
+        private List<Quaternion>[] _rotListArray;
+
 
         [SerializeField, Range(-10, 10), Tooltip("")]
         private float _timeScale = 1;
@@ -41,6 +51,8 @@ namespace UPDB.physic.TimeController
 
         private void Awake()
         {
+            objectList = FindObjectsOfType<GameObject>();
+
             if (_rb == null)
                 if (!TryGetComponent(out _rb))
                 {
