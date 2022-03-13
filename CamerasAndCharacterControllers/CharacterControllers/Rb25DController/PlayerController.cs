@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.Rb25DController
 {
-    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/Rb25DController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/Rigidbody 2.5D Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/Rb25DController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/Rb25DController/2.5D Controller")]
     public class PlayerController : MonoBehaviour
     {
 

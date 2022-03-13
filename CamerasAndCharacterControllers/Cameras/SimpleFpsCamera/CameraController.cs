@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera
 {
+    /// <summary>
+    /// simple fps camera controller, can be used with fps controller or alone
+    /// </summary>
     [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/SimpleFpsCamera/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/SimpleFpsCamera/Fps Camera Controller")]
     public class CameraController : MonoBehaviour
     {

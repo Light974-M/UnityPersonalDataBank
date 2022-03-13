@@ -5,10 +5,10 @@ using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTpsController
 {
     ///<summary>
-    /// 
+    /// component for third person controller movements input
     ///</summary>
-    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/Procedural Tps Controller")]
-    public class PlayerController : MonoBehaviour
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/TpsController")]
+    public class PlayerController : UPDBBehaviour
     {
         #region Serialized And Public Variables
 
@@ -24,8 +24,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
         [SerializeField, Tooltip("speed of character movements")]
         private float _smoothness = 1;
 
-        [SerializeField, Tooltip("camera pivot(at center of player)")]
-        private Transform _cameraPivot;
+        [SerializeField, Tooltip("object at center of player, as to be under camera pivot, will set direction for movements")]
+        private Transform _moveDirection;
 
         [SerializeField, Tooltip("camera")]
         private Camera _camera;
@@ -65,8 +65,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
 
         public Transform CameraPivot
         {
-            get { return _cameraPivot; }
-            set { _cameraPivot = value; }
+            get { return _moveDirection; }
+            set { _moveDirection = value; }
         }
 
         public Camera Camera
@@ -99,7 +99,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
             else
                 Debug.LogWarning("warning : there is no rigidbody attached to this Component");
 
-            AnimationMove();
+            if (_meshList.Count != 0)
+                AnimationMove();
         }
 
         public void InitVariables()
@@ -127,20 +128,27 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
                 camObject.AddComponent<AudioListener>();
             }
 
-            if (_cameraPivot == null)
-                if (!TryGetComponent(out _cameraPivot))
-                    _cameraPivot = Instantiate(new GameObject("_cameraPivot")).transform;
+            if (_moveDirection == null)
+                if (!TryGetComponent(out _moveDirection))
+                    _moveDirection = Instantiate(new GameObject("_cameraPivot")).transform;
 
             if (_camera == null)
-                if (!TryGetComponent(out _camera))
-                    _camera = gameObject.AddComponent<Camera>();
+            {
+                _camera = FindObjectOfType<Camera>();
+
+                if (FindObjectOfType<Camera>() == null)
+                {
+                    _camera = new GameObject().AddComponent<Camera>();
+                    _camera.gameObject.transform.SetParent(transform);
+                }
+            }
         }
 
         private void Move()
         {
-            _cameraPivot.eulerAngles = new Vector3(0, _cameraPivot.eulerAngles.y, 0);
+            _moveDirection.eulerAngles = new Vector3(0, _moveDirection.eulerAngles.y, 0);
             Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            Vector3 move = (_cameraPivot.right * input.x + _cameraPivot.forward * input.y).normalized;
+            Vector3 move = (_moveDirection.right * input.x + _moveDirection.forward * input.y).normalized;
             float speedMultiplier = (_speed * 5000);
 
             _rb.AddForce(move * speedMultiplier * Time.deltaTime);
@@ -153,7 +161,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
         {
             _meshList[1].position = _meshList[0].position + _rb.velocity;
             _meshList[0].LookAt(_meshList[1]);
-            _meshList[0].eulerAngles = new Vector3( 0, _meshList[0].eulerAngles.y, 0);
+            _meshList[0].eulerAngles = new Vector3(0, _meshList[0].eulerAngles.y, 0);
         }
-    } 
+    }
 }

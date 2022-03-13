@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UPDB.physic.TimeController
+namespace UPDB.physic.CustomTimeScale
 {
     ///<summary>
     /// allow full control on time axis
     ///</summary>
-    [AddComponentMenu("Game/TimeController")]
+    [AddComponentMenu("UPDB/Physics/CustomTimeScale/TimeController")]
     public class TimeController : UPDBBehaviour
     {
 

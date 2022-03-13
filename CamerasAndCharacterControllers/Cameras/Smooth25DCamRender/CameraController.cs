@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.Smooth25DCameraController
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// 
+    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/Smooth25DCameraController/2.5D Camera Controller")]
     public class CameraController : MonoBehaviour
     {
         #region SerializedVariable
