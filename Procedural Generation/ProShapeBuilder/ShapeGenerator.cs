@@ -355,10 +355,10 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
                             }
                             else if (xz < _verticesNumber * 3)
                             {
-                                Debug.Log(((_verticesNumber + 1) * (_verticesNumber + 1) - 1) - (xz - (_verticesNumber * 2) + 1));
-                                //triangles[tris + trisIndex] = ((_verticesNumber + 1) * (_verticesNumber + 1) - 1) - (xz - (_verticesNumber * 2));
-                                //triangles[tris + trisIndex + 1] = vert + 1 + (_verticesNumber * 2) + (xz - _verticesNumber * 2);
-                                //triangles[tris + trisIndex + 2] = ((_verticesNumber + 1) * (_verticesNumber + 1) - 1) - (xz - (_verticesNumber * 2) + 1);
+                                //Debug.Log(((_verticesNumber + 1) * (_verticesNumber + 1) - 1) - (xz - (_verticesNumber * 2) + 1));
+                                triangles[tris + trisIndex] = ((_verticesNumber + 1) * (_verticesNumber + 1) - 1) - (xz - (_verticesNumber * 2));
+                                triangles[tris + trisIndex + 1] = vert + 1 + (_verticesNumber * 2) + (xz - _verticesNumber * 2);
+                                triangles[tris + trisIndex + 2] = ((_verticesNumber + 1) * (_verticesNumber + 1) - 1) - (xz - (_verticesNumber * 2) + 1);
                                 //triangles[tris + trisIndex + 3] = ((_verticesNumber) * ((xz - _verticesNumber) + 2)) + (xz - _verticesNumber + 1);
                                 //triangles[tris + trisIndex + 4] = vert + 1 + _verticesNumber + (xz - _verticesNumber);
                                 //triangles[tris + trisIndex + 5] = vert + 1 + _verticesNumber + (xz - _verticesNumber + 1);

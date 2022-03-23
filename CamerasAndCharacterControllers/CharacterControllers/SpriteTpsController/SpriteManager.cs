@@ -21,7 +21,11 @@ namespace UPDB
         private Transform _player;
 
         [SerializeField, Tooltip("")]
-        private Sprite[] _spriteList;
+        private bool _onlyYAxis = false;
+
+        [SerializeField, Tooltip("")]
+        private SpriteListAsset[] _spriteListAssetList;
+
 
         private void Awake()
         {
@@ -30,8 +34,8 @@ namespace UPDB
 
         private void Update()
         {
-            if (_spriteList.Length != 0)
-                _spriteRenderer.sprite = _spriteList[CalculateSpriteToDraw()];
+            if (_spriteListAssetList.Length != 0)
+                _spriteRenderer.sprite = _spriteListAssetList[0].SpriteList[CalculateSpriteToDraw()];
 
             SetRealRotation();
         }
@@ -66,7 +70,7 @@ namespace UPDB
         private int CalculateSpriteToDraw()
         {
             int index = 0;
-            float spritesDifference = 360 / _spriteList.Length;
+            float spritesDifference = 360 / _spriteListAssetList[0].SpriteList.Length;
             float currentRotation = _targetToLook.eulerAngles.y;
             float cameraCurrentRotation = _camera.eulerAngles.y;
             float camRotComparePlayerRot = cameraCurrentRotation - currentRotation;
@@ -74,7 +78,7 @@ namespace UPDB
             if (camRotComparePlayerRot < 0)
                 camRotComparePlayerRot = (360 + cameraCurrentRotation) - currentRotation;
 
-            for (int i = 0; i < _spriteList.Length; i++)
+            for (int i = 0; i < _spriteListAssetList[0].SpriteList.Length; i++)
             {
                 if(i == 0)
                 {
@@ -85,7 +89,6 @@ namespace UPDB
                     index = i;
                 }
             }
-            Debug.Log($"cam : {camRotComparePlayerRot}");
 
             return index;
         }
@@ -93,6 +96,9 @@ namespace UPDB
         private void SetRealRotation()
         {
             transform.LookAt(_camera.position);
+
+            if (_onlyYAxis)
+                transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
         }
     }
 }
