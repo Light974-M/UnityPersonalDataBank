@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UPDB.Ai.StateMachineTool
@@ -10,35 +11,96 @@ namespace UPDB.Ai.StateMachineTool
     {
         private StateMachine _stateMachine;
 
+        [SerializeField, Tooltip("")]
+        private StateMachinePreset _stateMachinePreset;
+
+        [System.Serializable]
+        public struct SerializedBlackBoard
+        {
+            public string _key;
+
+            public int _intValue;
+            public float _floatValue;
+            public bool _boolValue;
+
+            public enum ValueType
+            {
+                Bool,
+                Int,
+                Float,
+            }
+
+            public ValueType _valueType;
+
+            public SerializedBlackBoard(string key, int value)
+            {
+                _key = key;
+                _intValue = value;
+                _floatValue = 0;
+                _boolValue = false;
+                _valueType = ValueType.Int;
+            }
+
+            public SerializedBlackBoard(string key, float value)
+            {
+                _key = key;
+                _intValue = 0;
+                _floatValue = value;
+                _boolValue = false;
+                _valueType = ValueType.Float;
+            }
+
+            public SerializedBlackBoard(string key, bool value)
+            {
+                _key = key;
+                _intValue = 0;
+                _floatValue = 0;
+                _boolValue = value;
+                _valueType = ValueType.Bool;
+            }
+        }
+
+        [SerializeField, Tooltip("")]
+        private SerializedBlackBoard[] _blackBoard;
+
+        #region Public API
+
+        public SerializedBlackBoard[] BlackBoard
+        {
+            set
+            {
+                _stateMachine.BlackBoard = new Dictionary<string, object>();
+
+                foreach (SerializedBlackBoard item in _blackBoard)
+                {
+                    if (item._valueType == SerializedBlackBoard.ValueType.Bool)
+                        _stateMachine.BlackBoard.Add(item._key, item._boolValue);
+                    else if (item._valueType == SerializedBlackBoard.ValueType.Int)
+                        _stateMachine.BlackBoard.Add(item._key, item._intValue);
+                    else if (item._valueType == SerializedBlackBoard.ValueType.Float)
+                        _stateMachine.BlackBoard.Add(item._key, item._floatValue);
+                }
+            }
+        }
+
+        public StateMachine StateMachine => _stateMachine;
+
+        public StateMachinePreset StateMachinePreset => _stateMachinePreset;
+
+        #endregion
+
         private void Update()
         {
-            _stateMachine.UpdateMachine(_stateMachine.BlackBoard);
+            _stateMachine.UpdateMachine();
         }
 
         private void OnDrawGizmos()
         {
-            if(!Application.isPlaying)
+            if (!Application.isPlaying)
             {
                 if (_stateMachine == null)
                 {
-                    State idle = new State("idle");
-                    State eat = new State("eat");
-                    State reproduce = new State("reproduce");
-
-                    _stateMachine = new StateMachine(idle);
-
-                    idle.TransitionList.Add(new Transition(idle, eat));
-                    idle.TransitionList.Add(new Transition(idle, reproduce));
-                    eat.TransitionList.Add(new Transition(eat, idle));
-                    reproduce.TransitionList.Add(new Transition(reproduce, idle));
-
-                    _stateMachine.BlackBoard.Add("isHungry", false);
-                    _stateMachine.BlackBoard.Add("isHeat", false);
-
-                    idle.TransitionList[0].ConditionsList.Add(new BoolCondition("isHungry", true));
-                    idle.TransitionList[1].ConditionsList.Add(new BoolCondition("isHeat", true));
-                    eat.TransitionList[0].ConditionsList.Add(new BoolCondition("isHungry", false));
-                    reproduce.TransitionList[0].ConditionsList.Add(new BoolCondition("isHeat", false));
+                    _stateMachine = new StateMachine(_stateMachinePreset.StateList[0]);
                 }
             }
         }

@@ -30,6 +30,8 @@ namespace UPDB.Ai.StateMachineTool
             }
         }
 
+        public State ActiveState => _activeState;
+
         public Dictionary<string, object> BlackBoard
         {
             get
@@ -57,9 +59,9 @@ namespace UPDB.Ai.StateMachineTool
             _activeState = _initState;
         }
 
-        public void UpdateMachine(Dictionary<string, object> blackBoard)
+        public void UpdateMachine()
         {
-            State newStateToPut = _activeState.TestTransiting(blackBoard).StateTo;
+            State newStateToPut = _activeState.TestTransiting(_blackBoard).StateTo;
 
             if (newStateToPut != null)
                 _activeState = newStateToPut;

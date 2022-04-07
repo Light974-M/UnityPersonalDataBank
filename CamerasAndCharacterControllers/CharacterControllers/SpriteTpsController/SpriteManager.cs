@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace UPDB
+namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
 {
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/SpriteManager")]
+    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/SpriteTpsController/SpriteManager")]
     public class SpriteManager : UPDBBehaviour
     {
         [SerializeField, Tooltip("")]

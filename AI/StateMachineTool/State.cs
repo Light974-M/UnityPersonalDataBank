@@ -12,6 +12,8 @@ namespace UPDB.Ai.StateMachineTool
 
         private string _stateName;
 
+        private StateBehaviour _stateBehaviour;
+
         #region public API
 
         public List<Transition> TransitionList
@@ -24,6 +26,19 @@ namespace UPDB.Ai.StateMachineTool
             set
             {
                 _transitionList = value;
+            }
+        }
+
+        public StateBehaviour StateBehaviour
+        {
+            get
+            {
+                return _stateBehaviour;
+            }
+
+            set
+            {
+                _stateBehaviour = value;
             }
         }
 

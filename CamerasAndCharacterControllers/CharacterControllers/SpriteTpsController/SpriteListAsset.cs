@@ -1,24 +1,27 @@
 using UnityEngine;
 
-///<summary>
-/// 
-///</summary>
-[CreateAssetMenu(fileName = "NewSpriteListAsset", menuName = "SpriteListAsset")]
-public class SpriteListAsset : ScriptableObject
+namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
 {
-    [SerializeField, Tooltip("")]
-    private Sprite[] _spriteList;
-
-    public Sprite[] SpriteList
+    ///<summary>
+    /// 
+    ///</summary>
+    [CreateAssetMenu(fileName = "NewSpriteListAsset", menuName = "UPDB/CamerasAndCharacterControllers/CharacterControllers/SpriteTpsController/SpriteListAsset")]
+    public class SpriteListAsset : ScriptableObject
     {
-        get
-        {
-            return _spriteList;
-        }
+        [SerializeField, Tooltip("")]
+        private Sprite[] _spriteList;
 
-        set
+        public Sprite[] SpriteList
         {
-            _spriteList = value;
+            get
+            {
+                return _spriteList;
+            }
+
+            set
+            {
+                _spriteList = value;
+            }
         }
-    }
+    } 
 }
