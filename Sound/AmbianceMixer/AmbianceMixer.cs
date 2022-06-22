@@ -3,222 +3,160 @@ using UnityEngine;
 
 namespace UPDB.Sound.AmbianceMixer
 {
-    public class AmbianceMixer : MonoBehaviour
+    /// <summary>
+    /// Main script of AmbianceMixer tool, randomize and call randomly a list of AudioRandomizer
+    /// </summary>
+    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Ambiance Mixer Manager"), HelpURL(URL.baseURL + "/tree/main/Audio/AmbianceMixer/README.md")]
+    public class AmbianceMixer : UPDBBehaviour
     {
-        #region Serialized Variables
+        [SerializeField, Tooltip("array of clip array settings")]
+        private List<AudioRandomizerConfig> _randomClipConfig;
 
-        [Header("AMBIANCE MIXER")]
-        [SerializeField, Tooltip("array of clip array that call randomly a song")]
-        private AudioRandomizer[] _randomClipMixer;
+        /// <summary>
+        /// if disabled, a same song list can possibly play across itself
+        /// </summary>
+        private bool _allowCrossFade = false;
 
-        [SerializeField, Tooltip("array that contains random values for the randomizer ambiance playing"), Range(0, 1)]
-        private List<float> frequencyMixer;
+        #region Public API
 
-        [SerializeField, Tooltip("array that contains random timer clamp for randomizer, with a min and a max values")]
-        private List<Vector2> timeClampMixer;
-
-        [SerializeField, Tooltip("array that contains random values for the randomizer ambiance playing")]
-        private List<Vector2> volumeMixer;
-
-        [SerializeField, Tooltip("array that contains random values for the randomizer pitch")]
-        private List<Vector2> pitchMixer;
-
-        [SerializeField, Tooltip("if disabled, a same song list can possibly play across itself")]
-        private bool allowCrossFade = false;
-
-        [SerializeField, Tooltip("if disabled, mixer will use classic per frame randomization with frequencyMixer, if enabled, game will use random number between two timeClamps")]
-        private bool disableFrequencyMixer = false;
-        
-        [SerializeField, Tooltip("stop every sound")]
-        private bool stopAll = false;
-
-        /**************CUSTOM INSPECTOR**************/
-        [Header("CUSTOM INSPECTOR")]
-
-
-        [SerializeField, Tooltip("does AmbianceMixer show original values in default inspector or custom inspector, containing all functions, buttons, and features")]
-        private bool _drawDefaultInspector = false;
-
-        #endregion
-
-
-        #region Private Variables
-
-        [SerializeField, HideInInspector]
-        private List<float> timerList;
-
-        [SerializeField, HideInInspector]
-        private List<float> randomTimerList;
-
-        private List<float>[] floatListsArray;
-
-        private List<Vector2>[] vector2ListsArray;
-
-        #endregion
-
-
-        #region Accessors
-
-        /// <inheritdoc cref="_drawDefaultInspector"/>
-        public bool DrawDefaultInspector
-        { 
-            get { return _drawDefaultInspector; } 
-            set { _drawDefaultInspector = value; } 
-        }
-
-
-        /// <inheritdoc cref="_randomClipMixer"/>
-        public AudioRandomizer[] RandomClipMixer
+        public List<AudioRandomizerConfig> RandomClipConfig
         {
-            get { return _randomClipMixer; }
-            set { _randomClipMixer = value; }
+            get
+            {
+                if(_randomClipConfig == null)
+                    _randomClipConfig = new List<AudioRandomizerConfig>();
+
+                return _randomClipConfig;
+            }
+            set { _randomClipConfig = value; }
+        }
+
+
+        /// <inheritdoc cref="_allowCrossFade"/> 
+        public bool AllowCrossFade
+        {
+            get { return _allowCrossFade; }
+            set { _allowCrossFade = value; }
         }
 
         #endregion
 
 
+        /// <summary>
+        /// called at build of instance
+        /// </summary>
         private void Awake()
         {
-            if (_randomClipMixer.Length == 0)
-                _randomClipMixer = FindObjectsOfType<AudioRandomizer>();
-
-            floatListsArray = new List<float>[] { frequencyMixer, timerList, randomTimerList, };
-
-            vector2ListsArray = new List<Vector2>[] { timeClampMixer, volumeMixer, pitchMixer, };
+            Init();
         }
 
+        /// <summary>
+        /// called every frame
+        /// </summary>
         private void Update()
         {
-            MixerRandomValueGetterSetter();
-
-            CallRandom();
+            for (int i = 0; i < RandomClipConfig.Count; i++)
+                if (RandomClipConfig[i].Randomizer != null)
+                    UpdateClipCallState(i);
         }
 
-        private void MixerRandomValueGetterSetter()
+
+        /// <summary>
+        /// called at scene update in editor and at awake
+        /// </summary>
+        public void Init()
         {
-            foreach (List<float> list in floatListsArray)
+            if (RandomClipConfig.Count == 0)
             {
-                if (_randomClipMixer.Length != list.Count)
-                {
-                    int difference = _randomClipMixer.Length - list.Count;
+                AudioRandomizer[] randomClipMixer = FindObjectsOfType<AudioRandomizer>();
+                List<AudioRandomizerConfig> audioSettingsFinder = new List<AudioRandomizerConfig>();
 
-                    for (int i = 0; i < Mathf.Abs(difference); i++)
-                    {
-                        if (difference > 0)
-                            list.Add(0);
-                        else
-                            list.Remove(list[list.Count - 1]);
-                    }
-                }
+                for (int i = 0; i < randomClipMixer.Length; i++)
+                    audioSettingsFinder.Add(new AudioRandomizerConfig(randomClipMixer[i]));
+
+                RandomClipConfig = audioSettingsFinder;
             }
 
-            foreach (List<Vector2> list in vector2ListsArray)
-            {
-                if (_randomClipMixer.Length != list.Count)
-                {
-                    int difference = _randomClipMixer.Length - list.Count;
+            Vector2 volumeXRange = new Vector2(0, 2);
+            Vector2 volumeYRange = new Vector2(0, 2);
+            Vector2 pitchXRange = new Vector2(-12, 12);
+            Vector2 pitchYRange = new Vector2(-12, 12);
 
-                    for (int i = 0; i < Mathf.Abs(difference); i++)
-                    {
-                        if (difference > 0)
-                            list.Add(new Vector2(0, 1));
-                        else
-                            list.Remove(list[list.Count - 1]);
-                    }
+            for (int i = 0; i < RandomClipConfig.Count; i++)
+            {
+                Keyframe[] timeKeys = RandomClipConfig[i].TimeProbabilityCurve.keys;
+
+                if (timeKeys.Length != 0 && (timeKeys[0].time != 0 || timeKeys[0].value != RandomClipConfig[i].TimeRange.x || timeKeys[timeKeys.Length - 1].time != 1 || timeKeys[timeKeys.Length - 1].value != RandomClipConfig[i].TimeRange.y))
+                {
+                    timeKeys[0] = new Keyframe(0, RandomClipConfig[i].TimeRange.x);
+                    timeKeys[timeKeys.Length - 1] = new Keyframe(1, RandomClipConfig[i].TimeRange.y);
+                    RandomClipConfig[i].TimeProbabilityCurve.keys = timeKeys;
+                }
+
+                Keyframe[] volumeKeys = RandomClipConfig[i].VolumeProbabilityCurve.keys;
+
+                if (volumeKeys.Length != 0 && (volumeKeys[0].time != 0 || volumeKeys[0].value != RandomClipConfig[i].VolumeRange.x || volumeKeys[volumeKeys.Length - 1].time != 1 || volumeKeys[volumeKeys.Length - 1].value != RandomClipConfig[i].VolumeRange.y))
+                {
+                    volumeKeys[0] = new Keyframe(0, RandomClipConfig[i].VolumeRange.x);
+                    volumeKeys[volumeKeys.Length - 1] = new Keyframe(1, RandomClipConfig[i].VolumeRange.y);
+                    RandomClipConfig[i].VolumeProbabilityCurve.keys = volumeKeys;
+                }
+
+                Keyframe[] pitchKeys = RandomClipConfig[i].PitchProbabilityCurve.keys;
+
+                if (pitchKeys.Length != 0 && (pitchKeys[0].time != 0 || pitchKeys[0].value != RandomClipConfig[i].PitchRange.x || pitchKeys[pitchKeys.Length - 1].time != 1 || pitchKeys[pitchKeys.Length - 1].value != RandomClipConfig[i].PitchRange.y))
+                {
+                    pitchKeys[0] = new Keyframe(0, RandomClipConfig[i].PitchRange.x);
+                    pitchKeys[pitchKeys.Length - 1] = new Keyframe(1, RandomClipConfig[i].PitchRange.y);
+                    RandomClipConfig[i].PitchProbabilityCurve.keys = pitchKeys;
                 }
             }
         }
 
-        private void CallRandom()
+        /// <summary>
+        /// if called, every playing song will stop
+        /// </summary>
+        public void StopAll()
         {
-            for (int i = 0; i < _randomClipMixer.Length; i++)
-            {
-                volumeMixer[i] = new Vector2(Mathf.Clamp(volumeMixer[i].x, 0, 2), Mathf.Clamp(volumeMixer[i].y, 0, 2));
-                pitchMixer[i] = new Vector2(Mathf.Clamp(pitchMixer[i].x, -12f, 12f), Mathf.Clamp(pitchMixer[i].y, -12f, 12f));
-
-                timerList[i] += Time.deltaTime;
-
-                if (_randomClipMixer[i] != null)
-                {
-                    if (disableFrequencyMixer)
-                    {
-                        if (allowCrossFade)
-                            RandomPreset(true, i);
-                        else if (!_randomClipMixer[i].audioSource.isPlaying)
-                            RandomPreset(true, i);
-                    }
-                    else
-                    {
-                        if (allowCrossFade)
-                            RandomPreset(false, i);
-                        else if (!_randomClipMixer[i].audioSource.isPlaying)
-                            RandomPreset(false, i);
-
-                        if (timerList[i] >= timeClampMixer[i].y)
-                        {
-                            if (!_randomClipMixer[i].audioSource.isPlaying)
-                            {
-                                float minPitch = ((pitchMixer[i].x + 12f) / 16f) + 0.5f;
-                                float maxPitch = ((pitchMixer[i].y + 12f) / 16f) + 0.5f;
-                                float volume = Random.Range(volumeMixer[i].x, volumeMixer[i].y);
-                                float pitch = Random.Range(minPitch, maxPitch);
-
-                                _randomClipMixer[i].audioSource.volume = volume;
-                                _randomClipMixer[i].audioSource.pitch = pitch;
-
-                                _randomClipMixer[i].OnRandomizer();
-                                timerList[i] = 0;
-                            }
-                        }
-                    }
-                }
-
-                if (stopAll)
-                    _randomClipMixer[i].audioSource.Stop();
-            }
-
-            stopAll = false;
+            foreach (AudioRandomizerConfig randomizer in RandomClipConfig)
+                randomizer.Randomizer.AudioSource.Stop();
         }
 
-        private void RandomPreset(bool timerRandom, int i)
+        /// <summary>
+        /// called every frame, for each audioRandomize in list
+        /// </summary>
+        /// <param name="config">config to update</param>
+        /// <param name="randomizer">audioRandomizer to update</param>
+        private void UpdateClipCallState(int i)
         {
-            float minPitch = ((pitchMixer[i].x + 12f) / 16f) + 0.5f;
-            float maxPitch = ((pitchMixer[i].y + 12f) / 16f) + 0.5f;
+            RandomClipConfig[i].Timer += Time.deltaTime;
 
-            if (timerRandom)
+            bool isNotCrossedOrAllowed = _allowCrossFade || (!_allowCrossFade && !RandomClipConfig[i].Randomizer.AudioSource.isPlaying);
+            bool hasReachedTime = RandomClipConfig[i].Timer >= RandomClipConfig[i].RandomTime;
+
+            if (isNotCrossedOrAllowed && hasReachedTime)
+                RandomPreset(i);
+        }
+
+        /// <summary>
+        /// generate a random preset for audioRandomizer, and call it
+        /// </summary>
+        /// <param name="config">config to generate</param>
+        /// <param name="randomizer">audioRandomizer to generate</param>
+        private void RandomPreset(int i)
+        {
+            float volume = RandomClipConfig[i].VolumeProbabilityCurve.Evaluate(Random.Range(0f, 1f));
+            float pitch = RandomClipConfig[i].PitchProbabilityCurve.Evaluate(Random.Range(0f, 1f));
+
+            RandomClipConfig[i].Randomizer.OnRandomize(volume, pitch);
+
+            RandomClipConfig[i].Timer = 0;
+            RandomClipConfig[i].RandomTime = RandomClipConfig[i].TimeProbabilityCurve.Evaluate(Random.Range(0f, 1f));
+
+            float RangePitch(float PitchRange)
             {
-                if (timerList[i] >= randomTimerList[i])
-                {
-                    float volume = Random.Range(volumeMixer[i].x, volumeMixer[i].y);
-                    float pitch = Random.Range(minPitch, maxPitch);
-
-                    _randomClipMixer[i].audioSource.volume = volume;
-                    _randomClipMixer[i].audioSource.pitch = pitch;
-
-                    _randomClipMixer[i].OnRandomizer();
-                    timerList[i] = 0;
-                    randomTimerList[i] = Random.Range(timeClampMixer[i].x, timeClampMixer[i].y);
-                }
-            }
-            else
-            {
-                float random = Random.Range(0f, 1f);
-
-                if (Mathf.Pow(frequencyMixer[i], 4) > random || frequencyMixer[i] == 1)
-                {
-                    float volume = Random.Range(volumeMixer[i].x, volumeMixer[i].y);
-                    float pitch = Random.Range(minPitch, maxPitch);
-
-                    _randomClipMixer[i].audioSource.volume = volume;
-                    _randomClipMixer[i].audioSource.pitch = pitch;
-
-                    if (timerList[i] >= timeClampMixer[i].x)
-                    {
-                        _randomClipMixer[i].OnRandomizer();
-                        timerList[i] = 0;
-                    }
-                }
+                return ((PitchRange + 12f) / 16f) + 0.5f;
             }
         }
-    } 
+    }
 }

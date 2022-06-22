@@ -3,14 +3,17 @@ using UnityEngine;
 
 namespace UPDB.Sound.AmbianceMixer
 {
-    public class AudioRandomizer : MonoBehaviour
+    public class AudioRandomizer : UPDBBehaviour
     {
-        //SERIALIZED VARIABLES___________________________________________________________________________
+        /*****************************************SERIALIZED PROPERTIES**********************************************/
 
         [SerializeField, Tooltip("audioSource used to render songs")]
-        private AudioSource _audioSource; public AudioSource audioSource => _audioSource;
+        private AudioSource _audioSource;
 
-        [Header("RANDOMIZER")]
+        [SerializeField, Tooltip("explain here what is this config")]
+        private string _propertyTooltip = "";
+
+        [Header("RANDOMIZER SETTINGS")]
         [SerializeField, Tooltip("array that contains songs for randomizer")]
         private List<AudioClip> randomizerList;
 
@@ -20,16 +23,29 @@ namespace UPDB.Sound.AmbianceMixer
         [SerializeField, Tooltip("if enabled, random will use smart algorithm to use every song in list randomly without using 2 times the same.")]
         private bool useSmartRandomizer = true;
 
-        [Header("")]
+
+        [Header("PICK A CLIP")]
         [SerializeField, Tooltip("play a song from the randomizer(act like a button)")]
         private bool pickRandomClip = false;
 
 
-        //PRIVATE VARIABLES______________________________________________________________________________
+
+        /*****************************************PRIVATE PROPERTIES**********************************************/
 
         private int _randomIndex = -1;
 
 
+        #region Public API
+
+        public AudioSource AudioSource => _audioSource;
+        public string PropertyTooltip => _propertyTooltip;
+
+        #endregion
+
+
+        /// <summary>
+        /// called at build of instance
+        /// </summary>
         private void Awake()
         {
             if (_audioSource == null)
@@ -37,13 +53,48 @@ namespace UPDB.Sound.AmbianceMixer
                     _audioSource = gameObject.AddComponent<AudioSource>();
         }
 
+        /// <summary>
+        /// called every frame
+        /// </summary>
         private void Update()
         {
             if (pickRandomClip)
-                OnRandomizer();
+                OnRandomize();
         }
 
-        public void OnRandomizer()
+        /// <summary>
+        /// Pick a random song in the list, and play it
+        /// </summary>
+        /// <param name="volume">volume to set with this clip</param>
+        /// <param name="pitch">pitch to set with this clip</param>
+        public void OnRandomize(float volume, float pitch)
+        {
+            _audioSource.volume = volume;
+            _audioSource.pitch = pitch;
+
+            if (playOneSongATime)
+                _audioSource.Stop();
+
+            if (_randomIndex < 0)
+                _randomIndex = randomizerList.Count - 1;
+
+            int randomNumber = Random.Range(0, _randomIndex);
+            AudioClip selectedClip = randomizerList[randomNumber];
+
+            randomizerList.Remove(randomizerList[randomNumber]);
+            randomizerList.Add(selectedClip);
+
+            if (useSmartRandomizer)
+                _audioSource.PlayOneShot(selectedClip);
+            else
+                _audioSource.PlayOneShot(randomizerList[Random.Range(0, randomizerList.Count)]);
+
+            pickRandomClip = false;
+            _randomIndex--;
+        }
+
+        /// <inheritdoc cref="OnRandomize"/>
+        public void OnRandomize()
         {
             if (playOneSongATime)
                 _audioSource.Stop();

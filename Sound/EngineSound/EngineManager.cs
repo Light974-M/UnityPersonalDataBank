@@ -31,6 +31,9 @@ public class EngineManager : MonoBehaviour
     [SerializeField]
     private int actualVitesse = 1;
 
+    [SerializeField]
+    private float _offset = 0;
+
     private bool changePhase = false;
     private bool changePhaseSwitch = false;
     private float startPitchAtChange = 0;
@@ -51,6 +54,8 @@ public class EngineManager : MonoBehaviour
 
     private void Update()
     {
+        audioSource.pitch -= _offset;
+
         if (isPlaying)
             EngineSoundPlayer();
 
@@ -70,6 +75,8 @@ public class EngineManager : MonoBehaviour
                 changePhase = true;
             }
         }
+
+        audioSource.pitch += _offset;
     }
 
     private void EngineSoundPlayer()

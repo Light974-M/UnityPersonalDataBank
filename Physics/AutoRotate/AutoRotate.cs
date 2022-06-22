@@ -5,7 +5,7 @@ namespace UPDB.physic.AutoRotate
     /// <summary>
     /// rotate constantly an object when instantiated
     /// </summary>
-    public class AutoRotate : MonoBehaviour
+    public class AutoRotate : UPDBBehaviour
     {
         //variables you can see in the inspector
         #region Serialized And Public Variables

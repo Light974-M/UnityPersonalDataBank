@@ -102,7 +102,7 @@ namespace UPDB.physic.RAPhysic
 
         #endregion
 
-        #region Accessor
+        #region Public API
 
         /// <inheritdoc cref="_physicEnabled"/>
         public bool PhysicEnabled

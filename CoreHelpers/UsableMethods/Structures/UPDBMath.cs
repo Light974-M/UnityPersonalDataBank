@@ -15,4 +15,24 @@ public struct UPDBMath
     {
         return Mathf.Pow(number, 1 / root);
     }
+
+    /// <summary>
+    /// take in argument probability, between 0 and 1, and return it, 0 if failed, 1 if succeed
+    /// </summary>
+    /// <param name="probability"> probability of operation </param>
+    /// <returns></returns>
+    public static int Proba(float probability)
+    {
+        return Random.Range(0f, 1f) <= probability ? 1 : 0;
+    }
+
+    /// <summary>
+    /// take in argument probability, between 0 and 1, and return it, false if failed, true if succeed
+    /// </summary>
+    /// <param name="probability"> probability of operation </param>
+    /// <returns></returns>
+    public static bool Probool(float probability)
+    {
+        return Random.Range(0f, 1f) <= probability ? true : false;
+    }
 }
