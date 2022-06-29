@@ -157,7 +157,7 @@ public class EngineManager : MonoBehaviour
                 usedVitesse = vitesseSpeedList[vitesseIndex];
 
                 if (audioSource.pitch > 0.5f)
-                    audioSource.pitch -= 0.03f;
+                    audioSource.pitch -= 0.01f;
 
                 if(!manualVitesse)
                 {

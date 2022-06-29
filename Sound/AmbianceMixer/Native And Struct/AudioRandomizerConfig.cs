@@ -5,11 +5,14 @@ namespace UPDB.Sound.AmbianceMixer
     /// <summary>
     /// struct that contains audioRandomizer and every settings of it
     /// </summary>
-    [System.Serializable]
+    [System.Serializable, HelpURL(URL.baseURL + "/tree/main/Audio/AmbianceMixer/README.md")]
     public class AudioRandomizerConfig
     {
         [SerializeField, Tooltip("clip array that will play when asked")]
         private AudioRandomizer _randomizer;
+
+        [SerializeField, Tooltip("group used to override default preset values")]
+        private RangeMixerGroup _group;
 
         [SerializeField, Tooltip("clip calls will range randomly with min and max")]
         private Vector2 _timeRange;
@@ -62,6 +65,11 @@ namespace UPDB.Sound.AmbianceMixer
         {
             get { return _randomizer; }
             set { _randomizer = value; }
+        }
+        public RangeMixerGroup Group
+        {
+            get { return _group; }
+            set { _group = value; }
         }
         public Vector2 TimeRange
         {
@@ -135,6 +143,21 @@ namespace UPDB.Sound.AmbianceMixer
                 return _pitchProbabilityCurve;
             }
             set { _pitchProbabilityCurve = value; }
+        }
+        public Vector2 MinMaxTimeSlider
+        {
+            get { return _minMaxTimeSlider; }
+            set { _minMaxTimeSlider = value; }
+        }
+        public Vector2 MinMaxVolumeSlider
+        {
+            get{ return _minMaxVolumeSlider; }
+            set { _minMaxVolumeSlider = value; }
+        }
+        public Vector2 MinMaxPitchSlider
+        {
+            get { return _minMaxPitchSlider; }
+            set {  _minMaxPitchSlider = value; }
         }
 
         /// <inheritdoc cref="_timer"/>
