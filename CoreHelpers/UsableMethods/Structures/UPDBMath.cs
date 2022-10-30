@@ -35,4 +35,9 @@ public struct UPDBMath
     {
         return Random.Range(0f, 1f) <= probability ? true : false;
     }
+
+    public static int Intfinity
+    {
+        get { return 2147483647; }
+    }
 }
