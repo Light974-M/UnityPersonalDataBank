@@ -6,11 +6,13 @@ namespace UPDB.Sound.AmbianceMixer
     /// <summary>
     /// editor for audioRandomizer, to draw button, and attributes for AudioRandomizerConfig custom property
     /// </summary>
-    [CustomEditor(typeof(AudioRandomizer)), CanEditMultipleObjects, HelpURL(URL.baseURL + "/tree/main/Audio/AmbianceMixer/README.md")]
+    [CustomEditor(typeof(AudioRandomizer)), CanEditMultipleObjects, HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class AudioRandomizerEditor : Editor
     {
+        /*****************************************CLASS METHODS**********************************************/
+
         /// <summary>
-        /// called when inspector is refreshing
+        /// called when inspector of target class is refreshing
         /// </summary>
         public override void OnInspectorGUI()
         {
@@ -28,18 +30,13 @@ namespace UPDB.Sound.AmbianceMixer
             if (GUILayout.Button(new GUIContent("PICK RANDOM CLIP", "play a song from the randomizer(act like a button)")))
                 myTarget.OnRandomize();
 
-            //if there is at least one ambianceMixer, and there is one reference of target in its RandomClipConfig, hasAmbianceMixer set to true
-            bool hasAmbianceMixer = false;
-
+            //try to get an ambianceMixer in the scene, if one, search in every element of RandomClipConfig, if target is founded, draw attributes proper to ambianceMixer
             if (UPDBBehaviour.TryFindObjectOfType(out AmbianceMixer ambianceMixer))
                 for (int i = 0; i < ambianceMixer.RandomClipConfig.Count; i++)
                     if (ambianceMixer.RandomClipConfig[i].Randomizer == myTarget)
-                        hasAmbianceMixer = true;
-
-            //if target is referenced in ambianceMixer
-            if (hasAmbianceMixer)
-                DrawConfigAttributes(myTarget);
+                        DrawConfigAttributes(myTarget);
         }
+
 
         /// <summary>
         /// draw variables and attributes that will be used by AudioRandomizerConfig custom property
@@ -63,9 +60,11 @@ namespace UPDB.Sound.AmbianceMixer
                 //draw color field of font color, and at the same line, a button to reset it
                 GUILayout.BeginHorizontal("box");
                 {
+                    //create content for colorField, and colorField itself, that will set color of font property in RandomClipConfig
                     content = new GUIContent("Property Font Color", "use to change font color of config field");
                     myTarget.PropertyFontColor = EditorGUILayout.ColorField(content, myTarget.PropertyFontColor);
 
+                    //draw button that, if clicked, will reset colorField to it's default value
                     if (GUILayout.Button("Reset Color"))
                         myTarget.PropertyFontColor = new Color(0, 0, 0, 0.3f);
                 }
@@ -74,9 +73,11 @@ namespace UPDB.Sound.AmbianceMixer
                 //draw color field of text color, and at the same line, a button to reset it
                 GUILayout.BeginHorizontal("box");
                 {
+                    //create content for colorField, and colorField itself, that will set color of text property in RandomClipConfig
                     content = new GUIContent("Property Text Color", "use to change text color of config fields");
                     myTarget.PropertyTextColor = EditorGUILayout.ColorField(content, myTarget.PropertyTextColor);
 
+                    //draw button that, if clicked, will reset colorField to it's default value
                     if (GUILayout.Button("Reset Color"))
                         myTarget.PropertyTextColor = Color.white;
                 }

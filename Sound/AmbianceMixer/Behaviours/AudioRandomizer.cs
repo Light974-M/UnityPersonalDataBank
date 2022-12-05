@@ -6,7 +6,7 @@ namespace UPDB.Sound.AmbianceMixer
     /// <summary>
     /// Component to manage audioSource, when called, take randomly a song in its song list and play it
     /// </summary>
-    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Audio Randomizer"), HelpURL(URL.baseURL + "/tree/main/Audio/AmbianceMixer/README.md")]
+    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Audio Randomizer"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class AudioRandomizer : UPDBBehaviour
     {
         /*****************************************SERIALIZED PROPERTIES**********************************************/
@@ -47,6 +47,11 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         private int _randomIndex = -1;
 
+        /// <summary>
+        /// make that onDrawGizmo call init One time
+        /// </summary>
+        private bool _isFirstSceneUpdate = true;
+
 
         //public API is every public and unserialized properties, like accessors
         #region Public API
@@ -78,7 +83,7 @@ namespace UPDB.Sound.AmbianceMixer
         #endregion
 
 
-        /*****************************************CLASS FUNCTIONS**********************************************/
+        /*****************************************CLASS METHODS**********************************************/
 
         /// <summary>
         /// called at build of instance
@@ -86,6 +91,19 @@ namespace UPDB.Sound.AmbianceMixer
         private void Awake()
         {
             Init();
+        }
+
+        /// <summary>
+        /// called when scene is refreshing
+        /// </summary>
+        private void OnDrawGizmos()
+        {
+            //when object call OnDrawGizmo, pass one unique time in this condition, then, set boolean to false
+            if (_isFirstSceneUpdate)
+            {
+                Init();
+                _isFirstSceneUpdate = false;
+            }
         }
 
 
@@ -100,7 +118,7 @@ namespace UPDB.Sound.AmbianceMixer
                     _audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-
+        //input functions represent every override of main "OnRandomize" function, public and callable everywhere.
         #region INPUT FUNCTIONS
 
         /// <summary>
@@ -110,19 +128,21 @@ namespace UPDB.Sound.AmbianceMixer
         /// <param name="pitch">pitch to set with this clip</param>
         public void OnRandomize(float volume, float pitch)
         {
+            //set up values for audioSource at given parameters of OnRandomize
             SetUp(volume, pitch);
         }
 
         /// <inheritdoc cref="OnRandomize"/>
         public void OnRandomize()
         {
+            //set up values for audioSource without changing volume and pitch of it
             SetUp(_audioSource.volume, _audioSource.pitch);
-        } 
+        }
 
         #endregion
 
         /// <summary>
-        /// called by OnRandomizer functions, set values of audioSource, then, call Randomize
+        /// called by OnRandomizer functions, intermediate function that set values of audioSource, then, call Randomize
         /// </summary>
         private void SetUp(float volume, float pitch)
         {
@@ -134,8 +154,8 @@ namespace UPDB.Sound.AmbianceMixer
             if (_playOneSongATime)
                 _audioSource.Stop();
 
-            //if song list has songs
-            if (_randomizerList.Count > 0)
+            //if song list has songs and is not null, generate random index and play song at this position
+            if (_randomizerList != null && _randomizerList.Count > 0)
                 Randomize();
         }
 
@@ -144,6 +164,7 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         private void Randomize()
         {
+            //if audioRandomizer use smartRandomizer to avoid playing two times the same song, else, call random song normally
             if (_useSmartRandomizer)
             {
                 //if randomIndex is less than 0, loop it to max list value
@@ -161,6 +182,7 @@ namespace UPDB.Sound.AmbianceMixer
                 //play selected song
                 _audioSource.PlayOneShot(selectedClip);
 
+                //put -1 to max index to call, so that last songs(that have been played) are outside the range of this value
                 _randomIndex--;
             }
             else
