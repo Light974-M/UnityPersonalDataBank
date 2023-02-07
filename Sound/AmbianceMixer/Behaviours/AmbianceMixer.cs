@@ -6,7 +6,7 @@ namespace UPDB.Sound.AmbianceMixer
     /// <summary>
     /// Main script of AmbianceMixer tool, randomize and call randomly a list of AudioRandomizer
     /// </summary>
-    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Ambiance Mixer Manager"), HelpURL(URL.baseURL + "/tree/main/Audio/AmbianceMixer/README.md")]
+    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Ambiance Mixer Manager"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class AmbianceMixer : UPDBBehaviour
     {
         /*****************************************SERIALIZED PROPERTIES**********************************************/
@@ -17,6 +17,9 @@ namespace UPDB.Sound.AmbianceMixer
 
         /****************************************UNSERIALIZED PROPERTIES*********************************************/
 
+        /// <summary>
+        /// used to save every values of RandomClipConfig when user disable it with "disableAll" buttons
+        /// </summary>
         private List<AudioRandomizer> _randomClipSave = new List<AudioRandomizer>();
 
         /// <summary>
@@ -34,12 +37,15 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         private string _newClipName = "New AudioRandomizer";
 
+
+        //public API is every public and unserialized properties, like accessors
         #region Public API
 
         public List<AudioRandomizerConfig> RandomClipConfig
         {
             get
             {
+                //if randomClipConfig is null, create it and return it
                 if (_randomClipConfig == null)
                     _randomClipConfig = new List<AudioRandomizerConfig>();
 
@@ -72,6 +78,8 @@ namespace UPDB.Sound.AmbianceMixer
         #endregion
 
 
+        /*****************************************CLASS METHODS**********************************************/
+
         /// <summary>
         /// called at build of instance
         /// </summary>
@@ -85,6 +93,7 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         private void Update()
         {
+            //for every element in RandomClipConfig, if element has a randomizer, update state of randomizer
             for (int i = 0; i < RandomClipConfig.Count; i++)
                 if (RandomClipConfig[i].Randomizer != null)
                     UpdateClipCallState(i);
@@ -96,72 +105,46 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         public void Init()
         {
+            //if list is has no elements, automatically search every randomizer in scene, and put them in list, else, update state of some elements of configs in list
             if (RandomClipConfig.Count == 0)
             {
+                //get every randomizer in scene, and create a list of config that will handle randomizers
                 AudioRandomizer[] randomClipMixer = FindObjectsOfType<AudioRandomizer>();
                 List<AudioRandomizerConfig> audioSettingsFinder = new List<AudioRandomizerConfig>();
 
+                //for every randomizer found, add it to config list
                 for (int i = 0; i < randomClipMixer.Length; i++)
                     audioSettingsFinder.Add(new AudioRandomizerConfig(randomClipMixer[i]));
 
+                //put final list into RandomClipConfig
                 RandomClipConfig = audioSettingsFinder;
             }
-            else
-            {
-                Vector2 volumeXRange = new Vector2(0, 2);
-                Vector2 volumeYRange = new Vector2(0, 2);
-                Vector2 pitchXRange = new Vector2(-12, 12);
-                Vector2 pitchYRange = new Vector2(-12, 12);
 
-                for (int i = 0; i < RandomClipConfig.Count; i++)
-                {
-                    Keyframe[] timeKeys = RandomClipConfig[i].TimeProbabilityCurve.keys;
 
-                    if (timeKeys.Length != 0 && (timeKeys[0].time != 0 || timeKeys[0].value != RandomClipConfig[i].TimeRange.x || timeKeys[timeKeys.Length - 1].time != 1 || timeKeys[timeKeys.Length - 1].value != RandomClipConfig[i].TimeRange.y))
-                    {
-                        timeKeys[0] = new Keyframe(0, RandomClipConfig[i].TimeRange.x);
-                        timeKeys[timeKeys.Length - 1] = new Keyframe(1, RandomClipConfig[i].TimeRange.y);
-                        RandomClipConfig[i].TimeProbabilityCurve.keys = timeKeys;
-                    }
-
-                    Keyframe[] volumeKeys = RandomClipConfig[i].VolumeProbabilityCurve.keys;
-
-                    if (volumeKeys.Length != 0 && (volumeKeys[0].time != 0 || volumeKeys[0].value != RandomClipConfig[i].VolumeRange.x || volumeKeys[volumeKeys.Length - 1].time != 1 || volumeKeys[volumeKeys.Length - 1].value != RandomClipConfig[i].VolumeRange.y))
-                    {
-                        volumeKeys[0] = new Keyframe(0, RandomClipConfig[i].VolumeRange.x);
-                        volumeKeys[volumeKeys.Length - 1] = new Keyframe(1, RandomClipConfig[i].VolumeRange.y);
-                        RandomClipConfig[i].VolumeProbabilityCurve.keys = volumeKeys;
-                    }
-
-                    Keyframe[] pitchKeys = RandomClipConfig[i].PitchProbabilityCurve.keys;
-
-                    if (pitchKeys.Length != 0 && (pitchKeys[0].time != 0 || pitchKeys[0].value != RandomClipConfig[i].PitchRange.x || pitchKeys[pitchKeys.Length - 1].time != 1 || pitchKeys[pitchKeys.Length - 1].value != RandomClipConfig[i].PitchRange.y))
-                    {
-                        pitchKeys[0] = new Keyframe(0, RandomClipConfig[i].PitchRange.x);
-                        pitchKeys[pitchKeys.Length - 1] = new Keyframe(1, RandomClipConfig[i].PitchRange.y);
-                        RandomClipConfig[i].PitchProbabilityCurve.keys = pitchKeys;
-                    }
-                }
-            }
-
+            //if user disable all and save is null, then make a save of RandomClipConfig
             if (_disableAll && _randomClipSave.Count == 0)
             {
                 for (int i = 0; i < RandomClipConfig.Count; i++)
                     _randomClipSave.Add(RandomClipConfig[i].Randomizer);
             }
-            else if(_disableAll)
+            //while user disable all, delete every randomizer not set ot null
+            else if (_disableAll)
             {
+                //for each element of RandomClipConfig, if there is a randomizer, delete it
                 for (int i = 0; i < RandomClipConfig.Count; i++)
                     if (RandomClipConfig[i].Randomizer != null)
                         RandomClipConfig[i].Randomizer = null;
             }
+            //if there is no disableAll, but save list has elements saved, and there is same number of elements that in RandomClipConfig, load every randomizer
             else if (_randomClipSave.Count != 0 && _randomClipSave.Count == RandomClipConfig.Count)
             {
+                //for each randomizer in save, put it in corresponding element of RandomClipConfig
                 for (int i = 0; i < _randomClipSave.Count; i++)
                     RandomClipConfig[i].Randomizer = _randomClipSave[i];
 
+                //clear save list
                 _randomClipSave.Clear();
-            }
+            } 
         }
 
         /// <summary>
@@ -169,6 +152,7 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         public void Simulate()
         {
+            //make the same thing that update, but can be called at any moment
             for (int i = 0; i < RandomClipConfig.Count; i++)
                 if (RandomClipConfig[i].Randomizer != null)
                     UpdateClipCallState(i);
@@ -179,6 +163,7 @@ namespace UPDB.Sound.AmbianceMixer
         /// </summary>
         public void StopAll()
         {
+            //for each randomizer in RandomClipConfig, if is playing a song, stop it
             foreach (AudioRandomizerConfig randomizer in RandomClipConfig)
                 randomizer.Randomizer.AudioSource.Stop();
         }
@@ -190,11 +175,16 @@ namespace UPDB.Sound.AmbianceMixer
         /// <param name="randomizer">audioRandomizer to update</param>
         private void UpdateClipCallState(int i)
         {
+            //update timer of config element
             RandomClipConfig[i].Timer += Time.deltaTime;
 
+            //if current song is ended, or if allowCrossfade is enabled, set to true
             bool isNotCrossedOrAllowed = _allowCrossfade || (!_allowCrossfade && !RandomClipConfig[i].Randomizer.AudioSource.isPlaying);
+
+            //if timer has reach time, set to true
             bool hasReachedTime = RandomClipConfig[i].Timer >= RandomClipConfig[i].RandomTime;
 
+            //if randomizer as to call a new song, and current song is, crossfaded if true, or ended if not
             if (isNotCrossedOrAllowed && hasReachedTime)
                 RandomPreset(i);
         }
@@ -206,12 +196,17 @@ namespace UPDB.Sound.AmbianceMixer
         /// <param name="randomizer">audioRandomizer to generate</param>
         private void RandomPreset(int i)
         {
+            //put volume and pitch to random values, following curves
             float volume = RandomClipConfig[i].VolumeProbabilityCurve.Evaluate(Random.Range(0f, 1f));
             float pitch = RandomClipConfig[i].PitchProbabilityCurve.Evaluate(Random.Range(0f, 1f));
 
+            //call OnRandomize of Randomizer, with volume and pitch in arguments
             RandomClipConfig[i].Randomizer.OnRandomize(volume, pitch);
 
+            //reboot tier of config element
             RandomClipConfig[i].Timer = 0;
+
+            //generate a new random time, following time curve
             RandomClipConfig[i].RandomTime = RandomClipConfig[i].TimeProbabilityCurve.Evaluate(Random.Range(0f, 1f));
         }
     }

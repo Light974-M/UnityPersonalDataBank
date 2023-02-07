@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UPDB.Sound.AmbianceMixer
 {
     /// <summary>
-    /// 
+    /// group that override values of config when dragged in, link every grouped elements
     /// </summary>
-    [CreateAssetMenu(fileName ="new RangeMixerGroup", menuName ="UPDB/Sound/AmbianceMixer/RangeMixerGroup")]
+    [CreateAssetMenu(fileName ="new RangeMixerGroup", menuName ="UPDB/Sound/AmbianceMixer/RangeMixerGroup"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class RangeMixerGroup : ScriptableObject
     {
         [SerializeField, Tooltip("config used by group, when assigned, override element config")]

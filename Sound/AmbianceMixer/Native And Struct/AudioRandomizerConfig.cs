@@ -3,11 +3,13 @@ using UnityEngine;
 namespace UPDB.Sound.AmbianceMixer
 {
     /// <summary>
-    /// struct that contains audioRandomizer and every settings of it
+    /// class that contains audioRandomizer and every settings of it
     /// </summary>
-    [System.Serializable, HelpURL(URL.baseURL + "/tree/main/Audio/AmbianceMixer/README.md")]
+    [System.Serializable, HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class AudioRandomizerConfig
     {
+        /*****************************************SERIALIZED PROPERTIES**********************************************/
+
         [SerializeField, Tooltip("clip array that will play when asked")]
         private AudioRandomizer _randomizer;
 
@@ -31,18 +33,8 @@ namespace UPDB.Sound.AmbianceMixer
 
         [SerializeField, Tooltip("probability curve, pitch will follow this curve")]
         private AnimationCurve _pitchProbabilityCurve;
-        
 
-        /// <summary>
-        /// timer that reset every time a song is played, until it reach randomTimer
-        /// </summary>
-        private float _timer;
-
-        /// <summary>
-        /// random time between current and folloxing song, depend on timeRange
-        /// </summary>
-        private float _randomTime;
-
+        //fields hiden in inspector, attributes that are proper to custom property drawer, like foldout boolean
         #region Property Attributes
 
         [SerializeField, HideInInspector, Tooltip("only used by custom property drawer, determine if main foldout is displayed or not")]
@@ -59,6 +51,21 @@ namespace UPDB.Sound.AmbianceMixer
 
         #endregion
 
+
+        /*****************************************UNSERIALIZED PROPERTIES**********************************************/
+
+        /// <summary>
+        /// timer that reset every time a song is played, until it reach randomTimer
+        /// </summary>
+        private float _timer;
+
+        /// <summary>
+        /// random time between current and folloxing song, depend on timeRange
+        /// </summary>
+        private float _randomTime;
+
+
+        //public API is every public and unserialized properties, like accessors
         #region Public API
 
         public AudioRandomizer Randomizer
@@ -88,60 +95,17 @@ namespace UPDB.Sound.AmbianceMixer
         }
         public AnimationCurve TimeProbabilityCurve
         {
-            get
-            {
-                Keyframe[] keys = _timeProbabilityCurve.keys;
-
-                if (keys.Length != 0 && (keys[0].time != 0 || keys[0].value != _timeRange.x || keys[keys.Length - 1].time != 1 || keys[keys.Length - 1].value != _timeRange.y))
-                {
-                    keys[0] = new Keyframe(0, _timeRange.x);
-                    keys[keys.Length - 1] = new Keyframe(1, _timeRange.y);
-                    _timeProbabilityCurve.keys = keys;
-                }
-                if(keys.Length == 0)
-                    _timeProbabilityCurve = new AnimationCurve(new Keyframe[] { new Keyframe(_timeRange.x, 1), new Keyframe(_timeRange.y, 1) });
-
-                return _timeProbabilityCurve;
-            }
-
+            get { return _timeProbabilityCurve; }
             set { _timeProbabilityCurve = value; }
         }
         public AnimationCurve VolumeProbabilityCurve
         {
-            get
-            {
-                Keyframe[] keys = _volumeProbabilityCurve.keys;
-
-                if (keys.Length != 0 && (keys[0].time != 0 || keys[0].value != _volumeRange.x || keys[keys.Length - 1].time != 1 || keys[keys.Length - 1].value != _volumeRange.y))
-                {
-                    keys[0] = new Keyframe(0, _volumeRange.x);
-                    keys[keys.Length - 1] = new Keyframe(1, _volumeRange.y);
-                    _volumeProbabilityCurve.keys = keys;
-                }
-                if (keys.Length == 0)
-                    _volumeProbabilityCurve = new AnimationCurve(new Keyframe[] { new Keyframe(_volumeRange.x, 1), new Keyframe(_volumeRange.y, 1) });
-
-                return _volumeProbabilityCurve;
-            }
+            get { return _volumeProbabilityCurve; }
             set { _volumeProbabilityCurve = value; }
         }
         public AnimationCurve PitchProbabilityCurve
         {
-            get
-            {
-                Keyframe[] keys = _pitchProbabilityCurve.keys;
-
-                if (keys.Length != 0 && (keys[0].time != 0 || keys[0].value != _pitchRange.x || keys[keys.Length - 1].time != 1 || keys[keys.Length - 1].value != _pitchRange.y))
-                {
-                    keys[0] = new Keyframe(0, _pitchRange.x);
-                    keys[keys.Length - 1] = new Keyframe(1, _pitchRange.y);
-                    _pitchProbabilityCurve.keys = keys;
-                }
-                if (keys.Length == 0)
-                    _pitchProbabilityCurve = new AnimationCurve(new Keyframe[] { new Keyframe(_pitchRange.x, 1), new Keyframe(_pitchRange.y, 1) });
-
-                return _pitchProbabilityCurve;
-            }
+            get { return _pitchProbabilityCurve; }
             set { _pitchProbabilityCurve = value; }
         }
         public Vector2 MinMaxTimeSlider
@@ -176,19 +140,28 @@ namespace UPDB.Sound.AmbianceMixer
 
         #endregion
 
+
+        /*****************************************CLASS METHODS**********************************************/
+
         /// <summary>
         /// Constructor of AudioRandomizerSetting struct
         /// </summary>
         /// <param name="randomizer">AudioRandomizer class referenced</param>
         public AudioRandomizerConfig(AudioRandomizer randomizer)
         {
+            //put randomizer to input randomizer
             _randomizer = randomizer;
+
+            //put time, volume, and pitch, to random default value
             _timeRange = new Vector2(1, 3);
             _volumeRange = Vector2.one;
             _pitchRange = Vector2.one;
+
+            //put timer and randomTime to 0
             _timer = 0;
             _randomTime = 0;
 
+            //put time, volume, and pitch curves to initialized values of time, volume, and range time
             _timeProbabilityCurve = new AnimationCurve(new Keyframe[] { new Keyframe(_timeRange.x, 1), new Keyframe(_timeRange.y, 1) });
             _volumeProbabilityCurve = new AnimationCurve(new Keyframe[] { new Keyframe(_volumeRange.x, 1), new Keyframe(_volumeRange.y, 1) });
             _pitchProbabilityCurve = new AnimationCurve(new Keyframe[] { new Keyframe(_pitchRange.x, 1), new Keyframe(_pitchRange.y, 1) });

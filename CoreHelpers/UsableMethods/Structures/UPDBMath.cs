@@ -36,6 +36,9 @@ public struct UPDBMath
         return Random.Range(0f, 1f) <= probability ? true : false;
     }
 
+    /// <summary>
+    /// represent infinity with int value, return 2147483647, wich is max value of int type
+    /// </summary>
     public static int Intfinity
     {
         get { return 2147483647; }
