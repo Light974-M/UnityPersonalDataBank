@@ -7,7 +7,8 @@ tps controller that contain every compoent needed for it, animations, accurate s
 
 TO APPLY THIS CONTROLLER, USE PREFABS AND INCLUDED INPUT ACTION
 
-![GIF 1](file:///D:/films%20&%20videos/vid%C3%A9os%20Travail/UPDB/CompleteTpsController/videos/gif/1.look-and-move.gif)
+![1 look and move](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/1bd7ebc3-6ccc-4e81-b2e9-c970d0059ed7)
+
 INSTALLATION : 
 
 
