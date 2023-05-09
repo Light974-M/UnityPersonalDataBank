@@ -7,7 +7,7 @@ tps controller that contain every compoent needed for it, animations, accurate s
 
 TO APPLY THIS CONTROLLER, USE PREFABS AND INCLUDED INPUT ACTION
 
-
+![GIF 1](file:///D:/films%20&%20videos/vid%C3%A9os%20Travail/UPDB/CompleteTpsController/videos/gif/1.look-and-move.gif)
 INSTALLATION : 
 
 
