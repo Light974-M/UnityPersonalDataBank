@@ -17,6 +17,5 @@ namespace UPDB
         {
             return Mathf.Pow(number, 1 / root);
         }
-
     } 
 }
