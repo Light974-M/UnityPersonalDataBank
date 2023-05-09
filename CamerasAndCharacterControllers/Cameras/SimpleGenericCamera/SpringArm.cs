@@ -6,12 +6,11 @@ using UnityEditor;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
-    /// <summary>
-    /// add this to the parent of your camera object(if it has one, if not, just put it in your player or whatever object that should represent a camera pivot, including the camera itself(this last one is really useless))
-    /// </summary>
     [ExecuteAlways, AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera/Spring Arm")]
     public class SpringArm : MonoBehaviour
     {
+        #region Serialized API
+
         [SerializeField, Tooltip("")]
         private bool _armEnabled = true;
 
@@ -26,7 +25,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         private float _targetArmLength = 3f;
 
         [SerializeField, Tooltip("offset for camera target, also offset colliders and raycast")]
-        private Vector2 _cameraOffset;
+        private Vector2 _cameraOffset = new Vector2(0, 0.6f);
 
         [Space]
         [Header("Collision Settings \n-----------------------")]
@@ -61,9 +60,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         private float _springArmLineWidth = 6f;
 
         [SerializeField, Tooltip("is scene view render every detailled raycast of arm instead of just a line ?")]
-        private bool _showRaycasts;
+        private bool _showRaycasts = false; 
 
-        #region Private Variables
+        #endregion
+
+        #region Private API
 
         /// <summary>
         /// end position of string arm

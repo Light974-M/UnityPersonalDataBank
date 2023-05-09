@@ -1,0 +1,5 @@
+-améliorer la rotation libre
+-faire la surcouche au tool pour le rendre fazcilement éditable(plusiurs taches)
+-bug vitesse quand change de key
+-faire embranchements de chemins
+-faire des readonly
