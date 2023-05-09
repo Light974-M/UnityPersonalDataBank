@@ -153,16 +153,6 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             Look();
 
-            if (_fOVSystem != _fOVSystemMemo)
-            {
-                if (_fOVSystem)
-                    _basicFOVSave = _cameraFXTarget.fieldOfView;
-                else
-                    _cameraFXTarget.fieldOfView = _basicFOVSave;
-            }
-
-            _fOVSystemMemo = _fOVSystem;
-
             if (_cameraFXTarget)
                 CameraEffects();
         }
@@ -191,6 +181,16 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private void CameraEffects()
         {
+            if (_fOVSystem != _fOVSystemMemo)
+            {
+                if (_fOVSystem)
+                    _basicFOVSave = _cameraFXTarget.fieldOfView;
+                else
+                    _cameraFXTarget.fieldOfView = _basicFOVSave;
+            }
+
+            _fOVSystemMemo = _fOVSystem;
+
             if (_fOVSystem)
                 CameraFOVSystem();
 

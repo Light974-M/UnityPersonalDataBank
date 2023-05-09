@@ -64,6 +64,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /****************************JUMP AND PHYSIC*****************************/
         [Space, Header("JUMP AND PHYSIC"), Space]
 
+        [SerializeField, Tooltip("what layer should be considered as player ?")]
+        private LayerMask _playerLayer;
+
         [SerializeField, Tooltip("determine how jump will be done, different modes are available")]
         private JumpModeAction _jumpMode = JumpModeAction.PressToJumpAndHoldToControl;
 
@@ -278,6 +281,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// </summary>
         private string _schemeMemo = "";
 
+        private bool _workingWithoutGameManager = false;
+
         #endregion
 
         #region Public API
@@ -409,6 +414,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             _currentSpeed = _speed;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            _workingWithoutGameManager = GameManager.Instance == null;
         }
 
         /// <summary>
@@ -424,7 +430,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             _schemeMemo = _playerInput.currentControlScheme;
 
             //test jump input
-            if (GameManager.Instance.IsCharacterControllable)
+            if (_workingWithoutGameManager || GameManager.Instance.IsCharacterControllable)
                 JumpInputCalculation();
         }
 
@@ -434,10 +440,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         private void FixedUpdate()
         {
             //if game is not paused, make game run
-            if (!GameManager.Instance.IsPaused)
+            if (_workingWithoutGameManager || !GameManager.Instance.IsPaused)
             {
                 //is character controllable
-                if (GameManager.Instance.IsCharacterControllable)
+                if (_workingWithoutGameManager || GameManager.Instance.IsCharacterControllable)
                 {
                     LookDir();
                     Move();
@@ -644,7 +650,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         private void IsGroundedUpdate()
         {
             //make a check sphere to ave isGrouned value
-            _isGrounded = Physics.CheckSphere(transform.position + _isGroundedPosition, _isGroundedScale, ~LayerMask.GetMask("Player"));
+            _isGrounded = Physics.CheckSphere(transform.position + _isGroundedPosition, _isGroundedScale, ~_playerLayer);
         }
 
         /// <summary>
@@ -990,7 +996,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         public void GetJump(InputAction.CallbackContext callback)
         {
             //if game is not paused and character is controllable
-            if (!GameManager.Instance.IsPaused && GameManager.Instance.IsCharacterControllable)
+            if (_workingWithoutGameManager || (!GameManager.Instance.IsPaused && GameManager.Instance.IsCharacterControllable))
             {
                 //apply different code depending on jump mode
                 if (_jumpMode == JumpModeAction.PressToJumpAndReleaseToControl)
@@ -1048,7 +1054,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         public void GetCrouch(InputAction.CallbackContext callback)
         {
             //if game is not paused and character is controllable, and player is not sprinting
-            if (!GameManager.Instance.IsPaused && !_isSprinting && GameManager.Instance.IsCharacterControllable)
+            if (_workingWithoutGameManager || (!GameManager.Instance.IsPaused && !_isSprinting && GameManager.Instance.IsCharacterControllable))
             {
                 //if character is on ground, perform normal input reading, if character is in air, perform trigger updates
                 if (IsGrounded)
