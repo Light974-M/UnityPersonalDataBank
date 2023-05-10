@@ -47,6 +47,15 @@ in a new scene(without camera), create an empty gameObject with the completeTpsC
 ![1](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/5829f5e6-c690-49f8-8eea-74b0179faafd)
 
 
+STEP 2 :
+
+take the new automatically created object "PlayerTargetPivot" and make sure its localPosition is to 0 0 0, and add your player mesh in it, in the GameObject of the mesh you just imported, add an animator controller and the complete tps anim controller, then, put the animator controller of the tool in the animator component
+![2](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/973d1698-71ab-4130-a91a-317e59677785)
+
+
+STEP 3 :
+
+
 
 ## Links :
 
