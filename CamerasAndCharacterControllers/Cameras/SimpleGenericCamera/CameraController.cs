@@ -15,7 +15,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         [Space, Header("DEFAULT"), Space]
 
         [SerializeField, Tooltip("speed of mouse look in X and Y")]
-        private Vector2 _lookSpeed = Vector2.one / 0.2f;
+        private Vector2 _lookSpeed = Vector2.one * 0.2f;
 
 
         /*************************************CAMERA EFFECTS***************************************/

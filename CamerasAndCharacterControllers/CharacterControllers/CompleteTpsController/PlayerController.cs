@@ -27,6 +27,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         [SerializeField, Tooltip("GameObject that represent player components in one parent object")]
         private Transform _playerTargetPivot;
 
+        [SerializeField, Tooltip("linked camera, if one")]
+        private Transform _linkedCamera;
+
         /*********************************ROTATION********************************/
         [Space, Header("ROTATION"), Space]
 
@@ -514,6 +517,16 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 if (_playerTargetPivot == null)
                     _playerTargetPivot = new GameObject("PlayerTargetPivot").transform.parent = transform;
             }
+
+            if (_linkedCamera == null)
+            {
+                if (Camera.main)
+                    _linkedCamera = Camera.main.transform;
+                else if (FindObjectOfType<Camera>())
+                    _linkedCamera = FindObjectOfType<Camera>().transform;
+                else
+                    _linkedCamera = transform;
+            }
         }
 
         /// <summary>
@@ -532,7 +545,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     PreventRotationFromClipping(ref _smoothedInputValue);
 
                 //make the parent object look forward the camera, to make all basic calculation
-                transform.LookAt(new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z));
+                transform.LookAt(new Vector3(_linkedCamera.position.x, transform.position.y, _linkedCamera.position.z));
                 transform.eulerAngles += new Vector3(0, 180, 0);
 
                 //make different calculs depending on rotation mode

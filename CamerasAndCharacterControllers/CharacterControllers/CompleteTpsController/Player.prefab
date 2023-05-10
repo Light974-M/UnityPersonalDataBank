@@ -204,6 +204,7 @@ MonoBehaviour:
   _speedLerpTime: 1
   _smoothVelocityFallDown: 0.9
   _smoothVelocityGetHigh: 0.9
+  _gravityUsed: 0
   _playerLayer:
     serializedVersion: 2
     m_Bits: 256
