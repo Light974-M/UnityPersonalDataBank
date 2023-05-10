@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -63,6 +64,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
         /****************************JUMP AND PHYSIC*****************************/
         [Space, Header("JUMP AND PHYSIC"), Space]
+
+        [SerializeField, Tooltip("wich type of gravity do you want to use for your character ?")]
+        private GravityMode _gravityUsed = GravityMode.NonInteractive;
 
         [SerializeField, Tooltip("what layer should be considered as player ?")]
         private LayerMask _playerLayer;
@@ -397,6 +401,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             PressToJumpAndReleaseToControl,
         }
 
+        public enum GravityMode
+        {
+            NonInteractive,
+            PhysicsGravity,
+        }
+
         #endregion
 
 
@@ -640,6 +650,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             else
             {
                 _gravityVelocity = 0;
+            }
+
+            if (_gravityUsed == GravityMode.PhysicsGravity)
+            {
+                transform.rotation = Quaternion.LookRotation(Physics.gravity);
+                transform.eulerAngles += new Vector3(-90, 0, 0);
             }
 
         }

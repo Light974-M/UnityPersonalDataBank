@@ -105,7 +105,7 @@ namespace UPDB.physic.GravityManager
         {
             if (_lastEulerAngles != transform.eulerAngles || _lastLocalScale != transform.localScale)
             {
-                _gravityVector = transform.forward * LocalScale.x;
+                _gravityVector = transform.forward * transform.localScale.z/*LocalScale.x*/;
                 UpdateGravityManager();
             }
 
