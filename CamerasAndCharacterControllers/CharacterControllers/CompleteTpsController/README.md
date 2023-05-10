@@ -36,7 +36,13 @@ Walk :
 All animations oncluded and imported, work only by dragging the animator
 
 
-INSTALLATION : 
+## INSTALLATION : 
+
+to Install completeTpsController, you can simply drag and drop character prefab made for this, however, if you need to understand all the options behind code, here is some steps to begin from scratch :
+
+
+STEP 1 :
+
 
 
 
