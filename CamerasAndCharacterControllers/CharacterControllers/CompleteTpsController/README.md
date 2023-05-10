@@ -55,6 +55,14 @@ take the new automatically created object "PlayerTargetPivot" and make sure its 
 
 STEP 3 :
 
+now, in your main gameOject, adapt characterController dimensions, the isGround check pos is by default well positioned, so try to keep the bottom of character collider arround the same position, then, put the player and all children in a layer for him that is not default layer, and change the parameter in tps controller "player layer" to match your choice(notice that if the height of your character is not the same that default one, you will need to change the two parameters at the end of tps controller "crouch height" and "normal height")
+![3](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/cf791222-795f-4038-9f52-ed8527db9c22)
+
+
+STEP 4 :
+
+
+
 
 
 ## Links :
