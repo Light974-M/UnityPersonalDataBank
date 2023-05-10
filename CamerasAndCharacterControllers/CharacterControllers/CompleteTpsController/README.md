@@ -7,6 +7,7 @@ tps controller that contain every compoent needed for it, animations, accurate s
 
 TO APPLY THIS CONTROLLER, USE PREFABS AND INCLUDED INPUT ACTION
 
+
 Look arround and move Character :
 
 ![1 Look and move](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/a1afff56-6c55-4515-acfd-67aa07ef1ca5)
