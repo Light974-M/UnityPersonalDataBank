@@ -43,6 +43,8 @@ to Install completeTpsController, you can simply drag and drop character prefab 
 
 STEP 1 :
 
+in a new scene(without camera), create an empty gameObject with the completeTpsController component, unity's characterController component, and a playerInput component(make sure you have input system package installed !) 
+![1](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/5829f5e6-c690-49f8-8eea-74b0179faafd)
 
 
 
