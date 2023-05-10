@@ -61,7 +61,7 @@ now, in your main gameOject, adapt characterController dimensions, the isGround 
 
 STEP 4 :
 
-directly in CharacterController GameObject, add your camera system, i advice you to use my available tool "SimpleGenericCamera" that use a spring arm and a lot of functions really easy friendly, informations about how to install it available on its page : https://github.com/Light974-M/UnityPersonalDataBank/tree/main/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera
+directly in CharacterController GameObject, add your camera system, i advice you to use my available tool "SimpleGenericCamera" that use a spring arm and a lot of functions really easy friendly, informations about how to install it available on its page : https://github.com/Light974-M/UnityPersonalDataBank/tree/main/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera. 
 when done, if you want, you can make an offset of speed between mouse look speed and gamepad look speed(function available with simpleGenericCamera) to do so, go in playerController, at the event "OnSchemeChange" and add the event CameraController.MultiplySpeedValue(), with your input action component as argument.
 ![4](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/c272e43d-c306-4e6a-92c5-1ddd9ad7d096)
 
@@ -69,12 +69,15 @@ when done, if you want, you can make an offset of speed between mouse look speed
 STEP 5 :
 
 now, in playerInput component, add your input action asset(a default PlayerControls is available), change Behavior to "invoke Unity Events", now, you can see all input callback, init event like the following :
+
 Move : PlayerController.GetMove()
 Look : your function to move camera(with simple generic camera : CameraController.GetLook())
 Sprint : PlayerController.GetSprint()
 Walk : PlayerController.GetWalk()
 Jump : PlayerController.GetJump()
 Crouch : PlayerController.GetCrouch()
+
+![5](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/292a194f-c5f5-499c-86db-182664709a50)
 
 
 ## Links :
