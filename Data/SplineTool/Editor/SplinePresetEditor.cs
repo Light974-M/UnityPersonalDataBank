@@ -2,26 +2,29 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-///<summary>
-/// 
-///</summary>
-[CustomEditor(typeof(SplinePreset))]
-public class SplinePresetEditor : Editor
+namespace UPDB.Data.SplineTool
 {
-    SplinePreset myTarget;
-
-    public override void OnInspectorGUI()
+    ///<summary>
+    /// 
+    ///</summary>
+    [CustomEditor(typeof(SplinePreset))]
+    public class SplinePresetEditor : Editor
     {
-        base.OnInspectorGUI();
+        SplinePreset myTarget;
 
-        myTarget = (SplinePreset)target;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-        myTarget.IsOnInspector = true;
-    }
+            myTarget = (SplinePreset)target;
 
-    private void OnDisable()
-    {
-        if (myTarget)
-            myTarget.IsOnInspector = false;
-    }
+            myTarget.IsOnInspector = true;
+        }
+
+        private void OnDisable()
+        {
+            if (myTarget)
+                myTarget.IsOnInspector = false;
+        }
+    } 
 }
