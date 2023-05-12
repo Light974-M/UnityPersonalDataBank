@@ -15,7 +15,10 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         [Space, Header("DEFAULT"), Space]
 
         [SerializeField, Tooltip("speed of mouse look in X and Y")]
-        private Vector2 _lookSpeed = Vector2.one / 0.2f;
+        private Vector2 _lookSpeed = Vector2.one * 0.2f;
+
+        [SerializeField, Tooltip("do camera use input system or native input ?")]
+        private bool _inputSystem = true;
 
 
         /*************************************CAMERA EFFECTS***************************************/
@@ -61,7 +64,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         private float _shakeTime = 0.1f;
 
         [SerializeField, Tooltip("intensity of shake, means min and max angle camera can have")]
-        private float _shakeIntensity = 0.5f; 
+        private float _shakeIntensity = 0.5f;
 
         #endregion
 
@@ -73,6 +76,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// main variable to setup input value each update
         /// </summary>
         private Vector2 _inputValue = Vector2.zero;
+
+        /// <summary>
+        /// last value to make a scroll manually
+        /// </summary>
+        private Vector2 _inputValueMemo = Vector2.zero;
 
         /// <summary>
         /// used to store rotation that will be offset by input each update
@@ -120,6 +128,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 
         private bool _isFirstConditionValidated = false;
 
+
+        /******************************************DEBUG********************************************/
+
+        private bool _isTesting = false;
+
         #endregion
 
         #region Public API
@@ -128,6 +141,71 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             get { return _lookSpeed; }
             set { _lookSpeed = value; }
+        }
+        public bool InputSystem
+        {
+            get { return _inputSystem; }
+            set { _inputSystem = value; }
+        }
+        public Camera CameraFXTarget
+        {
+            get { return _cameraFXTarget; }
+            set { _cameraFXTarget = value; }
+        }
+        public bool FOVSystem
+        {
+            get => _fOVSystem;
+            set { _fOVSystem = value;}
+        }
+        public bool CameraShakeSystem
+        {
+            get => _cameraShakeSystem;
+            set { _cameraShakeSystem = value;}
+        }
+        public float DefaultFOV
+        {
+            get { return _defaultFOV; }
+            set { _defaultFOV = value; }
+        }
+        public Vector2 FOVMinMax
+        {
+            get => _fOVMinMax;
+            set { _fOVMinMax = value;}
+        }
+        public float FOVIntensity
+        {
+            get { return _fOVIntensity; }
+            set { _fOVIntensity = value; }
+        }
+        public AnimationCurve FOVEvolutionShape
+        {
+            get => _fOVEvolutionShape;
+            set => _fOVEvolutionShape = value;
+        }
+        public float FOVVelocityClamp
+        {
+            get => _fOVVelocityClamp;
+            set { _fOVVelocityClamp = value;}
+        }
+        public float FOVAccelerationClampIncrement
+        {
+            get => _fOVAccelerationClampIncrement;
+            set { _fOVAccelerationClampIncrement = value;}
+        }
+        public float ShakeTime
+        {
+            get => _shakeTime;
+            set { _shakeTime = value; }
+        }
+        public float ShakeIntensity
+        {
+            get => _shakeIntensity;
+            set { _shakeIntensity = value; }
+        }
+        public bool IsTesting
+        {
+            get => _isTesting;
+            set { _isTesting = value; }
         }
 
         #endregion
@@ -166,8 +244,14 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// <summary>
         /// manage rotation of transform, following input value
         /// </summary>
-        private void Look()
+        public void Look()
         {
+            if (!_inputSystem)
+            {
+                _inputValue = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - _inputValueMemo;
+                _inputValueMemo = Input.mousePosition;
+            }
+            Debug.Log(_inputValue);
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 
@@ -192,16 +276,16 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _fOVSystemMemo = _fOVSystem;
 
             if (_fOVSystem)
-                CameraFOVSystem();
+                CameraFOVUpdate();
 
             if (_cameraShakeSystem)
-                CameraShakeSystem();
+                CameraShakeUpdate();
         }
 
         /// <summary>
         /// call by CameraEffects, manage fov of camera depending on player speed and values increment
         /// </summary>
-        private void CameraFOVSystem()
+        private void CameraFOVUpdate()
         {
             float additiveValue = (new Vector3(_cameraVelocity.x, 0, _cameraVelocity.z).magnitude * _fOVIntensity);
             float nonTransformedValue = _defaultFOV + additiveValue;
@@ -233,7 +317,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// <summary>
         /// call by CameraEffects, make camera shake depending on velocity breaks and values increment
         /// </summary>
-        private void CameraShakeSystem()
+        private void CameraShakeUpdate()
         {
             if (_cameraAcceleration.y > 2)
             {
@@ -296,7 +380,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// <param name="callback"></param>
         public void GetLook(InputAction.CallbackContext callback)
         {
-            _inputValue = callback.ReadValue<Vector2>();
+            if (_inputSystem)
+                _inputValue = callback.ReadValue<Vector2>();
         }
 
         /// <summary>

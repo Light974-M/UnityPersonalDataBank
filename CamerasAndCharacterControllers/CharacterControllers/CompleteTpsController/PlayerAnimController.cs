@@ -24,10 +24,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         [Space, Header("WALK"), Space]
 
         [SerializeField, Tooltip("determine wich curve blend tree is gonna use to make walk anim transitions")]
-        private AnimationCurve _walkBlendCurve;
+        private AnimationCurve _walkBlendCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
         [SerializeField, Tooltip("determine wich curve blend tree is gonna use, affect only blend between idle and simple walk")]
-        private AnimationCurve _walkBlendWalkCurve;
+        private AnimationCurve _walkBlendWalkCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
 
         /***********************************IDLE**********************************/
@@ -125,6 +125,13 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 if (!TryGetComponent(out _player))
                     if (FindObjectOfType<PlayerController>())
                         _player = FindObjectOfType<PlayerController>();
+
+            if (_walkBlendCurve.keys.Length < 2)
+                _walkBlendCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+
+            if (_walkBlendWalkCurve.keys.Length < 2)
+                _walkBlendWalkCurve = AnimationCurve.Linear(0, 0, 1, 1);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -25,6 +26,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
         [SerializeField, Tooltip("GameObject that represent player components in one parent object")]
         private Transform _playerTargetPivot;
+
+        [SerializeField, Tooltip("linked camera, if one")]
+        private Transform _linkedCamera;
 
         /*********************************ROTATION********************************/
         [Space, Header("ROTATION"), Space]
@@ -63,6 +67,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
         /****************************JUMP AND PHYSIC*****************************/
         [Space, Header("JUMP AND PHYSIC"), Space]
+
+        [SerializeField, Tooltip("wich type of gravity do you want to use for your character ?")]
+        private GravityMode _gravityUsed = GravityMode.NonInteractive;
 
         [SerializeField, Tooltip("what layer should be considered as player ?")]
         private LayerMask _playerLayer;
@@ -397,6 +404,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             PressToJumpAndReleaseToControl,
         }
 
+        public enum GravityMode
+        {
+            NonInteractive,
+            PhysicsGravity,
+        }
+
         #endregion
 
 
@@ -504,6 +517,16 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 if (_playerTargetPivot == null)
                     _playerTargetPivot = new GameObject("PlayerTargetPivot").transform.parent = transform;
             }
+
+            if (_linkedCamera == null)
+            {
+                if (Camera.main)
+                    _linkedCamera = Camera.main.transform;
+                else if (FindObjectOfType<Camera>())
+                    _linkedCamera = FindObjectOfType<Camera>().transform;
+                else
+                    _linkedCamera = transform;
+            }
         }
 
         /// <summary>
@@ -522,7 +545,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     PreventRotationFromClipping(ref _smoothedInputValue);
 
                 //make the parent object look forward the camera, to make all basic calculation
-                transform.LookAt(new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z));
+                transform.LookAt(new Vector3(_linkedCamera.position.x, transform.position.y, _linkedCamera.position.z));
                 transform.eulerAngles += new Vector3(0, 180, 0);
 
                 //make different calculs depending on rotation mode
@@ -640,6 +663,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             else
             {
                 _gravityVelocity = 0;
+            }
+
+            if (_gravityUsed == GravityMode.PhysicsGravity)
+            {
+                transform.rotation = Quaternion.LookRotation(Physics.gravity);
+                transform.eulerAngles += new Vector3(-90, 0, 0);
             }
 
         }
