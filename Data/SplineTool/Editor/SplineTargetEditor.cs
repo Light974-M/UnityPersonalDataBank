@@ -54,10 +54,10 @@ namespace UPDB.Data.SplineTool
                 targetTransformContent = new GUIContent(targetTransform.name, "linked target");
 
                 //draw box of class field
-                EditorGUI.DrawRect(visibleRect, new Color(0.15f, 0.15f, 0.15f, 1));
+                EditorGUI.DrawRect(visibleRect, new Color(0, 0, 0, 0.3f));
 
                 //make background color of GUI's opacity to randomizer color(black text means 0 opacity, white text means 1 opacity) and text color to randomizer text color
-                GUI.backgroundColor = new Color(0,0,0, 1);
+                GUI.backgroundColor = new Color(0, 0, 0, 1);
                 GUI.contentColor = Color.white;
 
                 //set up randomizer property
@@ -92,6 +92,9 @@ namespace UPDB.Data.SplineTool
 
             #endregion
 
+            GUI.backgroundColor = Color.white;
+            GUI.contentColor = Color.white;
+
             #region TARGETTRANSFORM
 
             //set up randomizer property
@@ -115,10 +118,9 @@ namespace UPDB.Data.SplineTool
                 GUI.contentColor = new Color(1, 1, 1, GUI.contentColor.a - 0.5f);
             }
 
-
             //draw randomizer and label for tooltip
             subProperty.objectReferenceValue = (Transform)EditorGUI.ObjectField(rect, (Transform)subProperty.objectReferenceValue, typeof(Transform), true);
-            EditorGUI.LabelField(rect, new GUIContent(string.Empty, "target used to calculate spine for"));
+            EditorGUI.LabelField(rect, new GUIContent(string.Empty, "target used to calculate spline for"));
 
             //reapply saved colors of GUI
             GUI.backgroundColor = memoFontColor;
@@ -126,7 +128,7 @@ namespace UPDB.Data.SplineTool
 
             //if foldout is true and there is no randomizer, draw a warning box
             if (attributesProperty.boolValue && subProperty.objectReferenceValue == null)
-                EditorGUI.HelpBox(new Rect(rect.x - rect.width, rect.y, rect.width, rect.height * 2), "please choose AudioRandomizer", MessageType.Warning);
+                EditorGUI.HelpBox(new Rect(rect.x - rect.width, rect.y, rect.width, rect.height * 2), "please choose Target", MessageType.Warning);
 
             #endregion
 
@@ -140,165 +142,144 @@ namespace UPDB.Data.SplineTool
 
                 //set rect of box field
                 visibleRect.width -= 3;
-                visibleRect.height = EditorGUIUtility.singleLineHeight * 2;
-                visibleRect.xMin = position.xMin + 20;
+                visibleRect.height = EditorGUIUtility.singleLineHeight * 4;
+                visibleRect.xMin = position.xMin - 10;
                 visibleRect.y = position.yMin + EditorGUIUtility.singleLineHeight * 2;
 
                 //draw box field
                 EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
 
-                //set up timeRange value
-                subProperty = property.FindPropertyRelative("_targetManualFadeReference");
-
                 //set rects for first line
-                rect.width = EditorGUIUtility.labelWidth / 1.6f;
+                rect.width = Mathf.Clamp(EditorGUIUtility.labelWidth * 1, 190, Mathf.Infinity);
                 rect.height = EditorGUIUtility.singleLineHeight;
-                rect.x = position.xMin + 20;
+                rect.x = position.xMin;
                 rect.y = position.yMin + EditorGUIUtility.singleLineHeight * 2;
 
-                //extend rect for 4 fields
-                Rect rectMax = new Rect(position.xMax - rect.width / 1.5f, rect.y, rect.width / 1.5f, rect.height);
-                Rect rectCurve = new Rect(rectMax.x - rect.width - 5, rect.y, rect.width, rect.height);
-                Rect rectMin = new Rect(rectCurve.x - rectMax.width - 5, rect.y, rectMax.width, rect.height);
+                //draw label of Reference Base
+                EditorGUI.LabelField(rect, new GUIContent("BASE REFERENCES", "all references needed for core tool or other"), EditorStyles.boldLabel);
 
-                rect.xMax = rectMin.x - 5;
+                rect.y += EditorGUIUtility.singleLineHeight * 2;
+
+                //set up fade material property
+                subProperty = property.FindPropertyRelative("_targetManualFadeReference");
 
                 //draw label of material object reference
-                EditorGUI.LabelField(rect, new GUIContent("Target Manual Fade Reference", "manual reference to make a fade of material"), EditorStyles.boldLabel);
+                EditorGUI.LabelField(rect, new GUIContent("Target Manual Fade Reference", "manual reference to make a fade of material"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = position.xMax - 5;
+
                 subProperty.objectReferenceValue = (Material)EditorGUI.ObjectField(rect, (Material)subProperty.objectReferenceValue, typeof(Material), true);
+
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                //set up fade material property
+                subProperty = property.FindPropertyRelative("_targetLinkedAnimation");
+
+                //set rects for first line
+                rect.width = Mathf.Clamp(EditorGUIUtility.labelWidth * 1, 190, Mathf.Infinity);
+                rect.x = position.xMin;
+
+                //draw label of material object reference
+                EditorGUI.LabelField(rect, new GUIContent("Target Linked Animation", "animation reference to play while moving on spline"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = position.xMax - 5;
+
+                subProperty.objectReferenceValue = (Animator)EditorGUI.ObjectField(rect, (Animator)subProperty.objectReferenceValue, typeof(Animator), true);
+
+                #endregion
+
+                #region POSITION PAREMETERS
+
+                //set rect of box field
+                visibleRect.width -= 3;
+                visibleRect.height = EditorGUIUtility.singleLineHeight * 7;
+                visibleRect.xMin = position.xMin - 10;
+                visibleRect.y = rect.y + EditorGUIUtility.singleLineHeight * 2;
+
+                //draw box field
+                EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
+
+                //set rects for first line
+                rect.width = EditorGUIUtility.labelWidth * 3;
+                rect.height = EditorGUIUtility.singleLineHeight;
+                rect.x = position.xMin;
+                rect.y = visibleRect.y;
+
+                //draw label of Reference Base
+                EditorGUI.LabelField(rect, new GUIContent("POSITION PARAMETERS", "parameters of position calculations"), EditorStyles.boldLabel);
+
+                rect.y += EditorGUIUtility.singleLineHeight * 2;
+                rect.width = Mathf.Clamp(EditorGUIUtility.labelWidth * 0.8f, 0, 95);
+                rect.x = EditorGUIUtility.labelWidth * 0.8f;
+
+                GUI.enabled = false;
+
+                subProperty = property.FindPropertyRelative("_targetKeyPos");
+
+                EditorGUI.LabelField(rect, new GUIContent("Target Key Pos", "represent position of target on active key"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = rect.xMin + 50;
+
+                subProperty.floatValue = EditorGUI.FloatField(rect, subProperty.floatValue);
+
+                rect.x = rect.xMax + 30;
+                rect.width = Mathf.Clamp(EditorGUIUtility.labelWidth * 0.5f, 0, 68);
+
+                subProperty = property.FindPropertyRelative("_activeKey");
+
+                EditorGUI.LabelField(rect, new GUIContent("Active Key", "key representing point A of lerp"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = rect.xMin + 30;
+
+                subProperty.intValue = EditorGUI.IntField(rect, subProperty.intValue);
+
+                GUI.enabled = true;
+
+                rect.width = 110;
+                rect.x = position.xMin;
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                subProperty = property.FindPropertyRelative("_targetSplinePos");
+
+                EditorGUI.LabelField(rect, new GUIContent("Target Spline Pos", "represent overall position of target on spline"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = position.xMax - 5;
+
+                subProperty.floatValue = EditorGUI.Slider(rect, subProperty.floatValue, 0, 1);
+
+                rect.width = 110;
+                rect.x = position.xMin;
+                rect.y += EditorGUIUtility.singleLineHeight * 2;
+
+                EditorGUI.LabelField(rect, new GUIContent("Start Fade Time", "choose fade of target at beginning of spline"));
+
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                EditorGUI.LabelField(rect, new GUIContent("End Fade Time", "choose fade of target at end of spline"));
+
+                rect.y -= EditorGUIUtility.singleLineHeight;
+
+                subProperty = property.FindPropertyRelative("_startFadeTime");
+
+                rect.xMin = rect.xMax;
+                rect.xMax = position.xMax - 5;
+
+                subProperty.floatValue = EditorGUI.Slider(rect, subProperty.floatValue, 0, 1);
+
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                subProperty = property.FindPropertyRelative("_endFadeTime");
+                subProperty.floatValue = EditorGUI.Slider(rect, subProperty.floatValue, 0, 1);
 
                 //reapply saved color of GUI
                 GUI.backgroundColor = memoFontColor;
 
                 #endregion
-
-                //#region VOLUME RANGE
-
-                ////move y axis of box rect
-                //visibleRect.y += EditorGUIUtility.singleLineHeight * 2 + 10;
-
-                ////draw box field
-                //EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
-
-                ////set up timeRange value
-                //subProperty = property.FindPropertyRelative("_volumeRange");
-
-                ////set up property attribute value
-                //attributesProperty = property.FindPropertyRelative("_minMaxVolumeSlider");
-
-                ////set rects for first line
-                //rect.width = EditorGUIUtility.labelWidth / 1.6f;
-                //rect.height = EditorGUIUtility.singleLineHeight;
-                //rect.x = position.xMin + 20;
-                //rect.y = visibleRect.y;
-
-                ////extend rect for 4 fields
-                //rectMax = new Rect(position.xMax - rect.width / 1.5f, rect.y, rect.width / 1.5f, rect.height);
-                //rectCurve = new Rect(rectMax.x - rect.width - 5, rect.y, rect.width, rect.height);
-                //rectMin = new Rect(rectCurve.x - rectMax.width - 5, rect.y, rectMax.width, rect.height);
-
-                //rect.xMax = rectMin.x - 5;
-
-                ////draw label and two float fields
-                //EditorGUI.LabelField(rect, new GUIContent("Volume Range", "fields to control volume of a played song, between min and max value, and with probability control(curve)"));
-                //subProperty.vector2Value = new Vector2(EditorGUI.FloatField(rectMin, subProperty.vector2Value.x), EditorGUI.FloatField(rectMax, subProperty.vector2Value.y));
-
-                ////set rect for doubleSlider
-                //rect.xMax = position.xMax - 40;
-                //rect.xMin += 40;
-                //rect.y += EditorGUIUtility.singleLineHeight;
-
-                ////set slider min and max rect
-                //rectSliderMin = new Rect(position.xMin + 20, rect.y, rect.x - (position.xMin + 20) - 5, rect.height);
-                //rectSliderMax = new Rect(rect.xMax + 5, rect.y, (position.xMax - 5) - rect.xMax, rect.height);
-
-                ////set opacity to 1 to avoid invisible sliders and curves
-                //memoFontColor = GUI.backgroundColor;
-                //GUI.backgroundColor = new Color(GUI.backgroundColor.r, GUI.backgroundColor.g, GUI.backgroundColor.b, 1);
-
-                ////draw min and max slider
-                //attributesProperty.vector2Value = new Vector2(EditorGUI.FloatField(rectSliderMin, attributesProperty.vector2Value.x), EditorGUI.FloatField(rectSliderMax, attributesProperty.vector2Value.y));
-
-                ////draw double slider
-                //sliderX = subProperty.vector2Value.x;
-                //sliderY = subProperty.vector2Value.y;
-                //EditorGUI.MinMaxSlider(rect, ref sliderX, ref sliderY, attributesProperty.vector2Value.x, attributesProperty.vector2Value.y);
-                //subProperty.vector2Value = new Vector2(sliderX, sliderY);
-
-                ////set up curve field
-                //subProperty = property.FindPropertyRelative("_volumeProbabilityCurve");
-
-                ////draw curve
-                //subProperty.animationCurveValue = EditorGUI.CurveField(rectCurve, subProperty.animationCurveValue);
-
-                ////reapply saved color of GUI
-                //GUI.backgroundColor = memoFontColor;
-
-                //#endregion
-
-                //#region PITCH RANGE
-
-                ////move y axis of box rect
-                //visibleRect.y += EditorGUIUtility.singleLineHeight * 2 + 10;
-
-                ////draw box field
-                //EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
-
-                ////set up timeRange value
-                //subProperty = property.FindPropertyRelative("_pitchRange");
-
-                ////set up property attribute value
-                //attributesProperty = property.FindPropertyRelative("_minMaxPitchSlider");
-
-                ////set rects for first line
-                //rect.width = EditorGUIUtility.labelWidth / 1.6f;
-                //rect.height = EditorGUIUtility.singleLineHeight;
-                //rect.x = position.xMin + 20;
-                //rect.y = visibleRect.y;
-
-                ////extend rect for 4 fields
-                //rectMax = new Rect(position.xMax - rect.width / 1.5f, rect.y, rect.width / 1.5f, rect.height);
-                //rectCurve = new Rect(rectMax.x - rect.width - 5, rect.y, rect.width, rect.height);
-                //rectMin = new Rect(rectCurve.x - rectMax.width - 5, rect.y, rectMax.width, rect.height);
-
-                //rect.xMax = rectMin.x - 5;
-
-                ////draw label and two float fields
-                //EditorGUI.LabelField(rect, new GUIContent("Pitch Range", "fields to control pitch of a played song, between min and max value, and with probability control(curve)"));
-                //subProperty.vector2Value = new Vector2(EditorGUI.FloatField(rectMin, subProperty.vector2Value.x), EditorGUI.FloatField(rectMax, subProperty.vector2Value.y));
-
-                ////set rect for doubleSlider
-                //rect.xMax = position.xMax - 40;
-                //rect.xMin += 40;
-                //rect.y += EditorGUIUtility.singleLineHeight;
-
-                ////set slider min and max rect
-                //rectSliderMin = new Rect(position.xMin + 20, rect.y, rect.x - (position.xMin + 20) - 5, rect.height);
-                //rectSliderMax = new Rect(rect.xMax + 5, rect.y, (position.xMax - 5) - rect.xMax, rect.height);
-
-                ////draw min and max slider
-                //attributesProperty.vector2Value = new Vector2(EditorGUI.FloatField(rectSliderMin, attributesProperty.vector2Value.x), EditorGUI.FloatField(rectSliderMax, attributesProperty.vector2Value.y));
-
-                ////set opacity to 1 to avoid invisible sliders and curves
-                //memoFontColor = GUI.backgroundColor;
-                //GUI.backgroundColor = new Color(GUI.backgroundColor.r, GUI.backgroundColor.g, GUI.backgroundColor.b, 1);
-
-                ////draw double slider
-                //sliderX = subProperty.vector2Value.x;
-                //sliderY = subProperty.vector2Value.y;
-                //EditorGUI.MinMaxSlider(rect, ref sliderX, ref sliderY, attributesProperty.vector2Value.x, attributesProperty.vector2Value.y);
-                //subProperty.vector2Value = new Vector2(sliderX, sliderY);
-
-                ////set up curve field
-                //subProperty = property.FindPropertyRelative("_pitchProbabilityCurve");
-
-                ////draw curve
-                //subProperty.animationCurveValue = EditorGUI.CurveField(rectCurve, subProperty.animationCurveValue);
-
-                ////reapply saved color of GUI
-                //GUI.backgroundColor = memoFontColor;
-
-                //#endregion
             }
 
             //end foldout
@@ -324,7 +305,7 @@ namespace UPDB.Data.SplineTool
 
             //if foldout is true, add 10 height to default height
             if (subProperty.boolValue)
-                size += EditorGUIUtility.singleLineHeight * 10;
+                size += EditorGUIUtility.singleLineHeight * 18;
 
             //return height
             return size;

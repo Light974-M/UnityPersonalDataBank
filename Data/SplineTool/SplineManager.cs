@@ -7,13 +7,14 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UPDB;
+using static UnityEngine.GraphicsBuffer;
 
 namespace UPDB.Data.SplineTool
 {
     /// <summary>
     /// manage spline system for every kind of object
     /// </summary>
-    [ExecuteAlways]
+    [AddComponentMenu("UPDB/Data/SplineTool/Spline Manager"), ExecuteAlways]
     public class SplineManager : UPDBBehaviour
     {
         #region Serialized API
@@ -23,6 +24,8 @@ namespace UPDB.Data.SplineTool
 
         [SerializeField, Tooltip("preset to apply for spline keys")]
         private SplinePreset _usedSpline;
+
+        [Space]
 
         [SerializeField, Tooltip("list of all target affected by this spline")]
         private SplineTarget[] _targetList;
@@ -85,11 +88,13 @@ namespace UPDB.Data.SplineTool
         {
             if (_usedSpline)
             {
+                _usedSpline.InitValuesAndCurves();
+
                 if (_targetList != null && _targetList.Length != 0)
                 {
-                    foreach (SplineTarget target in _targetList)
-                        if (target.Target)
-                            UpdateSplineTarget(target);
+                    for(int i = 0; i < _targetList.Length; i++)
+                        if (_targetList[i].Target)
+                            UpdateSplineTarget(ref _targetList[i]);
                         else
                             Debug.LogWarning("you have no target transform in your target component, add one before tool can calculate anything");
                 }
@@ -117,17 +122,16 @@ namespace UPDB.Data.SplineTool
 
         /****************************************************CUSTOM FUNCTIONS*************************************************************/
 
-        private void UpdateSplineTarget(SplineTarget target)
+        private void UpdateSplineTarget(ref SplineTarget target)
         {
-            _usedSpline.InitValuesAndCurves();
-            UpdateRotationList(target);
+            UpdateRotationList(ref target);
 
             if (target.Target)
             {
                 if (Application.isPlaying)
                 {
                     if (target.StartTimer >= target.StartTime)
-                        UpdatePlayer(target);
+                        UpdatePlayer(ref target);
                     else
                     {
                         target.StartTimer += Time.deltaTime;
@@ -139,12 +143,12 @@ namespace UPDB.Data.SplineTool
 
                 for (int i = 0; i < _usedSpline.KeyPoints.Length; i++)
                     if (_usedSpline.KeyPoints[i].RotationOverwrite != RotationMode.FreeRotation)
-                        OverwriteRotationKeysValues(target, i);
+                        OverwriteRotationKeysValues(ref target, i);
 
-                RegisterPositionInformations(target);
+                RegisterPositionInformations(ref target);
                 target.Target.position = GetTargetPos(target.TargetSplinePos);
                 target.Target.rotation = GetTargetRot(target, target.TargetSplinePos);
-                SetTargetOpacity(target);
+                SetTargetOpacity(ref target);
             }
             else
                 Debug.LogWarning("Warning : enter a target in slot in order for tool to calculate positions and rotations");
@@ -216,7 +220,7 @@ namespace UPDB.Data.SplineTool
             }
         }
 
-        private void UpdateRotationList(SplineTarget target)
+        private void UpdateRotationList(ref SplineTarget target)
         {
             if (target.KeysRotationOverrideList == null || target.KeysRotationOverrideList.Length != _usedSpline.KeyPoints.Length)
                 target.KeysRotationOverrideList = new Quaternion[_usedSpline.KeyPoints.Length];
@@ -274,7 +278,7 @@ namespace UPDB.Data.SplineTool
 
         #region SplinePrecalculation
 
-        private void RegisterPositionInformations(SplineTarget target)
+        private void RegisterPositionInformations(ref SplineTarget target)
         {
             target.TargetSplinePosScaled = target.TargetSplinePos * (_usedSpline.KeyPoints.Length - 1);
             target.ActiveKey = Mathf.FloorToInt(target.TargetSplinePosScaled);
@@ -347,7 +351,7 @@ namespace UPDB.Data.SplineTool
             return rotation;
         }
 
-        private void OverwriteRotationKeysValues(SplineTarget target, int i)
+        private void OverwriteRotationKeysValues(ref SplineTarget target, int i)
         {
             bool isLastIndex = i >= _usedSpline.KeyPoints.Length - 1;
             bool isFollowing = _usedSpline.KeyPoints[i].RotationOverwrite == RotationMode.FollowRotation;
@@ -382,7 +386,9 @@ namespace UPDB.Data.SplineTool
             float scaleValue = 0.001f / Vector3.Distance(_usedSpline.KeyPoints[targetIndex].KeyPosition, _usedSpline.KeyPoints[targetIndex + 1].KeyPosition);
             float targetedPos = staticFollow ? (targetIndex + 1 - scaleValue) / (_usedSpline.KeyPoints.Length - 1) : targetSplinePos + scaleValue;
 
-            return staticFollow ? Quaternion.LookRotation(GetTargetPos(pos) - GetTargetPos(targetedPos), Vector3.up) : Quaternion.LookRotation(GetTargetPos(targetedPos) - GetTargetPos(pos), Vector3.up);
+            Quaternion rotation = staticFollow ? Quaternion.LookRotation(GetTargetPos(pos) - GetTargetPos(targetedPos), Vector3.up) : Quaternion.LookRotation(GetTargetPos(targetedPos) - GetTargetPos(pos), Vector3.up);
+
+            return rotation;
         }
 
         private float GetTargetFade(SplineTarget target, float targetSplinePos)
@@ -390,15 +396,19 @@ namespace UPDB.Data.SplineTool
             float targetSplinePosScaled = targetSplinePos * (_usedSpline.KeyPoints.Length - 1);
             float distance = target.ActiveKey < (_usedSpline.KeyPoints.Length - 1) ? Vector3.Distance(_usedSpline.KeyPoints[target.ActiveKey].KeyPosition, _usedSpline.KeyPoints[target.ActiveKey + 1].KeyPosition) : Vector3.Distance(_usedSpline.KeyPoints[target.ActiveKey - 1].KeyPosition, _usedSpline.KeyPoints[target.ActiveKey].KeyPosition);
             float targetSplinePosRescaled = targetSplinePosScaled * distance;
-            float startFade = target.StartFadeTime == 0 ? 1 : Mathf.Lerp(0, 1, targetSplinePosRescaled / target.StartFadeTime);
-            float endFade = target.EndFadeTime == 0 ? 1 : Mathf.Lerp(0, 1, (((_usedSpline.KeyPoints.Length - 1) - targetSplinePosScaled) * distance) / target.EndFadeTime);
+
+            float startFadeTime = target.StartFadeTime * (_usedSpline.KeyPoints.Length - 1) * distance;
+            float endFadeTime = (1 - target.EndFadeTime) * (_usedSpline.KeyPoints.Length - 1) * distance;
+
+            float startFade = target.StartFadeTime == 0 ? 1 : Mathf.Lerp(0, 1, targetSplinePosRescaled / startFadeTime);
+            float endFade = target.EndFadeTime == 0 ? 1 : Mathf.Lerp(0, 1, (((_usedSpline.KeyPoints.Length - 1) - targetSplinePosScaled) * distance) / (endFadeTime));
 
             float fadeValue = endFade > startFade ? startFade : endFade;
 
             return fadeValue;
         }
 
-        private void SetTargetOpacity(SplineTarget target)
+        private void SetTargetOpacity(ref SplineTarget target)
         {
             if (!target.TargetManualFadeReference)
             {
@@ -418,21 +428,21 @@ namespace UPDB.Data.SplineTool
 
         #region SplineMovements
 
-        private void UpdatePlayer(SplineTarget target)
+        private void UpdatePlayer(ref SplineTarget target)
         {
             bool isAPauseTime = _usedSpline.KeyPoints[target.ActiveKey].PauseTime != Vector2.zero;
             bool hasPassedAKey = target.ActiveKey != target.ActiveKeyMemo;
 
             if (!isAPauseTime || !hasPassedAKey)
-                MovePlayer(target);
+                MovePlayer(ref target);
 
             if (isAPauseTime && (hasPassedAKey || target.PauseTimer != 0))
-                PauseBetweenKeys(target);
+                PauseBetweenKeys(ref target);
 
             target.ActiveKeyMemo = target.ActiveKey;
         }
 
-        private void MovePlayer(SplineTarget target)
+        private void MovePlayer(ref SplineTarget target)
         {
             float distance = target.ActiveKey < (_usedSpline.KeyPoints.Length - 1) ? Vector3.Distance(_usedSpline.KeyPoints[target.ActiveKey].KeyPosition, _usedSpline.KeyPoints[target.ActiveKey + 1].KeyPosition) : Vector3.Distance(_usedSpline.KeyPoints[target.ActiveKey - 1].KeyPosition, _usedSpline.KeyPoints[target.ActiveKey].KeyPosition);
             float targetKeyPosScaled = target.TargetKeyPos * distance;
@@ -471,7 +481,7 @@ namespace UPDB.Data.SplineTool
             }
         }
 
-        private void PauseBetweenKeys(SplineTarget target)
+        private void PauseBetweenKeys(ref SplineTarget target)
         {
             if (target.PauseTimer == 0)
                 target.PauseRandomValue = Random.Range(_usedSpline.KeyPoints[target.ActiveKey].PauseTime.x, _usedSpline.KeyPoints[target.ActiveKey].PauseTime.y);

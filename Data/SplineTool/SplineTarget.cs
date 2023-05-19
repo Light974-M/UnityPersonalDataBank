@@ -138,8 +138,8 @@ namespace UPDB.Data.SplineTool
         }
         public int ActiveKey
         {
-            get => _activeKeyMemo;
-            set => _activeKeyMemo = value;
+            get => _activeKey;
+            set => _activeKey = value;
         }
         public float StartFadeTime => _startFadeTime;
         public float EndFadeTime => _endFadeTime;
