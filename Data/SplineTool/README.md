@@ -23,6 +23,25 @@ complete spline system, with motions components added, and a full customizable c
 ![5 create new target and add created object to transform of target element](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/a8bdbe47-d662-4080-8f96-d4d40b4e06c6)
 
 
+
+## How it work :
+
+use target spline pos slider to move target between beginning(0) and end(1), you have real time informations on target position just above
+
+![6 move target](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/eb6c3220-2475-4048-a7b7-14407d05195b)
+
+
+
+you can create new keypoints and make curves on your new path
+
+![7 create new keyPoint](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/caedaac3-e409-4fdc-9eac-95b644d8c7cb)
+![8  make curves on x or y axis](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/9a59593d-de82-42f8-b933-612b04a51a54)
+
+
+you can make the spline target loop, and select the loop position
+
+![9 set loop and loop pos](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/a29c203b-9bca-43e0-8407-7cd8a9877090)
+
 ## Links :
 ["Youtube Channel"](https://www.youtube.com/channel/UC-_DDdI316_BYs7HlO260OA)
 
