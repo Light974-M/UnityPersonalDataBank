@@ -26,7 +26,7 @@ complete spline system, with motions components added, and a full customizable c
 
 ## How it work :
 
-use target spline pos slider to move target between beginning(0) and end(1), you have real time informations on target position just above
+use TargetSplinePos slider to move target between beginning(0) and end(1), you have real time informations on target position just above
 
 ![6 move target](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/eb6c3220-2475-4048-a7b7-14407d05195b)
 
