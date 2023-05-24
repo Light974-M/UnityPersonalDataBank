@@ -18,7 +18,7 @@ complete spline system, with motions components added, and a full customizable c
 ![3 set preset in manager](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/09998de2-810d-4f66-86ab-f7555cf3e942)
 
 
-4. create your target and add it to new created target in target list of manager
+4. create your object that will follow spline and add it to new created target element in target list of manager
 ![4 create new gameObject](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/b7467bac-d998-4410-83f4-4ba9c7111025)
 ![5 create new target and add created object to transform of target element](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/a8bdbe47-d662-4080-8f96-d4d40b4e06c6)
 
