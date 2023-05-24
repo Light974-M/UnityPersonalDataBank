@@ -17,10 +17,10 @@ namespace UPDB.Data.SplineTool
         private Vector3 _keyPosition;
 
         [SerializeField, Tooltip("shape in x dimension")]
-        private AnimationCurve _xCurve;
+        private AnimationCurve _xCurve = AnimationCurve.Constant(0, 1, 0);
 
         [SerializeField, Tooltip("shape in y dimension")]
-        private AnimationCurve _yCurve;
+        private AnimationCurve _yCurve = AnimationCurve.Constant(0, 1, 0);
 
 
         /*****************************************************ROTATION**************************************************************/
@@ -36,7 +36,7 @@ namespace UPDB.Data.SplineTool
         private float _rotationLerpTime = 1;
 
         [SerializeField, Tooltip("shape of lerp trough value to smooth transition")]
-        private AnimationCurve _rotationLerpShape;
+        private AnimationCurve _rotationLerpShape = AnimationCurve.Linear(0, 0, 1, 1);
 
         /*****************************************************MOVEMENTS**************************************************************/
         [Space, Header("MOVEMENTS"), Space]

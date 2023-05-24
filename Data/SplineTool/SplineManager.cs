@@ -110,7 +110,8 @@ namespace UPDB.Data.SplineTool
         /// </summary>
         private void OnDrawGizmosSelected()
         {
-            CallVisualDrawing();
+            if (_targetList != null && _targetList.Length != 0)
+                CallVisualDrawing();
         }
 
         private void OnDrawGizmos()

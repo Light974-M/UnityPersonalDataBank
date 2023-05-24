@@ -61,17 +61,17 @@ namespace UPDB.Data.SplineTool
 
         public void InitValuesAndCurves()
         {
-            if (_keyPoints.Length >= 2)
+            if (_keyPoints != null && _keyPoints.Length >= 2)
             {
                 for (int i = 0; i < _keyPoints.Length; i++)
                 {
-                    if (_keyPoints[i].XCurve.length == 0)
+                    if (_keyPoints[i].XCurve != null && _keyPoints[i].XCurve.length == 0)
                         _keyPoints[i].XCurve = AnimationCurve.Constant(0, 1, 0);
 
-                    if (_keyPoints[i].YCurve.length == 0)
+                    if (_keyPoints[i].YCurve != null && _keyPoints[i].YCurve.length == 0)
                         _keyPoints[i].YCurve = AnimationCurve.Constant(0, 1, 0);
 
-                    if (_keyPoints[i].RotationLerpShape.length == 0)
+                    if (_keyPoints[i].RotationLerpShape != null && _keyPoints[i].RotationLerpShape.length == 0)
                         _keyPoints[i].RotationLerpShape = AnimationCurve.Linear(0, 0, 1, 1);
                 }
             }

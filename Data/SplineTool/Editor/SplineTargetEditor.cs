@@ -149,6 +149,8 @@ namespace UPDB.Data.SplineTool
                 //draw box field
                 EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
 
+                #region LABEL
+
                 //set rects for first line
                 rect.width = Mathf.Clamp(EditorGUIUtility.labelWidth * 1, 190, Mathf.Infinity);
                 rect.height = EditorGUIUtility.singleLineHeight;
@@ -157,6 +159,10 @@ namespace UPDB.Data.SplineTool
 
                 //draw label of Reference Base
                 EditorGUI.LabelField(rect, new GUIContent("BASE REFERENCES", "all references needed for core tool or other"), EditorStyles.boldLabel);
+
+                #endregion
+
+                #region TARGET MANUAL FADE
 
                 rect.y += EditorGUIUtility.singleLineHeight * 2;
 
@@ -170,6 +176,10 @@ namespace UPDB.Data.SplineTool
                 rect.xMax = position.xMax - 5;
 
                 subProperty.objectReferenceValue = (Material)EditorGUI.ObjectField(rect, (Material)subProperty.objectReferenceValue, typeof(Material), true);
+
+                #endregion
+
+                #region TARGET LINKED ANIMATION
 
                 rect.y += EditorGUIUtility.singleLineHeight;
 
@@ -190,6 +200,8 @@ namespace UPDB.Data.SplineTool
 
                 #endregion
 
+                #endregion
+
                 #region POSITION PAREMETERS
 
                 //set rect of box field
@@ -201,6 +213,8 @@ namespace UPDB.Data.SplineTool
                 //draw box field
                 EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
 
+                #region LABEL
+
                 //set rects for first line
                 rect.width = EditorGUIUtility.labelWidth * 3;
                 rect.height = EditorGUIUtility.singleLineHeight;
@@ -209,6 +223,10 @@ namespace UPDB.Data.SplineTool
 
                 //draw label of Reference Base
                 EditorGUI.LabelField(rect, new GUIContent("POSITION PARAMETERS", "parameters of position calculations"), EditorStyles.boldLabel);
+
+                #endregion
+
+                #region READONLY FIELDS
 
                 rect.y += EditorGUIUtility.singleLineHeight * 2;
                 rect.width = Mathf.Clamp(EditorGUIUtility.labelWidth * 0.8f, 0, 95);
@@ -239,6 +257,10 @@ namespace UPDB.Data.SplineTool
 
                 GUI.enabled = true;
 
+                #endregion
+
+                #region TARGET SPLINE POS
+
                 rect.width = 110;
                 rect.x = position.xMin;
                 rect.y += EditorGUIUtility.singleLineHeight;
@@ -251,6 +273,10 @@ namespace UPDB.Data.SplineTool
                 rect.xMax = position.xMax - 5;
 
                 subProperty.floatValue = EditorGUI.Slider(rect, subProperty.floatValue, 0, 1);
+
+                #endregion
+
+                #region FADE TIME
 
                 rect.width = 110;
                 rect.x = position.xMin;
@@ -276,10 +302,154 @@ namespace UPDB.Data.SplineTool
                 subProperty = property.FindPropertyRelative("_endFadeTime");
                 subProperty.floatValue = EditorGUI.Slider(rect, subProperty.floatValue, 0, 1);
 
-                //reapply saved color of GUI
-                GUI.backgroundColor = memoFontColor;
+                #endregion
+
 
                 #endregion
+
+                #region MOVEMENTS PARAMETERS
+
+                //set rect of box field
+                visibleRect.width -= 3;
+                visibleRect.height = EditorGUIUtility.singleLineHeight * 6;
+
+                if (property.FindPropertyRelative("_targetLinkedAnimation").objectReferenceValue)
+                    visibleRect.height += EditorGUIUtility.singleLineHeight;
+
+                if (property.FindPropertyRelative("_loop").boolValue)
+                    visibleRect.height += EditorGUIUtility.singleLineHeight * 2;
+
+                visibleRect.xMin = position.xMin - 10;
+                visibleRect.y = rect.y + EditorGUIUtility.singleLineHeight * 2;
+
+                //draw box field
+                EditorGUI.DrawRect(visibleRect, new Color(1, 1, 1, 0.03f));
+
+                #region LABEL
+
+                //set rects for first line
+                rect.width = EditorGUIUtility.labelWidth * 3;
+                rect.height = EditorGUIUtility.singleLineHeight;
+                rect.x = position.xMin;
+                rect.y = visibleRect.y;
+
+                //draw label of Reference Base
+                EditorGUI.LabelField(rect, new GUIContent("MOVEMENTS PARAMETERS", "parameters of movements on runtime in play mode"), EditorStyles.boldLabel);
+
+                #endregion
+
+                #region START TIME
+
+                rect.y += EditorGUIUtility.singleLineHeight * 2;
+                rect.width = 110;
+                rect.x = position.xMin;
+
+                subProperty = property.FindPropertyRelative("_startTime");
+
+                EditorGUI.LabelField(rect, new GUIContent("Start Time", "choose a time when target will begin to move"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = position.xMax - 8;
+
+                subProperty.floatValue = EditorGUI.FloatField(rect, subProperty.floatValue);
+
+                #endregion
+
+                #region SPEED MULTIPLIER
+
+                rect.y += EditorGUIUtility.singleLineHeight;
+                rect.width = 110;
+                rect.x = position.xMin;
+
+                subProperty = property.FindPropertyRelative("_speedMultiplier");
+
+                EditorGUI.LabelField(rect, new GUIContent("Speed Multiplier", "default speed multiplier applied all across the spline"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = position.xMax - 8;
+
+                subProperty.floatValue = EditorGUI.FloatField(rect, subProperty.floatValue);
+
+                #endregion
+
+                if (property.FindPropertyRelative("_targetLinkedAnimation").objectReferenceValue)
+                {
+                    #region ANIM SPEED MULTIPLIER
+
+                    rect.y += EditorGUIUtility.singleLineHeight;
+                    rect.width = 125;
+                    rect.x = position.xMin;
+
+                    subProperty = property.FindPropertyRelative("_animSpeedMultiplier");
+
+                    EditorGUI.LabelField(rect, new GUIContent("Anim Speed Multiplier", "speed multiplier for animation linked(if one)"));
+
+                    rect.xMin = rect.xMax;
+                    rect.xMax = position.xMax - 8;
+
+                    subProperty.floatValue = EditorGUI.FloatField(rect, subProperty.floatValue);
+
+                    #endregion 
+                }
+
+                #region LOOP
+
+                rect.y += EditorGUIUtility.singleLineHeight * 2;
+                rect.width = 110;
+                rect.x = position.xMin;
+
+                subProperty = property.FindPropertyRelative("_loop");
+
+                EditorGUI.LabelField(rect, new GUIContent("Loop", "is movements looping when at the end ?"));
+
+                rect.xMin = rect.xMax;
+                rect.xMax = rect.xMin + 15;
+
+                subProperty.boolValue = EditorGUI.Toggle(rect, subProperty.boolValue);
+
+                #endregion
+
+                if (subProperty.boolValue)
+                {
+                    #region LOOP TIME
+
+                    rect.y += EditorGUIUtility.singleLineHeight;
+                    rect.width = 110;
+                    rect.x = position.xMin;
+
+                    subProperty = property.FindPropertyRelative("_loopTime");
+
+                    EditorGUI.LabelField(rect, new GUIContent("Loop Time", "time before looping"));
+
+                    rect.xMin = rect.xMax;
+                    rect.xMax = position.xMax - 8;
+
+                    subProperty.floatValue = EditorGUI.FloatField(rect, subProperty.floatValue);
+
+                    #endregion
+
+                    #region LOOP POS
+
+                    rect.y += EditorGUIUtility.singleLineHeight;
+                    rect.width = 110;
+                    rect.x = position.xMin;
+
+                    subProperty = property.FindPropertyRelative("_loopPos");
+
+                    EditorGUI.LabelField(rect, new GUIContent("Loop Pos", "choose a position where to loop"));
+
+                    rect.xMin = rect.xMax;
+                    rect.xMax = position.xMax - 8;
+
+                    subProperty.floatValue = EditorGUI.Slider(rect, subProperty.floatValue, 0, 1);
+
+                    #endregion 
+                }
+
+                #endregion
+
+                //reapply saved color of GUI
+                GUI.backgroundColor = memoFontColor;
             }
 
             //end foldout
@@ -305,7 +475,15 @@ namespace UPDB.Data.SplineTool
 
             //if foldout is true, add 10 height to default height
             if (subProperty.boolValue)
-                size += EditorGUIUtility.singleLineHeight * 18;
+            {
+                size += EditorGUIUtility.singleLineHeight * 21;
+
+                if (property.FindPropertyRelative("_targetLinkedAnimation").objectReferenceValue)
+                    size += EditorGUIUtility.singleLineHeight;
+
+                if (property.FindPropertyRelative("_loop").boolValue)
+                    size += EditorGUIUtility.singleLineHeight * 2;
+            }
 
             //return height
             return size;

@@ -58,7 +58,7 @@ namespace UPDB.Data.SplineTool
         [SerializeField, Tooltip("is movements looping when at the end ?")]
         private bool _loop = true;
 
-        [SerializeField, Tooltip("is movements looping when at the end ?")]
+        [SerializeField, Tooltip("time before looping")]
         private float _loopTime = 0;
 
         [SerializeField, Range(0, 1), Tooltip("choose a position where to loop")]
