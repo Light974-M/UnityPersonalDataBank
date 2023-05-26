@@ -3,3 +3,6 @@
 -bug vitesse quand change de key
 -faire embranchements de chemins
 -faire des readonly
+-faire du custom inspector
+-bien séparer les mouvements (motion components) avec custom inspector
+-gérer rotation et scale du gameobject parent parfaitement
