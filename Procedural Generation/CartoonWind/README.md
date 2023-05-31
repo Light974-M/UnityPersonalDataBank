@@ -4,7 +4,8 @@ procedural wind system for cartoo effects(zelda wind waker inspired) for celShad
 
 ## How it work :
 
-in the wind instancier, you have a lot of preconfiguration and tool to make automatic wind for basic needs, here you can choose between three different speed for wind
+in the wind instancier, you have a lot of preconfiguration and tool to make automatic wind for basic needs, here you can choose between three different speed for wind :
+
 ![1 wind speed](https://github.com/Light974-M/UnityPersonalDataBank/assets/72139424/32829e79-785d-4896-bcee-3e02e5938fba)
 
 
