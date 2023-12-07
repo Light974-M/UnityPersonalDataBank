@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
-public class MazeGenerationManager : MonoBehaviour
+public class MazeZeroWallWidthGenerator : MonoBehaviour
 {
     [SerializeField]
     private bool _generate = false;
@@ -19,6 +19,9 @@ public class MazeGenerationManager : MonoBehaviour
 
     [SerializeField, Range(0, 4)]
     private int _entryNumber = 1;
+
+    [SerializeField]
+    private float _wallBold = 0.01f;
 
     [SerializeField]
     private GameObject _wallTilePrefab;
@@ -149,7 +152,7 @@ public class MazeGenerationManager : MonoBehaviour
                     {
                         bool isTileSurrounded = _mazeArray[x - 1, y] && _mazeArray[x + 1, y] && _mazeArray[x, y - 1] && _mazeArray[x, y + 1];
 
-                        if(isTileSurrounded)
+                        if (isTileSurrounded)
                         {
                             int random = Random.Range(0, 4);
 
@@ -170,19 +173,51 @@ public class MazeGenerationManager : MonoBehaviour
             }
         }
 
+
         for (int z = 0; z < _height; z++)
         {
-            for (int y = 0; y < _length; y++)
+            float wallKeyPointEraserY = 0;
+
+            for (int y = 0; y < _length; y ++)
             {
-                for (int x = 0; x < _width; x++)
+                float wallKeyPointEraserX = 0;
+
+                for (int x = 0; x < _width; x ++)
                 {
-                    if (_mazeArray[x, y])
+                    if (_mazeArray[x, y] && (IsImpair(x) || IsImpair(y)))
                     {
-                        GameObject tile = Instantiate(_wallTilePrefab, new Vector3(x, z, y), Quaternion.identity);
+                        GameObject tile = Instantiate(_wallTilePrefab, new Vector3(x - wallKeyPointEraserX, z, y - wallKeyPointEraserY + (IsPair(x) && IsImpair(y) ? 0.5f : 0)), Quaternion.identity);
                         tile.transform.SetParent(transform);
+
+                        if (IsPair(x))
+                        {
+                            tile.transform.localScale = new Vector3(_wallBold, tile.transform.localScale.y, tile.transform.localScale.z);
+                        }
+                        else
+                        {
+                            tile.transform.localScale = new Vector3(tile.transform.localScale.x, tile.transform.localScale.y, _wallBold);
+                        }
+                    }
+
+                    if ((IsPair(x) && IsPair(y)))
+                    {
+                        wallKeyPointEraserX++;
+
+                        if (x == 0)
+                            wallKeyPointEraserX -= 0.5f;
+                    }
+
+                    if((IsImpair(x) && IsImpair(y)))
+                    {
+                        wallKeyPointEraserX++;
                     }
                 }
-            } 
+
+                if (IsPair(y))
+                {
+                    wallKeyPointEraserY++;
+                }
+            }
         }
     }
 }
