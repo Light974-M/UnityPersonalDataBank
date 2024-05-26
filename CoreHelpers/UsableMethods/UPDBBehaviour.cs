@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UPDB
+namespace UPDB.CoreHelper.UsableMethods
 {
     ///<summary>
     /// UPDB methods that does not use extensions, callable in every classes that derives from monoBehaviour

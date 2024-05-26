@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public class URL : MonoBehaviour
+namespace UPDB.CoreHelper
 {
-    public const string baseURL = "https://github.com/Light974-M/UnityPersonalDataBank";
-    public const string DefaultURL = baseURL + "/README.md";
+	public class URL : MonoBehaviour
+	{
+		public const string baseURL = "https://github.com/Light974-M/UnityPersonalDataBank";
+		public const string DefaultURL = baseURL + "/README.md";
+	} 
 }
