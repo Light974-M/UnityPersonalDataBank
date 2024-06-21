@@ -1,5 +1,6 @@
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
+using UPDB.CoreHelper;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsController
 {

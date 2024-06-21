@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CustomInput.RotationDetector
 {

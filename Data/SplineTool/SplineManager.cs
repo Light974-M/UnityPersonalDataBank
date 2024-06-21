@@ -1,13 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using UPDB;
-using static UnityEngine.GraphicsBuffer;
+using UPDB.CoreHelper.ExtensionMethods;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Data.SplineTool
 {
