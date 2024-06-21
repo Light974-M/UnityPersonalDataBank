@@ -20,6 +20,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 EditorGUILayout.LabelField("DEFAULT");
 
                 myTarget.LookSpeed = EditorGUILayout.Vector2Field(new GUIContent(nameof(myTarget.LookSpeed), "speed of mouse look in X and Y"), myTarget.LookSpeed);
+                myTarget.VerticalBorders = EditorGUILayout.Vector2Field(new GUIContent(nameof(myTarget.VerticalBorders), "degrees of angles to clamp camera vertically"), myTarget.VerticalBorders);
                 myTarget.InputSystem = EditorGUILayout.Toggle(new GUIContent(nameof(myTarget.InputSystem), "do camera use input system or native input ?"), myTarget.InputSystem);
             }
             EditorGUILayout.EndVertical();
