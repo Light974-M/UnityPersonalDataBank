@@ -17,6 +17,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         [SerializeField, Tooltip("speed of mouse look in X and Y")]
         private Vector2 _lookSpeed = Vector2.one * 0.2f;
 
+        [SerializeField, Tooltip("degrees of angles to clamp camera vertically")]
+        private Vector2 _verticalBorders = new Vector2(-89, 89);
+
         [SerializeField, Tooltip("do camera use input system or native input ?")]
         private bool _inputSystem = true;
 
@@ -142,6 +145,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             get { return _lookSpeed; }
             set { _lookSpeed = value; }
         }
+
+        public Vector2 VerticalBorders
+        {
+            get => _verticalBorders;
+            set => _verticalBorders = value;
+        }
         public bool InputSystem
         {
             get { return _inputSystem; }
@@ -255,7 +264,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 
-            _rotation.x = Mathf.Clamp(_rotation.x, -89, 89);
+            _rotation.x = Mathf.Clamp(_rotation.x, _verticalBorders.x, _verticalBorders.y);
 
             transform.eulerAngles = new Vector3(_rotation.x, _rotation.y, 0.0f);
         }
