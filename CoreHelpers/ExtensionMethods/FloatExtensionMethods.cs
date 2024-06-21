@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UPDB
+namespace UPDB.CoreHelper.ExtensionMethods
 {
     /// <summary>
     /// method bank that can be used everywhere for float extensions

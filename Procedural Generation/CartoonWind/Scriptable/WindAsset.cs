@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UPDB.ProceduralGeneration.CartoonWind
 {
-    [CreateAssetMenu(fileName = "new windAsset", menuName = "ScriptableObjects/WindAssets")]
+    [CreateAssetMenu(fileName = "new windAsset", menuName = "UPDB/ProceduralGeneration/CartoonWind/WindAssets")]
     public class WindAsset : ScriptableObject
     {
         /*********************INSTANCIATION**************************/

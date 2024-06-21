@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
+using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTpsController
 {

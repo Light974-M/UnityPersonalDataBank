@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
 {

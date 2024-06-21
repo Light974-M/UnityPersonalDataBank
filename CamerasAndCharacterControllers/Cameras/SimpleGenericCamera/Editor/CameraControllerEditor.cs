@@ -30,6 +30,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 
             EditorGUILayout.BeginVertical("helpBox");
             {
+                EditorGUILayout.LabelField("CAMERA FX");
+
                 myTarget.CameraFXTarget = (Camera)EditorGUILayout.ObjectField(new GUIContent(nameof(myTarget.CameraFXTarget), "reference of camera for every camera effects, null means that there is no camera effects"), myTarget.CameraFXTarget, typeof(Camera), true);
 
                 if (myTarget.CameraFXTarget)

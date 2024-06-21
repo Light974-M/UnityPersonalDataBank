@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace UPDB
+namespace UPDB.CoreHelper.UsableMethods
 {
     ///<summary>
     /// UPDB methods that does not use extensions, callable in every classes that derives from monoBehaviour
@@ -16,6 +17,104 @@ namespace UPDB
         {
             variable = FindObjectOfType<T>();
             return variable != null;
+        }
+
+        /// <summary>
+        /// return if two lists have exactly the sames values(same number of objects and same objects at same positions)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        private bool AreSameList<T>(List<T> list1, List<T> list2) where T : UnityEngine.Object
+        {
+            bool isSame = true;
+
+            if (list1.Count == list2.Count)
+            {
+                for (int i = 0; i < list1.Count; i++)
+                    if (list1[i] != list2[i])
+                        isSame = false;
+            }
+            else
+            {
+                isSame = false;
+            }
+
+            return isSame;
+        }
+
+        /// <summary>
+        /// calculate rotation with a direction vector and a up vector
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="up"></param>
+        /// <returns></returns>
+        public static Quaternion MyLookRotation(Vector3 dir, Vector3 up)
+        {
+            if (dir == Vector3.zero)
+            {
+                Debug.Log("Zero direction in MyLookRotation");
+                return Quaternion.identity;
+            }
+
+            if (up != dir)
+            {
+                up.Normalize();
+                var v = dir + up * -Vector3.Dot(up, dir);
+                var q = Quaternion.FromToRotation(Vector3.forward, v);
+                return Quaternion.FromToRotation(v, dir) * q;
+            }
+            else
+            {
+                return Quaternion.FromToRotation(Vector3.forward, dir);
+            }
+        }
+
+        /// <summary>
+        /// make a lookAt rotation with up instead(turn a pleyr to ave feet pointing direction)
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="dir"></param>
+        public static void LookRotationUp(Transform transform, Vector3 dir)
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.right, dir);
+            transform.Rotate(0, -90, 0);
+            transform.rotation = Quaternion.LookRotation(transform.forward, dir);
+        }
+
+        /// <summary>
+        /// calculate an angularVelocity from transform rotation of a moving object
+        /// </summary>
+        /// <param name="rotation">actual rotation</param>
+        /// <param name="previousRotation">last rotation(only need a variable, value is automatically updated</param>
+        /// <param name="timeDelta">is deltaTime, fixedDeltaTime, or other ?</param>
+        /// <returns></returns>
+        public static Vector3 GetAngularVelocity(Quaternion rotation, ref Quaternion previousRotation, float timeDelta)
+        {
+            Quaternion deltaRotation = rotation * Quaternion.Inverse(previousRotation);
+
+            deltaRotation.ToAngleAxis(out float angle, out Vector3 axis);
+
+            angle *= Mathf.Deg2Rad;
+
+            Vector3 angularVelocity = (1.0f / timeDelta) * angle * axis;
+
+            previousRotation = rotation;
+
+            return angularVelocity;
+        }
+
+        /// <summary>
+        /// destroy instance in play or in editor intelligently
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void IntelliDestroy(Object obj)
+        {
+            if (Application.isPlaying)
+                Destroy(obj);
+            else
+                DestroyImmediate(obj);
         }
 
         #region AutoLerp

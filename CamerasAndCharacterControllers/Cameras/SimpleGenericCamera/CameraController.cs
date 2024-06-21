@@ -251,7 +251,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 _inputValue = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - _inputValueMemo;
                 _inputValueMemo = Input.mousePosition;
             }
-            Debug.Log(_inputValue);
+            
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 

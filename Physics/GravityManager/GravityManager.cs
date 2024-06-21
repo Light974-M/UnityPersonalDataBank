@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.physic.GravityManager
 {

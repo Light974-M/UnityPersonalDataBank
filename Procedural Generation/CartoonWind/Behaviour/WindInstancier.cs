@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace UPDB.ProceduralGeneration.CartoonWind
 {
+    [AddComponentMenu("UPDB/ProceduralGeneration/CartoonWind/Wind Instancier")]
     public class WindInstancier : MonoBehaviour
     {
         /*********************ACTIVE CONFIG**************************/
