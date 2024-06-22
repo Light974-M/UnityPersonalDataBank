@@ -11,8 +11,8 @@ namespace UPDB.Ai.StateMachineTool
         [SerializeField]
         private State[] _stateList;
 
-        [SerializeField]
-        private bool _init = false;
+        //[SerializeField]
+        //private bool _init = false;
 
         #region Public API
 
@@ -42,7 +42,7 @@ namespace UPDB.Ai.StateMachineTool
             _stateList[1].TransitionList[0].ConditionsList.Add(new BoolCondition("isHungry", false));
             _stateList[2].TransitionList[0].ConditionsList.Add(new BoolCondition("isHeat", false));
 
-            _init = false;
+            //_init = false;
         }
     } 
 }

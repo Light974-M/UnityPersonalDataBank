@@ -16,8 +16,8 @@ public class EngineManager : MonoBehaviour
     [SerializeField]
     private float playerSpeedMultiplier = 3;
 
-    [SerializeField]
-    private float RPM = 0;
+    //[SerializeField]
+    //private float RPM = 0;
 
     [SerializeField]
     private bool manualVitesse = true;
