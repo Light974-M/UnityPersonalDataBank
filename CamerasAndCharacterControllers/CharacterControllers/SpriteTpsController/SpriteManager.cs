@@ -41,12 +41,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsCont
             SetRealRotation();
         }
 
-        private void OnDrawGizmos()
+        protected override void OnScene()
         {
-            if (!Application.isPlaying)
-            {
-                InitVariables(); 
-            }
+            InitVariables();
         }
 
         private void InitVariables()

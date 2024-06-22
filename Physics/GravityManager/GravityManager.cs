@@ -102,8 +102,10 @@ namespace UPDB.physic.GravityManager
             return transform.localScale;
         }
 
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             if (_lastEulerAngles != transform.eulerAngles || _lastLocalScale != transform.localScale)
             {
                 _gravityVector = transform.forward * transform.localScale.z/*LocalScale.x*/;

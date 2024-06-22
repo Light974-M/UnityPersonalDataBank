@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper.UsableMethods;
 
-public class PerformanceDebugger : MonoBehaviour
+public class PerformanceDebugger : UPDBBehaviour
 {
     [SerializeField]
     private float _averageFpsUpdateTime = 1;

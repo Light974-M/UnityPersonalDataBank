@@ -98,8 +98,10 @@ namespace UPDB.Sound.AmbianceMixer
         /// <summary>
         /// called when scene is refreshing
         /// </summary>
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             //when object call OnDrawGizmo, pass one unique time in this condition, then, set boolean to false
             if (_isFirstSceneUpdate)
             {

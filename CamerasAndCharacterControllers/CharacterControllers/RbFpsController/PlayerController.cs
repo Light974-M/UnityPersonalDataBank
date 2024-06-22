@@ -1,11 +1,12 @@
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsController
 {
     [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/RbFpsController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/RbFpsController/Fps Controller")]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : UPDBBehaviour
     {
         #region Serialized And Public Variables
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
@@ -7,7 +8,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
     /// usefull generic camera controller, can be used with fps or tps controller or alone(or wathever controller you want, simply drag script into object that will be rotated)
     /// </summary>
     [AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera/Generic Camera Controller")]
-    public class CameraController : MonoBehaviour
+    public class CameraController : UPDBBehaviour
     {
         #region Serialized API
 

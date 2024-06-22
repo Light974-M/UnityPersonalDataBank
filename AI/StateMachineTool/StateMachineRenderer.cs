@@ -95,15 +95,10 @@ namespace UPDB.Ai.StateMachineTool
             _stateMachine.UpdateMachine();
         }
 
-        private void OnDrawGizmos()
+        protected override void OnScene()
         {
-            if (!Application.isPlaying)
-            {
-                if (_stateMachine == null)
-                {
-                    _stateMachine = new StateMachine(_stateMachinePreset.StateList[0]);
-                }
-            }
+            if (_stateMachine == null)
+                _stateMachine = new StateMachine(_stateMachinePreset.StateList[0]);
         }
     }
 }

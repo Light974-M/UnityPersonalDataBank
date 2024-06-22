@@ -8,6 +8,47 @@ namespace UPDB.CoreHelper.UsableMethods
     ///</summary>
     public class UPDBBehaviour : MonoBehaviour
     {
+        /******************************************************NATIVE METHODS***********************************************************/
+
+        /// <summary>
+        /// call when scene is updating before rendering gizmos
+        /// </summary>
+        protected virtual void OnDrawGizmos()
+        {
+            if (!Application.isPlaying)
+                OnScene();
+        }
+
+        /// <summary>
+        /// call when scene is updating before rendering gizmos if obhect is selected by inspector
+        /// </summary>
+        protected virtual void OnDrawGizmosSelected()
+        {
+            if (!Application.isPlaying)
+                OnSceneSelected();
+        }
+
+
+        /******************************************************CUSTOM METHODS***********************************************************/
+
+        /// <summary>
+        /// called on scene update in editor only
+        /// </summary>
+        protected virtual void OnScene()
+        {
+
+        }
+
+        /// <summary>
+        /// called on scene update in editor only, when object is selected by inspector
+        /// </summary>
+        protected virtual void OnSceneSelected()
+        {
+
+        }
+
+        /******************************************************UTILITY METHODS**********************************************************/
+
         /// <summary>
         /// try to find Object, and, if not, let an exception parameter
         /// </summary>
@@ -26,7 +67,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="list1"></param>
         /// <param name="list2"></param>
         /// <returns></returns>
-        private bool AreSameList<T>(List<T> list1, List<T> list2) where T : UnityEngine.Object
+        public static bool AreSameList<T>(List<T> list1, List<T> list2) where T : UnityEngine.Object
         {
             bool isSame = true;
 
@@ -115,6 +156,36 @@ namespace UPDB.CoreHelper.UsableMethods
                 Destroy(obj);
             else
                 DestroyImmediate(obj);
+        }
+
+        /// <summary>
+        /// make the value given "clamp" but instead of clamping to borders, it is looping, so it's clamping with "inverse borns" usefull when using arrays and want to loop without going outside the bounds
+        /// </summary>
+        /// <param name="value">value to clamp</param>
+        /// <param name="min">min born(0 for a list)</param>
+        /// <param name="max">max born(length - 1 for a list)</param>
+        /// <returns></returns>
+        public static int LoopClamp(int value, int min, int max)
+        {
+            bool isLastValueOutbound = value > max;
+            bool isFirstValueOutboud = value < min;
+
+            if (isLastValueOutbound)
+            {
+                return min;
+            }
+
+            if (isFirstValueOutboud)
+            {
+                return max;
+            }
+
+            if (!isFirstValueOutboud && !isLastValueOutbound)
+            {
+                return value;
+            }
+
+            return value;
         }
 
         #region AutoLerp

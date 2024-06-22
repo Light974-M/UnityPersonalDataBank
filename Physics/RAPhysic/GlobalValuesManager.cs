@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.physic.RAPhysic
 {
@@ -8,7 +9,7 @@ namespace UPDB.physic.RAPhysic
     /// manage global values and lists of Affector from RAPhysic (break without it, Affector put it in scene Automatically)
     /// </summary>
     [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu("UPDB/Physics/RAPhysics/Global Values Manager")]
-    public class GlobalValuesManager : MonoBehaviour
+    public class GlobalValuesManager : UPDBBehaviour
     {
         #region Serialized And Public Variables
 

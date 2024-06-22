@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UPDB.CoreHelper.UsableMethods;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -7,7 +8,7 @@ using UnityEditor;
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
     [ExecuteAlways, AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera/Spring Arm")]
-    public class SpringArm : MonoBehaviour
+    public class SpringArm : UPDBBehaviour
     {
         #region Serialized API
 
@@ -134,8 +135,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _hits = new RaycastHit[_collisionTestResolution];
         }
 
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        protected override void OnSceneSelected()
         {
             if (!_targetCamera)
                 if (transform.childCount == 0 || !transform.GetChild(0).TryGetComponent(out _targetCamera))
@@ -159,7 +159,6 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 
             Handles.SphereHandleCap(0, _socketPosition, Quaternion.identity, 2 * _collisionProbeSize, EventType.Repaint);
         }
-#endif
 
         /// <summary>
         /// Checks for collisions and fill the raycastPositions and hits array

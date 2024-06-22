@@ -1,67 +1,77 @@
+using System.CodeDom;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
     /// <summary>
     /// singleton manager of scenes global properties, unique scene properties are stored in children classes of levelManager
     /// </summary>
-    public abstract class LevelManager : MonoBehaviour
+    public abstract class LevelManager<LevelOverrideStartInfo> : Singleton<LevelManager<LevelOverrideStartInfo>> where LevelOverrideStartInfo : LevelStartInfo
     {
-        #region Singleton Initialize
+        [SerializeField, Tooltip("name of level")]
+        protected string _levelName = "";
 
-        /// <summary>
-        /// unique instance of GameManager class
-        /// </summary>
-        private static LevelManager _instance;
+        [SerializeField, Tooltip("unique index of level")]
+        protected int _levelIndex = 0;
 
-        public static LevelManager Instance
+        [SerializeField, Tooltip("all parameters that will define start state of level")]
+        protected LevelOverrideStartInfo _startInfo;
+
+        protected override void Awake()
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = FindObjectOfType<LevelManager>();
+            base.Awake();
 
-                return _instance;
-            }
+            Init();
 
-            set
-            {
-                _instance = value;
-            }
+            LoadLevel();
         }
 
-        #endregion
-
-        /// <summary>
-        /// awake is called when script instance is being loaded
-        /// </summary>
-        private void Awake()
+        protected virtual void Start()
         {
-            Initialize();
+            StartLevel();
+        }
+
+        /*********************************************CUSTOM METHODS**********************************************/
+
+        protected override void OnScene()
+        {
+            base.OnScene();
+
+            Init();
         }
 
         /// <summary>
-        /// OnDrawGizmos is called each time scene refresh
+        /// when class values arebeing initialize in awake and scene update
         /// </summary>
-        private void OnDrawGizmos()
+        private void Init()
         {
-            if (!Application.isPlaying)
-                Initialize();
+            _levelName = SceneManager.GetActiveScene().name;
+            _levelIndex = SceneManager.GetActiveScene().buildIndex;
         }
 
-        private void Initialize()
+        /// <summary>
+        /// called when level is loading on awake, init level values
+        /// </summary>
+        protected virtual void LoadLevel()
         {
-            if (_instance == null)
-            {
-                _instance = this;
-            }
-            else if (_instance != this)
-            {
-                if (Application.isPlaying)
-                    Destroy(this);
-                else
-                    DestroyImmediate(this);
-            }
+            GameObject.FindWithTag("Player").transform.position = _startInfo.PlayerStartPos;
+        }
+
+        /// <summary>
+        /// called at first frame, initialize level values
+        /// </summary>
+        protected virtual void StartLevel()
+        {
+            
+        }
+
+        /// <summary>
+        /// hen called, re initialize level values
+        /// </summary>
+        protected virtual void RestartLevel()
+        {
+            GameObject.FindWithTag("Player").transform.position = _startInfo.PlayerStartPos;
         }
     }
 

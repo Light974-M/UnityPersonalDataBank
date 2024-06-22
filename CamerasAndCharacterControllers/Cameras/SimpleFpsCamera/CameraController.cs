@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera
 {
@@ -9,7 +10,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera
     /// simple fps camera controller, can be used with fps controller or alone
     /// </summary>
     [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/SimpleFpsCamera/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/SimpleFpsCamera/Fps Camera Controller")]
-    public class CameraController : MonoBehaviour
+    public class CameraController : UPDBBehaviour
     {
         [SerializeField, Tooltip("camera used to render fps game view")]
         private Camera _camera;

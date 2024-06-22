@@ -1,38 +1,13 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
     /// <summary>
     /// singleton manager of all projects global properties
     /// </summary>
-    public class GameManager : MonoBehaviour
+    public class GameManager : Singleton<GameManager>
     {
-        #region Singleton Initialize
-
-        /// <summary>
-        /// unique instance of GameManager class
-        /// </summary>
-        private static GameManager _instance;
-
-        public static GameManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = FindObjectOfType<GameManager>();
-
-                return _instance;
-            }
-
-            set
-            {
-                _instance = value;
-            }
-        }
-
-        #endregion
-
-
         [SerializeField, Tooltip("tell if the game is in pause or not")]
         private bool _isPaused = false;
 
@@ -68,43 +43,26 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <summary>
         /// awake is called when script instance is being loaded
         /// </summary>
-        private void Awake()
+        protected override void Awake()
         {
-            Initialize();
+            base.Awake();
 
             DontDestroyOnLoad(gameObject);
         }
 
-        /// <summary>
-        /// OnDrawGizmos is called each time scene refresh
-        /// </summary>
-        private void OnDrawGizmos()
+        private void OnEnable()
         {
-            if (!Application.isPlaying)
-                Initialize();
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void OnLevelWasLoaded(int level)
+        private void OnDisable()
         {
-            if (_instance == null)
-                _instance = this;
-            else if (_instance != this)
-                Destroy(gameObject);
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
-        private void Initialize()
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (_instance == null)
-            {
-                _instance = this;
-            }
-            else if (_instance != this)
-            {
-                if (Application.isPlaying)
-                    Destroy(this);
-                else
-                    DestroyImmediate(this);
-            }
+            Initialize();
         }
     }
 
