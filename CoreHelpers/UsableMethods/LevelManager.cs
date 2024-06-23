@@ -55,7 +55,10 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void LoadLevel()
         {
-            GameObject.FindWithTag("Player").transform.position = _startInfo.PlayerStartPos;
+            Transform player = GameObject.FindWithTag("Player").transform;
+
+            if (player)
+                player.position = _startInfo.PlayerStartPos;
         }
 
         /// <summary>
@@ -63,7 +66,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void StartLevel()
         {
-            
+
         }
 
         /// <summary>
@@ -71,7 +74,10 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void RestartLevel()
         {
-            GameObject.FindWithTag("Player").transform.position = _startInfo.PlayerStartPos;
+            Transform player = GameObject.FindWithTag("Player").transform;
+
+            if (player)
+                player.position = _startInfo.PlayerStartPos;
         }
     }
 
