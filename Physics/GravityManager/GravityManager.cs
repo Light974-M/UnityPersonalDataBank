@@ -1,13 +1,14 @@
 using UnityEngine;
 using System;
 using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper;
 
-namespace UPDB.physic.GravityManager
+namespace UPDB.Physic.GravityManager
 {
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/Physics/GravityManager/gravityManager")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.GravityManager + "/gravityManager")]
     public class GravityManager : UPDBBehaviour
     {
 
@@ -102,8 +103,10 @@ namespace UPDB.physic.GravityManager
             return transform.localScale;
         }
 
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             if (_lastEulerAngles != transform.eulerAngles || _lastLocalScale != transform.localScale)
             {
                 _gravityVector = transform.forward * transform.localScale.z/*LocalScale.x*/;

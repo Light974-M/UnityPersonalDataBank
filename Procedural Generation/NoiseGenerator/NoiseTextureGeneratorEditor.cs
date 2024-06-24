@@ -28,7 +28,7 @@ namespace UPDB.ProceduralGeneration.NoiseGenerator
 
         private Texture2D _texture = null;
 
-        [MenuItem("Tools/Noise Texture Generator")]
+        [MenuItem("UPDB/Noise Texture Generator")]
         private static void Open()
         {
             NoiseTextureGeneratorEditor window = GetWindow<NoiseTextureGeneratorEditor>(false, "Noise Texture Generator", true);

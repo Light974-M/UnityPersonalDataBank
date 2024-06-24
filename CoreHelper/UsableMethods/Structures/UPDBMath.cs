@@ -1,3 +1,4 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace UPDB.CoreHelper.UsableMethods.Structures
@@ -16,6 +17,26 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         public static float Root(float number, float root)
         {
             return Mathf.Pow(number, 1 / root);
+        }
+
+        /// <summary>
+        /// make a square power
+        /// </summary>
+        /// <param name="number"> number to square </param>
+        /// <returns></returns>
+        public static float Sqr(float number)
+        {
+            return Mathf.Pow(number, 2);
+        }
+
+        /// <summary>
+        /// make a cube power
+        /// </summary>
+        /// <param name="number"> number to cube </param>
+        /// <returns></returns>
+        public static float Cbe(float number)
+        {
+            return Mathf.Pow(number, 3);
         }
 
         /// <summary>
@@ -45,6 +66,40 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         {
             get { return 2147483647; }
         }
+
+        /// <summary>
+        /// return square root of 2
+        /// </summary>
+        public static float V2
+        {
+            get { return Mathf.Sqrt(2); }
+        }
+
+        /// <summary>
+        /// return the golden ratio
+        /// </summary>
+        public static float Gr
+        {
+            get { return 1.618033988749894848204586834365638117720309179805762862135448622705260462818902449707207204f; }
+        }
+
+        /// <summary>
+        /// return the speed of light in void in m/s
+        /// </summary>
+        public static float C
+        {
+            get { return 299792458f; }
+        }
+
+        /// <summary>
+        /// return the gravitationnal constant G = 6.6743 × 10-11 m3 kg-1 s-2
+        /// </summary>
+        public static float G
+        {
+            get { return 0.000000000066743f; }
+        }
+
+
     }
 
 }

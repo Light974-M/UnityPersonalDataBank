@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 3617838550692299024}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
   _playerInput: {fileID: 3617838550692299024}
   _controller: {fileID: 3617838550692299029}
   _playerTargetPivot: {fileID: 3617838550441132144}
-  _linkedCamera: {fileID: 0}
+  _linkedCameraPivot: {fileID: 3617838549553102027}
   _rotationMode: 0
   _rotationSpeed: 0.1
   _rotationShape:
@@ -210,7 +210,7 @@ MonoBehaviour:
   _gravityUsed: 0
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _jumpMode: 0
   _gravityHardeness: 1
   _jumpStrength: 25

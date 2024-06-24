@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.ExtensionMethods;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -8,7 +9,7 @@ namespace UPDB.Data.SplineTool
     /// <summary>
     /// manage spline system for every kind of object
     /// </summary>
-    [AddComponentMenu("UPDB/Data/SplineTool/Spline Manager"), ExecuteAlways]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.SplineTool + "/Spline Manager"), ExecuteAlways]
     public class SplineManager : UPDBBehaviour
     {
         #region Serialized API
@@ -102,14 +103,18 @@ namespace UPDB.Data.SplineTool
         /// <summary>
         /// OnDrawGizmosSelected is called at scene refresh, when inspector of class is selected
         /// </summary>
-        private void OnDrawGizmosSelected()
+        protected override void OnDrawGizmosSelected()
         {
+            base.OnDrawGizmosSelected();
+
             if (_targetList != null && _targetList.Length != 0)
                 CallVisualDrawing();
         }
 
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             if (_usedSpline)
                 _usedSpline.CallGizmos(this);
         }

@@ -9,7 +9,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
     ///<summary>
     /// component for third person controller movements input
     ///</summary>
-    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/README.md"), AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/TpsController")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/ProceduralTpsController/README.md"), AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.ProceduralTpsController + "/TpsController")]
     public class PlayerController : UPDBBehaviour
     {
         #region Serialized And Public Variables

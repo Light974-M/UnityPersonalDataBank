@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.ProceduralGeneration.CartoonWind
 {
-    [CreateAssetMenu(fileName = "new windAsset", menuName = "UPDB/ProceduralGeneration/CartoonWind/WindAssets")]
+    [CreateAssetMenu(fileName = "new windAsset", menuName = NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/" + NamespaceID.CartoonWind + "/WindAssets")]
     public class WindAsset : ScriptableObject
     {
         /*********************INSTANCIATION**************************/

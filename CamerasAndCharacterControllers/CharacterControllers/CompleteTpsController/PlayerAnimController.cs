@@ -1,12 +1,14 @@
 using UnityEngine;
+using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsController
 {
     /// <summary>
     /// manage every animations of player, to link in input events, created to be used with CompleteTpsController components
     /// </summary>
-    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/CompleteTpsController/Complete Tps Anim Controller")]
-    public class PlayerAnimController : MonoBehaviour
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Anim Controller")]
+    public class PlayerAnimController : UPDBBehaviour
     {
         #region Serialized API
 
@@ -100,13 +102,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             CrouchManager();
         }
 
-        /// <summary>
-        /// OnDrawGizmosSelected is called at OnDrawGizmo, only if object is selected by inspector
-        /// </summary>
-        private void OnDrawGizmosSelected()
+        protected override void OnSceneSelected()
         {
-            if (!Application.isPlaying)
-                Init();
+            Init();
         }
 
 

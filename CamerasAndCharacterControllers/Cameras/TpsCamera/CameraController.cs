@@ -1,12 +1,14 @@
 using UnityEngine;
+using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.TpsCamera
 {
     /// <summary>
     /// simple tps camera controller, can be used with fps controller or alone
     /// </summary>
-    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/TpsCamera/Tps Camera Controller")]
-    public class CameraController : MonoBehaviour
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.TpsCamera + "/Tps Camera Controller")]
+    public class CameraController : UPDBBehaviour
     {
         [SerializeField, Tooltip("Camera pivot linked to this Player(where you have to put camera script)")]
         private Transform _cameraPivot;

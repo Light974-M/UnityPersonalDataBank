@@ -3,12 +3,12 @@ using UnityEngine;
 using UPDB.CoreHelper.UsableMethods;
 using UPDB.CoreHelper;
 
-namespace UPDB.physic.RAPhysic
+namespace UPDB.Physic.RAPhysic
 {
     /// <summary>
     /// main class of RAPhysic
     /// </summary>
-    [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu("UPDB/Physics/RAPhysics/RAPhysics Affector")]
+    [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.RAPhysic + "/RAPhysics Affector")]
     public class Affector : UPDBBehaviour
     {
         #region Serialized And Public Variables

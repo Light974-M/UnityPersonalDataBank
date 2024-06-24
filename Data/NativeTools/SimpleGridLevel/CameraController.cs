@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Data.NativeTools.SimpleGridLevel
 {
@@ -6,7 +7,7 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
     /// control camera movement for 2D game mode
     ///</summary>
     [AddComponentMenu("UPDB/Data/NativeTools/SimpleGridLevel/CameraController")]
-    public class CameraController : MonoBehaviour
+    public class CameraController : UPDBBehaviour
     {
         [SerializeField, Tooltip("speed of zoom in and out")]
         private float _scrollSpeed = 0.5f;

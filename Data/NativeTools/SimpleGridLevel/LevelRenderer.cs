@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Data.NativeTools.SimpleGridLevel
 {
     ///<summary>
     /// renderer of levelMap for unityEngine
     ///</summary>
-    [AddComponentMenu("UPDB/Data/NativeTools/SimpleGridLevel/Level")]
-    public class LevelRenderer : MonoBehaviour
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.NativeTools + "/" + NamespaceID.SimpleGridLevel + "/Level")]
+    public class LevelRenderer : UPDBBehaviour
     {
         #region variables
 
@@ -80,44 +82,41 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
             PauseInputManager();
         }
 
-        private void OnDrawGizmos()
+        protected override void OnScene()
         {
-            if (!Application.isPlaying)
+            if (_gameCamera == null)
+                _gameCamera = FindObjectOfType<Camera>();
+
+            if (_cellsParentObject == null)
             {
-                if (_gameCamera == null)
-                    _gameCamera = FindObjectOfType<Camera>();
-
-                if (_cellsParentObject == null)
+                if (transform.Find("Cells") == null)
                 {
-                    if (transform.Find("Cells") == null)
-                    {
-                        _cellsParentObject = Instantiate(new GameObject("Cells"));
-                        _cellsParentObject.transform.SetParent(transform);
-                    }
-                    else
-                    {
-                        _cellsParentObject = transform.Find("Cells").gameObject;
-                    }
+                    _cellsParentObject = Instantiate(new GameObject("Cells"));
+                    _cellsParentObject.transform.SetParent(transform);
                 }
-
-                _levelParameters.Width = Mathf.Clamp(_levelParameters.Width, 1, _intInfinity);
-                _levelParameters.Height = Mathf.Clamp(_levelParameters.Height, 1, _intInfinity);
-
-                _gameCamera.transform.position = new Vector3((Level.Width / 2f - 0.5f) * transform.localScale.x, (Level.Height / 2f - 0.5f) * transform.localScale.y, -100) + transform.position;
-                _gameCamera.orthographicSize = (Level.Width + Level.Height) / 4f;
-
-                for (int y = 0; y < Level.Height; y++)
+                else
                 {
-                    for (int x = 0; x < Level.Width; x++)
-                    {
-                        Gizmos.DrawWireCube((new Vector3(x * transform.localScale.x, y * transform.localScale.y) + transform.position), Vector2.one * transform.localScale);
-                    }
+                    _cellsParentObject = transform.Find("Cells").gameObject;
                 }
+            }
 
-                if ((_levelParameters.Width != Level.Width || _levelParameters.Height != Level.Height))
+            _levelParameters.Width = Mathf.Clamp(_levelParameters.Width, 1, _intInfinity);
+            _levelParameters.Height = Mathf.Clamp(_levelParameters.Height, 1, _intInfinity);
+
+            _gameCamera.transform.position = new Vector3((Level.Width / 2f - 0.5f) * transform.localScale.x, (Level.Height / 2f - 0.5f) * transform.localScale.y, -100) + transform.position;
+            _gameCamera.orthographicSize = (Level.Width + Level.Height) / 4f;
+
+            for (int y = 0; y < Level.Height; y++)
+            {
+                for (int x = 0; x < Level.Width; x++)
                 {
-                    _level = null;
+                    Gizmos.DrawWireCube((new Vector3(x * transform.localScale.x, y * transform.localScale.y) + transform.position), Vector2.one * transform.localScale);
                 }
+            }
+
+            if ((_levelParameters.Width != Level.Width || _levelParameters.Height != Level.Height))
+            {
+                _level = null;
             }
         }
 
@@ -130,7 +129,7 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
                 for (int x = 0; x < Level.Width; x++)
                 {
                     GameObject cellPrefab = Instantiate(_cellObjectPrefab, new Vector3(x * transform.localScale.x, y * transform.localScale.y) + transform.position, Quaternion.identity);
-                    if(!cellPrefab.TryGetComponent(out CellRenderer cellScript))
+                    if (!cellPrefab.TryGetComponent(out CellRenderer cellScript))
                         cellScript = cellPrefab.AddComponent<CellRenderer>();
 
                     cellPrefab.transform.SetParent(_cellsParentObject.transform);

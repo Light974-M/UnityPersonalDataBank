@@ -1,7 +1,7 @@
 using UnityEngine;
 using UPDB.CoreHelper.UsableMethods;
 
-namespace UPDB.physic.AutoRotate
+namespace UPDB.Physic.AutoRotate
 {
     /// <summary>
     /// rotate constantly an object when instantiated

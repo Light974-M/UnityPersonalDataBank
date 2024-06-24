@@ -17,5 +17,25 @@ namespace UPDB.CoreHelper.ExtensionMethods
         {
             return Mathf.Pow(number, 1 / root);
         }
+
+        /// <summary>
+        /// make a square power
+        /// </summary>
+        /// <param name="number"> number to square </param>
+        /// <returns></returns>
+        public static float Sqr(this float number)
+        {
+            return Mathf.Pow(number, 2);
+        }
+
+        /// <summary>
+        /// make a cube power
+        /// </summary>
+        /// <param name="number"> number to cube </param>
+        /// <returns></returns>
+        public static float Cbe(this float number)
+        {
+            return Mathf.Pow(number, 3);
+        }
     } 
 }

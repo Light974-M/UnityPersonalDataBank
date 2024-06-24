@@ -1,12 +1,14 @@
 using UnityEngine;
+using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Data.NativeTools.SimpleGridLevel
 {
     ///<summary>
     /// renderer for every game cells, making textures, and collision detections
     ///</summary>
-    [AddComponentMenu("UPDB/Data/NativeTools/SimpleGridLevel/CellRenderer")]
-    public class CellRenderer : MonoBehaviour
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.NativeTools + "/" + NamespaceID.SimpleGridLevel + "/CellRenderer")]
+    public class CellRenderer : UPDBBehaviour
     {
         [Header("INPUT TEXTURES\n")]
 

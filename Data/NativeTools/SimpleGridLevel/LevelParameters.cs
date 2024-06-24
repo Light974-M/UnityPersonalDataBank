@@ -1,11 +1,12 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.Data.NativeTools.SimpleGridLevel
 {
     ///<summary>
     /// parameter of level that will be used between scene loads
     ///</summary>
-    [CreateAssetMenu(fileName = "NewLevelParameters", menuName = "UPDB/Data/NativeTools/SimpleGridLevel/LevelParameters")]
+    [CreateAssetMenu(fileName = "NewLevelParameters", menuName = NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.NativeTools + "/" + NamespaceID.SimpleGridLevel + "/LevelParameters")]
     public class LevelParameters : ScriptableObject
     {
         [SerializeField, Tooltip("width of level in x")]
