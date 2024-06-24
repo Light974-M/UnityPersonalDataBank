@@ -1,5 +1,7 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+#if INPUT_SYSTEM_PRESENT
+using UnityEngine.InputSystem; 
+#endif
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -383,6 +385,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _cameraVelocityMemo = _cameraVelocity;
         }
 
+#if INPUT_SYSTEM_PRESENT
         #region Event Functions
 
         /// <summary>
@@ -407,6 +410,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 _currentLookSpeed = _lookSpeed * 25;
         }
 
-        #endregion
+        #endregion  
+#endif
     }
 }

@@ -1,8 +1,9 @@
 using System;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
+#if INPUT_SYSTEM_PRESENT
 using UnityEngine.InputSystem;
+#endif
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -19,8 +20,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /*****************************BASE REFERENCES****************************/
         [Header("BASE REFERENCES"), Space]
 
+#if INPUT_SYSTEM_PRESENT
         [SerializeField, Tooltip("used player input, used to link input system")]
         private PlayerInput _playerInput;
+#endif
 
         [SerializeField, Tooltip("character controller component used to move player")]
         private CharacterController _controller;
@@ -457,12 +460,14 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// </summary>
         private void Update()
         {
+#if INPUT_SYSTEM_PRESENT
             //if scheme(controller) change, call an event to reorganise controller
             if (_playerInput.currentControlScheme != _schemeMemo)
                 _onSchemeChange.Invoke();
 
             //register last input scheme
             _schemeMemo = _playerInput.currentControlScheme;
+#endif
 
             //test jump input
             if (_workingWithoutGameManager || GameManager.Instance.IsCharacterControllable)
@@ -526,10 +531,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 if (!TryGetComponent(out _controller))
                     _controller = gameObject.AddComponent<CharacterController>();
 
+#if INPUT_SYSTEM_PRESENT
             //if player input component reference is null, try to get component in gameObject, or create one
             if (_playerInput == null)
                 if (!TryGetComponent(out _playerInput))
                     _playerInput = gameObject.AddComponent<PlayerInput>();
+#endif
 
             //if player rotation pivot reference is null
             if (_playerTargetPivot == null)
@@ -566,9 +573,11 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 //make a smoothed value of input direction
                 _smoothedInputValue = AutoLerp(_rotationLerpStart, _inputValue, _currentRotationSpeed, ref _rotationLerpTimer, _rotationShape);
 
+#if INPUT_SYSTEM_PRESENT
                 //if player is on keyboard, use a function to prevent rotation from clipping by adding a square function to input dir
                 if (_playerInput.currentControlScheme == "KeyboardAndMouse")
                     PreventRotationFromClipping(ref _smoothedInputValue);
+#endif
 
                 //set pos and rot of rotation obj
                 LookDirObj.position = _linkedCameraPivot.position;
@@ -879,6 +888,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         }
 
 
+#if INPUT_SYSTEM_PRESENT
         #region Input System Functions
 
         /// <summary>
@@ -1060,7 +1070,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             }
         }
 
-        #endregion
+        #endregion  
+#endif
 
 
         #region Invoked Functions
