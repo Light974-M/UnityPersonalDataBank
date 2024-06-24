@@ -25,38 +25,60 @@ namespace UPDB.CoreHelper.CustomScriptOrderMethods
             set => _iterationLateFixedUpdateCount = value;
         }
 
+        public int IterationLaterRUpdateCount
+        {
+            get => _iterationLaterUpdateCount;
+            set => _iterationLaterUpdateCount = value;
+        }
+
+        public int IterationLateOnDrawGizmosCount
+        {
+            get => _iterationLateOnDrawGizmosCount;
+            set => _iterationLateOnDrawGizmosCount = value;
+        }
+
         #endregion
 
         #region MethodsEvents
 
-        public delegate void CustomFunctionCall(int i);
-        public event CustomFunctionCall OnLateFixedUpdate;
-        public event CustomFunctionCall OnLaterUpdate;
-        public event CustomFunctionCall OnLateOnDrawGizmos;
+        public delegate void CustomFunctionIterationCall(int i);
+        public delegate void CustomFunctionUniqueCall();
+
+        public event CustomFunctionUniqueCall OnLateFixedUpdate;
+        public event CustomFunctionUniqueCall OnLaterUpdate;
+        public event CustomFunctionUniqueCall OnLateOnDrawGizmo;
+
+        public event CustomFunctionIterationCall OnLateFixedUpdateIteration;
+        public event CustomFunctionIterationCall OnLaterUpdateIteration;
+        public event CustomFunctionIterationCall OnLateOnDrawGizmosIteration;
 
         #endregion
 
         // Update is called once per frame
         private void FixedUpdate()
         {
+            OnLateFixedUpdate?.Invoke();
+
             for (int i = 0; i < _iterationLateFixedUpdateCount; i++)
-                OnLateFixedUpdate?.Invoke(i);
-            Debug.Log("LateFixedUpdate");
+                OnLateFixedUpdateIteration?.Invoke(i);
         }
 
         private void LateUpdate()
         {
+            OnLaterUpdate?.Invoke();
+
             for (int i = 0; i < _iterationLaterUpdateCount; i++)
-                OnLaterUpdate?.Invoke(i);
-            Debug.Log("LaterUpdate");
+                OnLaterUpdateIteration?.Invoke(i);
         }
 
         protected override void OnDrawGizmos()
         {
             base.OnDrawGizmos();
 
+            OnLateOnDrawGizmo?.Invoke();
+
             for (int i = 0; i < _iterationLateOnDrawGizmosCount; i++)
-                OnLateOnDrawGizmos?.Invoke(i);
+                OnLateOnDrawGizmosIteration?.Invoke(i);
         }
     }
 }
