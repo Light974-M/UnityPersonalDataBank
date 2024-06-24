@@ -1,5 +1,7 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+#if INPUT_SYSTEM_PRESENT
+using UnityEngine.InputSystem; 
+#endif
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
@@ -164,12 +166,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public bool FOVSystem
         {
             get => _fOVSystem;
-            set { _fOVSystem = value;}
+            set { _fOVSystem = value; }
         }
         public bool CameraShakeSystem
         {
             get => _cameraShakeSystem;
-            set { _cameraShakeSystem = value;}
+            set { _cameraShakeSystem = value; }
         }
         public float DefaultFOV
         {
@@ -179,7 +181,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public Vector2 FOVMinMax
         {
             get => _fOVMinMax;
-            set { _fOVMinMax = value;}
+            set { _fOVMinMax = value; }
         }
         public float FOVIntensity
         {
@@ -194,12 +196,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public float FOVVelocityClamp
         {
             get => _fOVVelocityClamp;
-            set { _fOVVelocityClamp = value;}
+            set { _fOVVelocityClamp = value; }
         }
         public float FOVAccelerationClampIncrement
         {
             get => _fOVAccelerationClampIncrement;
-            set { _fOVAccelerationClampIncrement = value;}
+            set { _fOVAccelerationClampIncrement = value; }
         }
         public float ShakeTime
         {
@@ -260,7 +262,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 _inputValue = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - _inputValueMemo;
                 _inputValueMemo = Input.mousePosition;
             }
-            
+
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 
@@ -380,7 +382,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _cameraAccelerationMagnitude = _cameraVelocity.magnitude - _cameraVelocityMemo.magnitude;
             _cameraVelocityMemo = _cameraVelocity;
         }
-
+        
+#if INPUT_SYSTEM_PRESENT
         #region Event Functions
 
         /// <summary>
@@ -405,6 +408,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 _currentLookSpeed = _lookSpeed * 25;
         }
 
-        #endregion
+        #endregion  
+#endif
     }
 }

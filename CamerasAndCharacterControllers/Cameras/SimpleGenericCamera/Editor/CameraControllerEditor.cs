@@ -25,7 +25,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             }
             EditorGUILayout.EndVertical();
 
-            
+
 
             EditorGUILayout.LabelField("__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
 
@@ -50,7 +50,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                             myTarget.FOVVelocityClamp = EditorGUILayout.FloatField(new GUIContent(nameof(myTarget.FOVVelocityClamp), "clamp FOV increasing or decreasing speed"), myTarget.FOVVelocityClamp);
                             myTarget.FOVAccelerationClampIncrement = EditorGUILayout.Slider(new GUIContent(nameof(myTarget.FOVAccelerationClampIncrement), "make a smooth on every movements of FOV, to avoid brutal speed changing"), myTarget.FOVAccelerationClampIncrement, 0, 1);
                         }
-                        EditorGUILayout.EndVertical();  
+                        EditorGUILayout.EndVertical();
                     }
 
                     myTarget.CameraShakeSystem = EditorGUILayout.Toggle(new GUIContent(nameof(myTarget.CameraShakeSystem), "reference of camera for every camera effects, null means that there is no camera effects"), myTarget.CameraShakeSystem);
