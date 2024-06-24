@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsController
@@ -6,7 +7,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
     /// <summary>
     /// manage every animations of player, to link in input events, created to be used with CompleteTpsController components
     /// </summary>
-    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/CompleteTpsController/Complete Tps Anim Controller")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Anim Controller")]
     public class PlayerAnimController : UPDBBehaviour
     {
         #region Serialized API

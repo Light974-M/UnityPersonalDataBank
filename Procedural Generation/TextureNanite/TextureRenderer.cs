@@ -1,12 +1,13 @@
 using UnityEditor;
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.ProceduralGeneration.TextureNanite
 {
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/ProceduralGeneration/TextureNanite/TextureRenderer")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/" + NamespaceID.TextureNanite + "/TextureRenderer")]
     public class TextureRenderer : MonoBehaviour
     {
 

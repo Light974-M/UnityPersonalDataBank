@@ -1,11 +1,12 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.Ai.StateMachineTool
 {
     ///<summary>
     /// 
     ///</summary>
-    [CreateAssetMenu(fileName = "NewStateMachinePreset", menuName = "UPDB/AI/StateMachineTool/StateMachinePreset")]
+    [CreateAssetMenu(fileName = "NewStateMachinePreset", menuName = NamespaceID.UPDB + "/" + NamespaceID.Ai + "/" + NamespaceID.StateMachineTool + "/StateMachinePreset")]
     public class StateMachinePreset : ScriptableObject
     {
         [SerializeField]

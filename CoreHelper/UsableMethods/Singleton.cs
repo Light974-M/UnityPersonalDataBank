@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace UPDB.CoreHelper.UsableMethods
@@ -12,6 +8,22 @@ namespace UPDB.CoreHelper.UsableMethods
     /// <typeparam name="T"></typeparam>
     public class Singleton<T> : UPDBBehaviour where T : Component
     {
+        /// <summary>
+        /// tell if this singleton has to Hide in inspector
+        /// </summary>
+        protected bool hideInInspector = false;
+
+
+        #region Public API
+
+        public bool HideInInspector
+        {
+            get => hideInInspector; 
+            set => hideInInspector = value;
+        }
+
+        #endregion
+
         #region Singleton Initialize
 
         /// <summary>
@@ -54,6 +66,16 @@ namespace UPDB.CoreHelper.UsableMethods
                 _instance = null;
         }
 
+        protected override void OnDrawGizmos()
+        {
+            base.OnDrawGizmos();
+
+            if (hideInInspector)
+                hideFlags = HideFlags.HideInInspector;
+            else
+                hideFlags = HideFlags.None;
+        }
+
         /*********************************CUSTOM METHODS**********************************/
 
         protected override void OnScene()
@@ -68,7 +90,7 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             if (_instance == null)
                 _instance = this as T;
-            else if (_instance != this)
+            else if (_instance != this as T)
                 IntelliDestroy(this);
         }
     }

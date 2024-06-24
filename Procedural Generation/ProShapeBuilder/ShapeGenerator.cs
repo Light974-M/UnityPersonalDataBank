@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.ProceduralGeneration.ProShapeBuilder
 {
     /// <summary>
     /// procedural generation for custom shapes
     /// </summary>
-    [AddComponentMenu("UPDB/ProceduralGeneration/ProShapeBuilder/Shape Generator")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/" + NamespaceID.ProShapeBuilder + "/Shape Generator")]
     public class ShapeGenerator : MonoBehaviour
     {
         //SERIALIZED VARIABLES___________________________________________________________________________________________________

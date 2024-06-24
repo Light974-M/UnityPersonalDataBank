@@ -1,13 +1,14 @@
 using UnityEngine;
 using System;
 using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper;
 
-namespace UPDB.physic.GravityManager
+namespace UPDB.Physic.GravityManager
 {
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/Physics/GravityManager/gravityManager")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.GravityManager + "/gravityManager")]
     public class GravityManager : UPDBBehaviour
     {
 

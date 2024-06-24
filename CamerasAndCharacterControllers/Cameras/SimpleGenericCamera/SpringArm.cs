@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -7,7 +8,7 @@ using UnityEditor;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
-    [ExecuteAlways, AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera/Spring Arm")]
+    [ExecuteAlways, AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.SimpleGenericCamera + "/Spring Arm")]
     public class SpringArm : UPDBBehaviour
     {
         #region Serialized API

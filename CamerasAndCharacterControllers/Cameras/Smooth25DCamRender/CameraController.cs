@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.Smooth25DCameraController
@@ -9,7 +10,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.Smooth25DCameraController
     /// 
     /// </summary>
     /// 
-    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/Cameras/Smooth25DCameraController/2.5D Camera Controller")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.Smooth25DCameraController + "/2.5D Camera Controller")]
     public class CameraController : UPDBBehaviour
     {
         #region SerializedVariable

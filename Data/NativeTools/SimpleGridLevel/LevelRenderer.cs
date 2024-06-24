@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Data.NativeTools.SimpleGridLevel
@@ -7,7 +8,7 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
     ///<summary>
     /// renderer of levelMap for unityEngine
     ///</summary>
-    [AddComponentMenu("UPDB/Data/NativeTools/SimpleGridLevel/Level")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.NativeTools + "/" + NamespaceID.SimpleGridLevel + "/Level")]
     public class LevelRenderer : UPDBBehaviour
     {
         #region variables

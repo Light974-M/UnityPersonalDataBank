@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
@@ -6,7 +7,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsCont
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/SpriteTpsController/SpriteManager")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.SpriteTpsController + "/SpriteManager")]
     public class SpriteManager : UPDBBehaviour
     {
         [SerializeField, Tooltip("")]

@@ -1,11 +1,12 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.ProceduralGeneration.NoiseGenerator
 {
     ///<summary>
     /// 
     ///</summary>
-    [CreateAssetMenu(fileName = "NewRandomNoiseGenerator", menuName = "UPDB/ProceduralGeneration/NoiseGenerator")]
+    [CreateAssetMenu(fileName = "NewRandomNoiseGenerator", menuName = NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/NoiseGenerator")]
     public class RandomNoiseGenerator : NoiseTextureGenerator
     {
         [SerializeField, Range(0, 1)]

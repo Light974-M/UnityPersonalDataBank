@@ -1,11 +1,12 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
 {
     ///<summary>
     /// 
     ///</summary>
-    [CreateAssetMenu(fileName = "NewSpriteListAsset", menuName = "UPDB/CamerasAndCharacterControllers/CharacterControllers/SpriteTpsController/SpriteListAsset")]
+    [CreateAssetMenu(fileName = "NewSpriteListAsset", menuName = NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.SpriteTpsController + "/SpriteListAsset")]
     public class SpriteListAsset : ScriptableObject
     {
         [SerializeField, Tooltip("")]

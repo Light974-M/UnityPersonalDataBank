@@ -1,8 +1,9 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 
-namespace Bug
+namespace UPDB.Data.SimpleCraft
 {
-    [CreateAssetMenu(fileName = "newItem", menuName = "UPDB/Data/SimpleCraft/Items")]
+    [CreateAssetMenu(fileName = "newItem", menuName = NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.SimpleCraft + "/Items")]
     public class ItemAsset : ScriptableObject
     {
         [SerializeField, Tooltip("items used to craft this item")]

@@ -64,6 +64,16 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             Initialize();
         }
+
+        protected override void OnDrawGizmos()
+        {
+            base.OnDrawGizmos();
+
+            if (hideInInspector)
+                hideFlags = HideFlags.HideInInspector;
+            else
+                hideFlags = HideFlags.None;
+        }
     }
 
 }

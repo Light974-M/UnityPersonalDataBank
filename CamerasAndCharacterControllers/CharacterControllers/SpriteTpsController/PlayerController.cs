@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
@@ -8,7 +9,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsCont
     ///<summary>
     /// component for third person controller movements input with sprite fake renderer
     ///</summary>
-    [AddComponentMenu("UPDB/CamerasAndCharacterControllers/CharacterControllers/SpriteTpsRenderer/Tps Sprite Controller")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.SpriteTpsController + "/Tps Sprite Controller")]
     public class PlayerController : UPDBBehaviour
     {
         #region Serialized And Public Variables

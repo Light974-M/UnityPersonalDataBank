@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CustomInput.RotationDetector
@@ -6,7 +7,7 @@ namespace UPDB.CustomInput.RotationDetector
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/Input/RotationDetector/RotationInputDetector")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CustomInput + "/" + NamespaceID.RotationDetector + "/RotationInputDetector")]
     public class RotationInputDetector : UPDBBehaviour
     {
         [SerializeField]

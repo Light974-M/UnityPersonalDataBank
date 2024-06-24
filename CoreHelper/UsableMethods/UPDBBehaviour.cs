@@ -1,3 +1,4 @@
+using System.CodeDom;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -186,6 +187,31 @@ namespace UPDB.CoreHelper.UsableMethods
             }
 
             return value;
+        }
+
+        public static T[] FindObjectsOfTypeGeneric<T>(System.Type type) where T : Object
+        {
+            T[] objList = FindObjectsOfType<T>();
+            List<T> matchList = new List<T>();
+
+            foreach (T obj in objList)
+            {
+                System.Type objTypeRaw = obj.GetType();
+
+                while (objTypeRaw != typeof(System.Object))
+                {
+                    objTypeRaw = objTypeRaw.BaseType;
+                    System.Type objType = objTypeRaw.IsGenericType ? objTypeRaw.GetGenericTypeDefinition() : objTypeRaw;
+
+                    if (objType == type)
+                    {
+                        matchList.Add(obj);
+                        break;
+                    }
+                }
+            }
+
+            return matchList.ToArray();
         }
 
         #region AutoLerp

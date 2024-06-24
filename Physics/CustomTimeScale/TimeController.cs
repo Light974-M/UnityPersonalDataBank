@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
-namespace UPDB.physic.CustomTimeScale
+namespace UPDB.Physic.CustomTimeScale
 {
     ///<summary>
     /// allow full control on time axis
     ///</summary>
-    [AddComponentMenu("UPDB/Physics/CustomTimeScale/TimeController")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.CustomTimeScale + "/TimeController")]
     public class TimeController : UPDBBehaviour
     {
 

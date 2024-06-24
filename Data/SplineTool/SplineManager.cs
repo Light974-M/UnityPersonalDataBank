@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.ExtensionMethods;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -8,7 +9,7 @@ namespace UPDB.Data.SplineTool
     /// <summary>
     /// manage spline system for every kind of object
     /// </summary>
-    [AddComponentMenu("UPDB/Data/SplineTool/Spline Manager"), ExecuteAlways]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.SplineTool + "/Spline Manager"), ExecuteAlways]
     public class SplineManager : UPDBBehaviour
     {
         #region Serialized API

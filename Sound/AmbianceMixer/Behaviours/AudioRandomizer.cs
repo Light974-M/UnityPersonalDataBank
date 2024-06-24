@@ -8,7 +8,7 @@ namespace UPDB.Sound.AmbianceMixer
     /// <summary>
     /// Component to manage audioSource, when called, take randomly a song in its song list and play it
     /// </summary>
-    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Audio Randomizer"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Sound + "/" + NamespaceID.AmbianceMixer + "/Audio Randomizer"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class AudioRandomizer : UPDBBehaviour
     {
         /*****************************************SERIALIZED PROPERTIES**********************************************/

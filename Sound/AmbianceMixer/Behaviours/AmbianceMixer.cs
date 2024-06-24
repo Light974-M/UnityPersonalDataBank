@@ -8,7 +8,7 @@ namespace UPDB.Sound.AmbianceMixer
     /// <summary>
     /// Main script of AmbianceMixer tool, randomize and call randomly a list of AudioRandomizer
     /// </summary>
-    [AddComponentMenu("UPDB/Sound/AmbianceMixer/Ambiance Mixer Manager"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Sound + "/" + NamespaceID.AmbianceMixer + "/Ambiance Mixer Manager"), HelpURL(URL.baseURL + "/tree/main/Sound/AmbianceMixer/README.md")]
     public class AmbianceMixer : UPDBBehaviour
     {
         /*****************************************SERIALIZED PROPERTIES**********************************************/

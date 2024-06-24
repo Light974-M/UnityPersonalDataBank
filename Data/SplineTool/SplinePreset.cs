@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.Data.SplineTool
 {
     ///<summary>
     /// save data of a spline to use it whenever you want
     ///</summary>
-    [CreateAssetMenu(fileName = "NewSplinePreset", menuName = "UPDB/Data/SplineTool/SplinePreset")]
+    [CreateAssetMenu(fileName = "NewSplinePreset", menuName = NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.SplineTool + "/SplinePreset")]
     public class SplinePreset : ScriptableObject
     {
         /*****************************************************FIRST KEY PARAMETERS**************************************************************/

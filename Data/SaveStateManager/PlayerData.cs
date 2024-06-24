@@ -3,13 +3,14 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System;
+using UPDB.CoreHelper;
 
 namespace UPDB.Data.SaveStateManager
 {
     ///<summary>
     /// Manage save and load with cryptable keys
     ///</summary>
-    [CreateAssetMenu(fileName = "NewPlayerData", menuName = "UPDB/Data/SaveState Manager/PlayerData")]
+    [CreateAssetMenu(fileName = "NewPlayerData", menuName = NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.SaveStateManager + "/PlayerData")]
     public class PlayerData : ScriptableObject
     {
         [SerializeField]

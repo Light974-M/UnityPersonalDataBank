@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UPDB.CoreHelper;
 
 namespace UPDB.Data.UITools.MenuUIController
 {
     ///<summary>
     /// controller of every UI and buttons of menu Scene
     ///</summary>
-    [AddComponentMenu("UPDB/Data/UITools/MenuUIController/MenuController")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.UITools + "/" + NamespaceID.MenuUIController + "/MenuController")]
     public class MenuController : MonoBehaviour
     {
         #region variables

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UPDB.CoreHelper;
 
-namespace UPDB.physic.RAPhysic
+namespace UPDB.Physic.RAPhysic
 {
     /// <summary>
     /// Custom inspector of monoBehaviour Affector Class for RAPhysic

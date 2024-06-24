@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Ai.StateMachineTool
@@ -7,7 +8,7 @@ namespace UPDB.Ai.StateMachineTool
     ///<summary>
     /// 
     ///</summary>
-    [AddComponentMenu("UPDB/AI/StateMachineTool/StateMachine")]
+    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Ai + "/" + NamespaceID.StateMachineTool + "/StateMachine")]
     public class StateMachineRenderer : UPDBBehaviour
     {
         private StateMachine _stateMachine;

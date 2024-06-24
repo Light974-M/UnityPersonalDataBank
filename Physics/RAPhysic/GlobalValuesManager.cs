@@ -3,12 +3,12 @@ using UnityEngine;
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
-namespace UPDB.physic.RAPhysic
+namespace UPDB.Physic.RAPhysic
 {
     /// <summary>
     /// manage global values and lists of Affector from RAPhysic (break without it, Affector put it in scene Automatically)
     /// </summary>
-    [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu("UPDB/Physics/RAPhysics/Global Values Manager")]
+    [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.RAPhysic + "/Global Values Manager")]
     public class GlobalValuesManager : UPDBBehaviour
     {
         #region Serialized And Public Variables
