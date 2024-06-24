@@ -1,8 +1,9 @@
 using System;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
+#if INPUT_SYSTEM_PRESENT
 using UnityEngine.InputSystem;
+#endif
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -12,24 +13,25 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
     /// Tps Controller of player movements and actions
     /// </summary>
     [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Controller")]
-    public class PlayerController : UPDBBehaviour
+    public class PlayerController : MonoBehaviour
     {
         #region Serialized API
 
         /*****************************BASE REFERENCES****************************/
         [Header("BASE REFERENCES"), Space]
 
+#if INPUT_SYSTEM_PRESENT
         [SerializeField, Tooltip("used player input, used to link input system")]
-        private PlayerInput _playerInput;
-
+        private PlayerInput _playerInput; 
+#endif
         [SerializeField, Tooltip("character controller component used to move player")]
         private CharacterController _controller;
 
         [SerializeField, Tooltip("GameObject that represent player components in one parent object")]
         private Transform _playerTargetPivot;
 
-        [SerializeField, Tooltip("linked camera pivot, if one")]
-        private Transform _linkedCameraPivot;
+        [SerializeField, Tooltip("linked camera, if one")]
+        private Transform _linkedCamera;
 
         /*********************************ROTATION********************************/
         [Space, Header("ROTATION"), Space]
@@ -207,27 +209,6 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// smooth version of input value, used in rotations, to make a smooth turning effect
         /// </summary>
         private Vector2 _smoothedInputValue = Vector2.zero;
-
-        /// <summary>
-        /// take same direction as camera pivot but avoiding x direction
-        /// </summary>
-        private Transform _lookDirObj = null;
-
-        private Transform LookDirObj
-        {
-            get
-            {
-                //check if rotation object is set
-                if (!_lookDirObj)
-                {
-                    _lookDirObj = new GameObject("PlayerLookDirection").transform;
-                    _lookDirObj.SetParent(transform);
-                    Debug.LogWarning("created rotation dir object" + _lookDirObj.name);
-                }
-
-                return _lookDirObj;
-            }
-        }
 
         /**********************************JUMP AND PHYSIC**********************************/
 
@@ -457,12 +438,15 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// </summary>
         private void Update()
         {
+#if INPUT_SYSTEM_PRESENT
             //if scheme(controller) change, call an event to reorganise controller
             if (_playerInput.currentControlScheme != _schemeMemo)
                 _onSchemeChange.Invoke();
 
             //register last input scheme
-            _schemeMemo = _playerInput.currentControlScheme;
+            _schemeMemo = _playerInput.currentControlScheme; 
+            Debug.Log("EEEEE");
+#endif
 
             //test jump input
             if (_workingWithoutGameManager || GameManager.Instance.IsCharacterControllable)
@@ -501,17 +485,13 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <summary>
         /// OnDrawGizmos is called each time scene refresh
         /// </summary>
-        protected override void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
-            base.OnDrawGizmosSelected();
+            if (!Application.isPlaying)
+                Init();
 
             //draw isGrounded collider preview
             Gizmos.DrawWireSphere(transform.position + _isGroundedPosition, _isGroundedScale);
-        }
-
-        protected override void OnSceneSelected()
-        {
-            Init();
         }
 
         /*********************************************************CUSTOM FUNCTIONS************************************************************/
@@ -526,10 +506,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 if (!TryGetComponent(out _controller))
                     _controller = gameObject.AddComponent<CharacterController>();
 
+#if INPUT_SYSTEM_PRESENT
             //if player input component reference is null, try to get component in gameObject, or create one
             if (_playerInput == null)
                 if (!TryGetComponent(out _playerInput))
-                    _playerInput = gameObject.AddComponent<PlayerInput>();
+                    _playerInput = gameObject.AddComponent<PlayerInput>(); 
+#endif
 
             //if player rotation pivot reference is null
             if (_playerTargetPivot == null)
@@ -544,14 +526,14 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     _playerTargetPivot = new GameObject("PlayerTargetPivot").transform.parent = transform;
             }
 
-            if (_linkedCameraPivot == null)
+            if (_linkedCamera == null)
             {
                 if (Camera.main)
-                    _linkedCameraPivot = Camera.main.transform;
+                    _linkedCamera = Camera.main.transform;
                 else if (FindObjectOfType<Camera>())
-                    _linkedCameraPivot = FindObjectOfType<Camera>().transform;
+                    _linkedCamera = FindObjectOfType<Camera>().transform;
                 else
-                    _linkedCameraPivot = transform;
+                    _linkedCamera = transform;
             }
         }
 
@@ -566,16 +548,15 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 //make a smoothed value of input direction
                 _smoothedInputValue = AutoLerp(_rotationLerpStart, _inputValue, _currentRotationSpeed, ref _rotationLerpTimer, _rotationShape);
 
+#if INPUT_SYSTEM_PRESENT
                 //if player is on keyboard, use a function to prevent rotation from clipping by adding a square function to input dir
                 if (_playerInput.currentControlScheme == "KeyboardAndMouse")
-                    PreventRotationFromClipping(ref _smoothedInputValue);
+                    PreventRotationFromClipping(ref _smoothedInputValue); 
+#endif
 
-                //set pos and rot of rotation obj
-                LookDirObj.position = _linkedCameraPivot.position;
-                LookDirObj.eulerAngles = new Vector3(0, _linkedCameraPivot.eulerAngles.y, _linkedCameraPivot.eulerAngles.z);
-
-                //rotate player toward object forward
-                transform.rotation = Quaternion.LookRotation(_lookDirObj.forward);
+                //make the parent object look forward the camera, to make all basic calculation
+                transform.LookAt(new Vector3(_linkedCamera.position.x, transform.position.y, _linkedCamera.position.z));
+                transform.eulerAngles += new Vector3(0, 180, 0);
 
                 //make different calculs depending on rotation mode
                 if (_rotationMode == PlayerRotationMode.Free)
@@ -590,7 +571,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     //get end point of new direction vector
                     Vector3 position = transform.position + dir;
 
-                    //make player look at the end point(so that it look at the new direction)
+                    //make player loo at the end point(so that it look at the new direction)
                     _playerTargetPivot.LookAt(position);
                 }
                 else if (_rotationMode == PlayerRotationMode.Clamped)
@@ -878,7 +859,105 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             _controller.center = new Vector3(_controller.center.x, -0.9985f + (_controller.height / 2), _controller.center.z);
         }
 
+        /// <summary>
+        /// make a lerp automatically(based on delta time update rate) with Vector2, between a and b, in a specific time
+        /// </summary>
+        /// <param name="a">start point</param>
+        /// <param name="b">end point</param>
+        /// <param name="lerpTime">time to make lerp</param>
+        /// <param name="timer">timer to store lerp progression</param>
+        /// <returns></returns>
+        private Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer)
+        {
+            //create a null vector 2
+            Vector2 value = Vector2.zero;
 
+            //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
+            if (timer < lerpTime)
+            {
+                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1)
+                value = Vector2.Lerp(a, b, timer / lerpTime);
+
+                //update timer value
+                timer += Time.deltaTime;
+            }
+            else
+            {
+                timer = lerpTime;
+                value = b;
+            }
+
+            //return value updated
+            return value;
+        }
+
+        /// <summary>
+        /// make a lerp automatically(based on delta time update rate) with Vector2, between a and b, in a specific time
+        /// </summary>
+        /// <param name="a">start point</param>
+        /// <param name="b">end point</param>
+        /// <param name="lerpTime">time to make lerp</param>
+        /// <param name="timer">timer to store lerp progression</param>
+        /// /// <param name="smoothTimer">curve to offset timer and make things smooth</param>
+        /// <returns></returns>
+        private Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
+        {
+            //create a null vector 2
+            Vector2 value = Vector2.zero;
+
+            //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
+            if (timer < lerpTime)
+            {
+                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1) applyied to the animation curve value
+                value = Vector2.Lerp(a, b, smoothTimer.Evaluate(timer / lerpTime));
+
+                //update timer value
+                timer += Time.deltaTime;
+            }
+            else
+            {
+                timer = lerpTime;
+                value = b;
+            }
+
+            //return value updated
+            return value;
+        }
+
+        /// <summary>
+        /// make a lerp automatically(based on delta time update rate) with float, between a and b, in a specific time
+        /// </summary>
+        /// <param name="a">start point</param>
+        /// <param name="b">end point</param>
+        /// <param name="lerpTime">time to make lerp</param>
+        /// <param name="timer">timer to store lerp progression</param>
+        /// <returns></returns>
+        private float AutoLerp(float a, float b, float lerpTime, ref float timer)
+        {
+            //create a null value
+            float value = 0;
+
+            //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
+            if (timer < lerpTime)
+            {
+                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1)
+                value = Mathf.Lerp(a, b, timer / lerpTime);
+
+                //update timer value
+                timer += Time.deltaTime;
+            }
+            else
+            {
+                timer = lerpTime;
+                value = b;
+            }
+
+            //return value updated
+            return value;
+        }
+
+
+#if INPUT_SYSTEM_PRESENT
         #region Input System Functions
 
         /// <summary>
@@ -1060,7 +1139,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             }
         }
 
-        #endregion
+        #endregion  
+#endif
 
 
         #region Invoked Functions
