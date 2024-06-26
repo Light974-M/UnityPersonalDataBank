@@ -1,6 +1,9 @@
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Security.Policy;
 using UnityEngine;
+using UPDB.CoreHelper.UsableMethods.Structures;
+using static UnityEngine.UI.Image;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -705,6 +708,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+
         #region Vector2CoordinateConversion
 
         #region Vector type conversions
@@ -713,6 +717,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
         /// <summary>
         /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in world axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
@@ -725,14 +730,41 @@ namespace UPDB.CoreHelper.UsableMethods
 
         /// <summary>
         /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in world axis</param>
         /// <param name="axis">axis representing local x or y axis</param>
-        /// <param name="axisGiven">is the vector above representing x or y ?</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 axis, GivenAxis axisGiven)
+        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
         {
-            return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisGiven);
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisToFind);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in world axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        {
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, ignoreScale);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in world axis</param>
+        /// <param name="axis">axis representing local x or y axis</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
+        {
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisToFind, ignoreScale);
         }
 
         #endregion
@@ -741,6 +773,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
         /// <summary>
         /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in local axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
@@ -753,14 +786,41 @@ namespace UPDB.CoreHelper.UsableMethods
 
         /// <summary>
         /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in local axis</param>
         /// <param name="axis">axis representing local x or y axis</param>
-        /// <param name="axisGiven">is the vector above representing x or y ?</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 axis, GivenAxis axisGiven)
+        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
         {
-            return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisGiven);
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisToFind);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in local axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        {
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, ignoreScale);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in local axis</param>
+        /// <param name="axis">axis representing local x or y axis</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
+        {
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisToFind, ignoreScale);
         }
 
         #endregion
@@ -772,6 +832,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
@@ -797,33 +858,18 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="axisOfB">axis representing x or y axis of system B, given in system A</param>
-        /// <param name="axisGiven">is axis given above representing x or y ?</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 axisOfB, GivenAxis axisGiven)
+        public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 axisOfB, Axis axisToFind)
         {
             Vector2 xAxisOfB = Vector2.zero;
             Vector2 yAxisOfB = Vector2.zero;
 
-            if(axisGiven == GivenAxis.Z)
-            {
-                Debug.LogError("ERROR : you're using Z axis with a 2D typed vector, please select either X or Y axis to give");
-                return Vector2.zero;
-            }
-
-            if(axisGiven == GivenAxis.X)
-            {
-                xAxisOfB = axisOfB;
-                yAxisOfB = new Vector2(-axisOfB.y, axisOfB.x);
-            }
-
-            if (axisGiven == GivenAxis.Y)
-            {
-                yAxisOfB = axisOfB;
-                xAxisOfB = new Vector2(axisOfB.y, -axisOfB.x);
-            }
+            FindPerpToVec(axisOfB, axisToFind, ref xAxisOfB, ref yAxisOfB);
 
             Vector2 xAxisNormalized = xAxisOfB.normalized;
             Vector2 yAxisNormalized = yAxisOfB.normalized;
@@ -838,6 +884,63 @@ namespace UPDB.CoreHelper.UsableMethods
             return convertedVec;
         }
 
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 xAxisOfB, Vector2 yAxisOfB, bool ignoreScale)
+        {
+            Vector2 xAxisNormalized = xAxisOfB.normalized;
+            Vector2 yAxisNormalized = yAxisOfB.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfB.magnitude, yAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y);
+            Vector2 convertedNormalizedVec = new Vector2(x, y);
+
+            Vector2 convertedVec = ignoreScale ? convertedNormalizedVec : convertedNormalizedVec / axisMag;
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="axisOfB">axis representing x or y axis of system B, given in system A</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 axisOfB, Axis axisToFind, bool ignoreScale)
+        {
+            Vector2 xAxisOfB = Vector2.zero;
+            Vector2 yAxisOfB = Vector2.zero;
+
+            FindPerpToVec(axisOfB, axisToFind, ref xAxisOfB, ref yAxisOfB);
+
+            Vector2 xAxisNormalized = xAxisOfB.normalized;
+            Vector2 yAxisNormalized = yAxisOfB.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfB.magnitude, yAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y);
+            Vector2 convertedNormalizedVec = new Vector2(x, y);
+
+            Vector2 convertedVec = ignoreScale ? convertedNormalizedVec : convertedNormalizedVec / axisMag;
+
+            return convertedVec;
+        }
+
         #endregion
 
         #region to B from A
@@ -847,6 +950,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
@@ -873,39 +977,83 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
-        /// <param name="axisGiven">is axis given above representing x or y ?</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 axisOfA, GivenAxis axisGiven)
+        public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 axisOfA, Axis axisToFind)
         {
             Vector2 xAxisOfA = Vector2.zero;
             Vector2 yAxisOfA = Vector2.zero;
 
-            if (axisGiven == GivenAxis.Z)
-            {
-                Debug.LogError("ERROR : you're using Z axis with a 2D typed vector, please select either X or Y axis to give");
-                return Vector2.zero;
-            }
-
-            if (axisGiven == GivenAxis.X)
-            {
-                xAxisOfA = axisOfA;
-                yAxisOfA = new Vector2(-axisOfA.y, axisOfA.x);
-            }
-
-            if (axisGiven == GivenAxis.Y)
-            {
-                yAxisOfA = axisOfA;
-                xAxisOfA = new Vector2(axisOfA.y, -axisOfA.x);
-            }
+            FindPerpToVec(axisOfA, axisToFind, ref xAxisOfA, ref yAxisOfA);
 
             Vector2 xAxisNormalized = xAxisOfA.normalized;
             Vector2 yAxisNormalized = yAxisOfA.normalized;
             Vector2 axisMag = new Vector2(xAxisOfA.magnitude, yAxisOfA.magnitude);
 
             Vector2 VecNormalized = vecToConvert * axisMag;
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y);
+            Vector2 convertedVec = new Vector2(x, y);
+
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector to coordinate system B from A
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
+        /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 xAxisOfA, Vector2 yAxisOfA, bool ignoreScale)
+        {
+            Vector2 xAxisNormalized = xAxisOfA.normalized;
+            Vector2 yAxisNormalized = yAxisOfA.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfA.magnitude, yAxisOfA.magnitude);
+
+            Vector2 VecNormalized = ignoreScale ? vecToConvert : vecToConvert * axisMag;
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y);
+            Vector2 convertedVec = new Vector2(x, y);
+
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector to coordinate system B from A
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 axisOfA, Axis axisToFind, bool ignoreScale)
+        {
+            Vector2 xAxisOfA = Vector2.zero;
+            Vector2 yAxisOfA = Vector2.zero;
+
+            FindPerpToVec(axisOfA, axisToFind, ref xAxisOfA, ref yAxisOfA);
+
+            Vector2 xAxisNormalized = xAxisOfA.normalized;
+            Vector2 yAxisNormalized = yAxisOfA.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfA.magnitude, yAxisOfA.magnitude);
+
+            Vector2 VecNormalized = ignoreScale ? vecToConvert : vecToConvert * axisMag;
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y);
@@ -925,15 +1073,44 @@ namespace UPDB.CoreHelper.UsableMethods
 
         /// <summary>
         /// override for ConvertPointFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="posToConvert">point to convert, given in world axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="origin">origin of local axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector2 PosWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
+        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, xAxis, yAxis);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="posToConvert">vector to convert, given in world axis</param>
+        /// <param name="axis">axis representing local x or y axis</param>
+        /// <param name="origin">origin of local axis</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
+        /// <returns></returns>
+        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
+        {
+            return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisToFind);
+        }
+
+        /// <summary>
+        /// override for ConvertPointFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="posToConvert">point to convert, given in world axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="origin">origin of local axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        {
+            return ConvertPointFromSystemAToSystemB(posToConvert, origin, xAxis, yAxis, ignoreScale);
         }
 
         /// <summary>
@@ -942,11 +1119,12 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="posToConvert">vector to convert, given in world axis</param>
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="origin">origin of local axis</param>
-        /// <param name="axisGiven">is the vector above representing x or y ?</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 PosWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, GivenAxis axisGiven)
+        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
-            return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisGiven);
+            return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisToFind, ignoreScale);
         }
 
         #endregion
@@ -955,15 +1133,44 @@ namespace UPDB.CoreHelper.UsableMethods
 
         /// <summary>
         /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="posToConvert">point to convert, given in local axis</param>
         /// <param name="origin">origin of local axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector2 PosLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
+        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, xAxis, yAxis);
+        }
+
+        /// <summary>
+        /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="posToConvert">vector to convert, given in world axis</param>
+        /// <param name="axis">axis representing local x or y axis</param>
+        /// <param name="origin">origin of local axis</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
+        /// <returns></returns>
+        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
+        {
+            return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisToFind);
+        }
+
+        /// <summary>
+        /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="posToConvert">point to convert, given in local axis</param>
+        /// <param name="origin">origin of local axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        {
+            return ConvertPointToSystemBFromSystemA(posToConvert, origin, xAxis, yAxis, ignoreScale);
         }
 
         /// <summary>
@@ -972,11 +1179,12 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="posToConvert">vector to convert, given in world axis</param>
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="origin">origin of local axis</param>
-        /// <param name="axisGiven">is the vector above representing x or y ?</param>
+        /// <param name="axisToFind">is the vector above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 PosLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, GivenAxis axisGiven)
+        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
-            return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisGiven);
+            return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisToFind, ignoreScale);
         }
 
         #endregion
@@ -988,6 +1196,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="posToConvert">point to convert, given in system A</param>
         /// <param name="origin">origin of system B, given in system A</param>
@@ -1016,34 +1225,19 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="posToConvert">point to convert, given in system A</param>
         /// <param name="origin">origin of system B, given in system A</param>
         /// <param name="xAxisOfB">axis representing x or y axis of system B, given in system A</param>
-        /// <param name="axisGiven">is axis given above representing x or y ?</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 axisOfB, GivenAxis axisGiven)
+        public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 axisOfB, Axis axisToFind)
         {
             Vector2 xAxisOfB = Vector2.zero;
             Vector2 yAxisOfB = Vector2.zero;
 
-            if (axisGiven == GivenAxis.Z)
-            {
-                Debug.LogError("ERROR : you're using Z axis with a 2D typed vector, please select either X or Y axis to give");
-                return Vector2.zero;
-            }
-
-            if (axisGiven == GivenAxis.X)
-            {
-                xAxisOfB = axisOfB;
-                yAxisOfB = new Vector2(-axisOfB.y, axisOfB.x);
-            }
-
-            if (axisGiven == GivenAxis.Y)
-            {
-                yAxisOfB = axisOfB;
-                xAxisOfB = new Vector2(axisOfB.y, -axisOfB.x);
-            }
+            FindPerpToVec(axisOfB, axisToFind, ref xAxisOfB, ref yAxisOfB);
 
             Vector2 offsetedPod = posToConvert - origin;
 
@@ -1060,6 +1254,69 @@ namespace UPDB.CoreHelper.UsableMethods
             return convertedVec;
         }
 
+        /// <summary>
+        /// convert a given point from coordinate system A to B
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="posToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 xAxisOfB, Vector2 yAxisOfB, bool ignoreScale)
+        {
+            Vector2 offsetedPod = posToConvert - origin;
+
+            Vector2 xAxisNormalized = xAxisOfB.normalized;
+            Vector2 yAxisNormalized = yAxisOfB.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfB.magnitude, yAxisOfB.magnitude);
+
+            float x = (offsetedPod.x * xAxisNormalized.x) + (offsetedPod.y * xAxisNormalized.y);
+            float y = (offsetedPod.x * yAxisNormalized.x) + (offsetedPod.y * yAxisNormalized.y);
+            Vector2 convertedNormalizedVec = new Vector2(x, y);
+
+            Vector2 convertedVec = ignoreScale ? convertedNormalizedVec : convertedNormalizedVec / axisMag;
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given point from coordinate system A to B
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="posToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x or y axis of system B, given in system A</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 axisOfB, Axis axisToFind, bool ignoreScale)
+        {
+            Vector2 xAxisOfB = Vector2.zero;
+            Vector2 yAxisOfB = Vector2.zero;
+
+            FindPerpToVec(axisOfB, axisToFind, ref xAxisOfB, ref yAxisOfB);
+
+            Vector2 offsetedPod = posToConvert - origin;
+
+            Vector2 xAxisNormalized = xAxisOfB.normalized;
+            Vector2 yAxisNormalized = yAxisOfB.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfB.magnitude, yAxisOfB.magnitude);
+
+            float x = (offsetedPod.x * xAxisNormalized.x) + (offsetedPod.y * xAxisNormalized.y);
+            float y = (offsetedPod.x * yAxisNormalized.x) + (offsetedPod.y * yAxisNormalized.y);
+            Vector2 convertedNormalizedVec = new Vector2(x, y);
+
+            Vector2 convertedVec = ignoreScale ? convertedNormalizedVec : convertedNormalizedVec / axisMag;
+
+            return convertedVec;
+        }
+
         #endregion
 
         #region to B from A
@@ -1069,6 +1326,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="posToConvert">point to convert, given in system A</param>
         /// <param name="origin">origin of system A, given in system B</param>
@@ -1096,34 +1354,19 @@ namespace UPDB.CoreHelper.UsableMethods
         /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
         /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
         /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
         /// </summary>
         /// <param name="posToConvert">point to convert, given in system A</param>
         /// <param name="origin">origin of system A, given in system B</param>
         /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
-        /// <param name="axisGiven">is axis given above representing x or y ?</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 axisOfA, GivenAxis axisGiven)
+        public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 axisOfA, Axis axisToFind)
         {
             Vector2 xAxisOfA = Vector2.zero;
             Vector2 yAxisOfA = Vector2.zero;
 
-            if (axisGiven == GivenAxis.Z)
-            {
-                Debug.LogError("ERROR : you're using Z axis with a 2D typed vector, please select either X or Y axis to give");
-                return Vector2.zero;
-            }
-
-            if (axisGiven == GivenAxis.X)
-            {
-                xAxisOfA = axisOfA;
-                yAxisOfA = new Vector2(-axisOfA.y, axisOfA.x);
-            }
-
-            if (axisGiven == GivenAxis.Y)
-            {
-                yAxisOfA = axisOfA;
-                xAxisOfA = new Vector2(axisOfA.y, -axisOfA.x);
-            }
+            FindPerpToVec(axisOfA, axisToFind, ref xAxisOfA, ref yAxisOfA);
 
             Vector2 xAxisNormalized = xAxisOfA.normalized;
             Vector2 yAxisNormalized = yAxisOfA.normalized;
@@ -1139,17 +1382,1429 @@ namespace UPDB.CoreHelper.UsableMethods
             return convertedVec + origin;
         }
 
-        #endregion
-
-        #endregion
-
-        #endregion
-
-        public enum GivenAxis
+        /// <summary>
+        /// convert a given point to coordinate system B from A
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="posToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system A, given in system B</param>
+        /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
+        /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 xAxisOfA, Vector2 yAxisOfA, bool ignoreScale)
         {
-            X,
-            Y,
-            Z,
+            Vector2 xAxisNormalized = xAxisOfA.normalized;
+            Vector2 yAxisNormalized = yAxisOfA.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfA.magnitude, yAxisOfA.magnitude);
+
+            Vector2 VecNormalized = ignoreScale ? posToConvert : posToConvert * axisMag;
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y);
+            Vector2 convertedVec = new Vector2(x, y);
+
+
+            return convertedVec + origin;
         }
+
+        /// <summary>
+        /// convert a given point to coordinate system B from A
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="posToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system A, given in system B</param>
+        /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
+        /// <param name="axisToFind">is axis given above representing x or y ?</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 axisOfA, Axis axisToFind, bool ignoreScale)
+        {
+            Vector2 xAxisOfA = Vector2.zero;
+            Vector2 yAxisOfA = Vector2.zero;
+
+            FindPerpToVec(axisOfA, axisToFind, ref xAxisOfA, ref yAxisOfA);
+
+            Vector2 xAxisNormalized = xAxisOfA.normalized;
+            Vector2 yAxisNormalized = yAxisOfA.normalized;
+            Vector2 axisMag = new Vector2(xAxisOfA.magnitude, yAxisOfA.magnitude);
+
+            Vector2 VecNormalized = ignoreScale ? posToConvert : posToConvert * axisMag;
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y);
+            Vector2 convertedVec = new Vector2(x, y);
+
+
+            return convertedVec + origin;
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
+        #region Vector3CoordinateConversion
+
+        #region Vector type conversions
+
+        #region WorldToLocal overrides
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in world axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <returns></returns>
+        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        {
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, zAxis);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in world axis</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <returns></returns>
+        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        {
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in world axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        {
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, zAxis, ignoreScale);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in world axis</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        {
+            return ConvertVectorFromSystemAToSystemB(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
+        }
+
+        #endregion
+
+        #region localToWorld overrides
+
+        /// <summary>
+        /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in local axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="zAxis">axis representing local z axis</param>
+        /// <returns></returns>
+        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        {
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, zAxis);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in local axis</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <returns></returns>
+        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        {
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in local axis</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="zAxis">axis representing local z axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        {
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, zAxis, ignoreScale);
+        }
+
+        /// <summary>
+        /// override for ConvertVectorToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in local axis</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        {
+            return ConvertVectorToSystemBFromSystemA(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
+        }
+
+        #endregion
+
+        #region from A to B 
+
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
+        /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB)
+        {
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y) + (vecToConvert.z * xAxisNormalized.z);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y) + (vecToConvert.z * yAxisNormalized.z);
+            float z = (vecToConvert.x * zAxisNormalized.x) + (vecToConvert.y * zAxisNormalized.y) + (vecToConvert.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+            
+            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis)
+        {
+            Vector3 xAxisOfB = Vector3.zero;
+            Vector3 yAxisOfB = Vector3.zero;
+            Vector3 zAxisOfB = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfB, axisTwoOfB, firstAxis, secondAxis, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y) + (vecToConvert.z * xAxisNormalized.z);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y) + (vecToConvert.z * yAxisNormalized.z);
+            float z = (vecToConvert.x * zAxisNormalized.x) + (vecToConvert.y * zAxisNormalized.y) + (vecToConvert.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
+        /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB, bool ignoreScale)
+        {
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y) + (vecToConvert.z * xAxisNormalized.z);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y) + (vecToConvert.z * yAxisNormalized.z);
+            float z = (vecToConvert.x * zAxisNormalized.x) + (vecToConvert.y * zAxisNormalized.y) + (vecToConvert.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis, bool ignoreScale)
+        {
+            Vector3 xAxisOfB = Vector3.zero;
+            Vector3 yAxisOfB = Vector3.zero;
+            Vector3 zAxisOfB = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfB, axisTwoOfB, firstAxis, secondAxis, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y) + (vecToConvert.z * xAxisNormalized.z);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y) + (vecToConvert.z * yAxisNormalized.z);
+            float z = (vecToConvert.x * zAxisNormalized.x) + (vecToConvert.y * zAxisNormalized.y) + (vecToConvert.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        #endregion
+
+        #region to B from A
+
+        /// <summary>
+        /// convert a given vector to coordinate system B from A
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
+        /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
+        /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA)
+        {
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = UPDBMath.VecTime(vecToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector to coordinate system B from A
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="axisOneOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="axisTwoOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis)
+        {
+            Vector3 xAxisOfA = Vector3.zero;
+            Vector3 yAxisOfA = Vector3.zero;
+            Vector3 zAxisOfA = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfA, axisTwoOfA, firstAxis, secondAxis, ref xAxisOfA, ref yAxisOfA, ref zAxisOfA);
+
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = UPDBMath.VecTime(vecToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector to coordinate system B from A
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
+        /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
+        /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA, bool ignoreScale)
+        {
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = ignoreScale ? vecToConvert : UPDBMath.VecTime(vecToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given vector to coordinate system B from A
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="axisOneOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="axisTwoOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis, bool ignoreScale)
+        {
+            Vector3 xAxisOfA = Vector3.zero;
+            Vector3 yAxisOfA = Vector3.zero;
+            Vector3 zAxisOfA = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfA, axisTwoOfA, firstAxis, secondAxis, ref xAxisOfA, ref yAxisOfA, ref zAxisOfA);
+
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = ignoreScale ? vecToConvert : UPDBMath.VecTime(vecToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Position Type conversions
+
+        #region WorldToLocal overrides
+
+        /// <summary>
+        /// override for ConvertPointFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in world axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <returns></returns>
+        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        {
+            return ConvertPointFromSystemAToSystemB(pointToConvert, origin, xAxis, yAxis, zAxis);
+        }
+
+        /// <summary>
+        /// override for ConvertPointFromSystemAToSystemB, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in world axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <returns></returns>
+        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        {
+            return ConvertPointFromSystemAToSystemB(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType);
+        }
+
+        /// <summary>
+        /// override for ConvertPointFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in world axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        {
+            return ConvertPointFromSystemAToSystemB(pointToConvert, origin, xAxis, yAxis, zAxis, ignoreScale);
+        }
+
+        /// <summary>
+        /// override for ConvertPointFromSystemAToSystemB, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in world axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        {
+            return ConvertPointFromSystemAToSystemB(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
+        }
+
+        #endregion
+
+        #region localToWorld overrides
+
+        /// <summary>
+        /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in local axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="zAxis">axis representing local z axis</param>
+        /// <returns></returns>
+        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        {
+            return ConvertPointToSystemBFromSystemA(pointToConvert, origin, xAxis, yAxis, zAxis);
+        }
+
+        /// <summary>
+        /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// Note : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in local axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <returns></returns>
+        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        {
+            return ConvertPointToSystemBFromSystemA(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType);
+        }
+
+        /// <summary>
+        /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in local axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxis">axis representing local x axis</param>
+        /// <param name="yAxis">axis representing local y axis</param>
+        /// <param name="zAxis">axis representing local z axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        {
+            return ConvertPointToSystemBFromSystemA(pointToConvert, origin, xAxis, yAxis, zAxis, ignoreScale);
+        }
+
+        /// <summary>
+        /// override for ConvertPointToSystemBFromSystemA, basically just to remember wich method to use
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in local axis</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="axisOne">axis representing one local axis</param>
+        /// <param name="axisTwo">axis representing another local axis</param>
+        /// <param name="axisOneType">what first axis represent in local axis</param>
+        /// <param name="axisTwoType">what second axis represent in local axis</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        {
+            return ConvertPointToSystemBFromSystemA(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
+        }
+
+        #endregion
+
+        #region from A to B 
+
+        /// <summary>
+        /// convert a given point from coordinate system A to B
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
+        /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB)
+        {
+            Vector3 offsetedPoint = pointToConvert - origin;
+
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (offsetedPoint.x * xAxisNormalized.x) + (offsetedPoint.y * xAxisNormalized.y) + (offsetedPoint.z * xAxisNormalized.z);
+            float y = (offsetedPoint.x * yAxisNormalized.x) + (offsetedPoint.y * yAxisNormalized.y) + (offsetedPoint.z * yAxisNormalized.z);
+            float z = (offsetedPoint.x * zAxisNormalized.x) + (offsetedPoint.y * zAxisNormalized.y) + (offsetedPoint.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given point from coordinate system A to B
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis)
+        {
+            Vector3 offsetedPoint = pointToConvert - origin;
+
+            Vector3 xAxisOfB = Vector3.zero;
+            Vector3 yAxisOfB = Vector3.zero;
+            Vector3 zAxisOfB = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfB, axisTwoOfB, firstAxis, secondAxis, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (offsetedPoint.x * xAxisNormalized.x) + (offsetedPoint.y * xAxisNormalized.y) + (offsetedPoint.z * xAxisNormalized.z);
+            float y = (offsetedPoint.x * yAxisNormalized.x) + (offsetedPoint.y * yAxisNormalized.y) + (offsetedPoint.z * yAxisNormalized.z);
+            float z = (offsetedPoint.x * zAxisNormalized.x) + (offsetedPoint.y * zAxisNormalized.y) + (offsetedPoint.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given point from coordinate system A to B
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
+        /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB, bool ignoreScale)
+        {
+            Vector3 offsetedPoint = pointToConvert - origin;
+
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (offsetedPoint.x * xAxisNormalized.x) + (offsetedPoint.y * xAxisNormalized.y) + (offsetedPoint.z * xAxisNormalized.z);
+            float y = (offsetedPoint.x * yAxisNormalized.x) + (offsetedPoint.y * yAxisNormalized.y) + (offsetedPoint.z * yAxisNormalized.z);
+            float z = (offsetedPoint.x * zAxisNormalized.x) + (offsetedPoint.y * zAxisNormalized.y) + (offsetedPoint.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        /// <summary>
+        /// convert a given point from coordinate system A to B
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis, bool ignoreScale)
+        {
+            Vector3 offsetedPoint = pointToConvert - origin;
+
+            Vector3 xAxisOfB = Vector3.zero;
+            Vector3 yAxisOfB = Vector3.zero;
+            Vector3 zAxisOfB = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfB, axisTwoOfB, firstAxis, secondAxis, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (offsetedPoint.x * xAxisNormalized.x) + (offsetedPoint.y * xAxisNormalized.y) + (offsetedPoint.z * xAxisNormalized.z);
+            float y = (offsetedPoint.x * yAxisNormalized.x) + (offsetedPoint.y * yAxisNormalized.y) + (offsetedPoint.z * yAxisNormalized.z);
+            float z = (offsetedPoint.x * zAxisNormalized.x) + (offsetedPoint.y * zAxisNormalized.y) + (offsetedPoint.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        #endregion
+
+        #region to B from A
+
+        /// <summary>
+        /// convert a given point to coordinate system B from A
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
+        /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
+        /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA)
+        {
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = UPDBMath.VecTime(pointToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec + origin;
+        }
+
+        /// <summary>
+        /// convert a given point to coordinate system B from A
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="axisOneOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="axisTwoOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis)
+        {
+            Vector3 xAxisOfA = Vector3.zero;
+            Vector3 yAxisOfA = Vector3.zero;
+            Vector3 zAxisOfA = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfA, axisTwoOfA, firstAxis, secondAxis, ref xAxisOfA, ref yAxisOfA, ref zAxisOfA);
+
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = UPDBMath.VecTime(pointToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec + origin;
+        }
+
+        /// <summary>
+        /// convert a given point to coordinate system B from A
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
+        /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
+        /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA, bool ignoreScale)
+        {
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = ignoreScale ? pointToConvert : UPDBMath.VecTime(pointToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec + origin;
+        }
+
+        /// <summary>
+        /// convert a given point to coordinate system B from A
+        /// note 1 : point type of conversion offset the position, if you enter a vector, it will consider it as a point, and your vector is gonna stay to the same final point, but it's origin will change(relatively to coords origin, this as nonsense otherwise)
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// </summary>
+        /// <param name="pointToConvert">point to convert, given in system A</param>
+        /// <param name="origin">origin of system B, given in system A</param>
+        /// <param name="axisOneOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="axisTwoOfA">axis representing an axis of system A, given in system B</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
+        /// <returns></returns>
+        public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis, bool ignoreScale)
+        {
+            Vector3 xAxisOfA = Vector3.zero;
+            Vector3 yAxisOfA = Vector3.zero;
+            Vector3 zAxisOfA = Vector3.zero;
+
+            FindPerpToVecs(axisOneOfA, axisTwoOfA, firstAxis, secondAxis, ref xAxisOfA, ref yAxisOfA, ref zAxisOfA);
+
+            Vector3 xAxisNormalized = xAxisOfA.normalized;
+            Vector3 yAxisNormalized = yAxisOfA.normalized;
+            Vector3 zAxisNormalized = zAxisOfA.normalized;
+            Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
+
+            Vector3 VecNormalized = ignoreScale ? pointToConvert : UPDBMath.VecTime(pointToConvert, axisMag);
+
+            float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
+            float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
+            float z = (VecNormalized.x * xAxisNormalized.z) + (VecNormalized.y * yAxisNormalized.z) + (VecNormalized.z * zAxisNormalized.z);
+
+            Vector3 convertedVec = new Vector3(x, y, z);
+
+            return convertedVec + origin;
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
+        #region FindPerpendicularVector
+
+        #region 2D
+
+        /// <summary>
+        /// find the vector perpendicular to the given one
+        /// </summary>
+        /// <param name="givenAxis">vec to dearch for</param>
+        /// <param name="axisToFind">wich axis you give ? basically means that : x</param>
+        /// <returns></returns>
+        public static Vector2 FindPerpToVec(Vector2 givenAxis, Axis axisToFind)
+        {
+            if (axisToFind != Axis.X && axisToFind != Axis.Y)
+            {
+                Debug.LogError("ERROR : you're using an axis with a 2D typed vector wich is not X or Y, please select either X or Y axis to give");
+                return Vector2.up;
+            }
+
+            if (axisToFind == Axis.Y)
+                return UPDBMath.FindLeftPerpendicularVector(givenAxis);
+
+            if (axisToFind == Axis.X)
+                return UPDBMath.FindRightPerpendicularVector(givenAxis);
+
+            Debug.LogError("ERROR : method " + nameof(FindPerpToVec) + "return no axis possible to give");
+            return Vector3.up;
+        }
+
+        /// <summary>
+        /// find the vector perpendicular to the given one
+        /// </summary>
+        /// <param name="givenAxis">vec to dearch for</param>
+        /// <param name="axisToFind">wich axis you give ? basically means that : x</param>
+        /// <returns></returns>
+        public static void FindPerpToVec(Vector2 givenAxis, Axis axisToFind, ref Vector2 x, ref Vector2 y)
+        {
+            if (axisToFind != Axis.X && axisToFind != Axis.Y)
+            {
+                Debug.LogError("ERROR : you're using an axis with a 2D typed vector wich is not X or Y, please select either X or Y axis to give");
+                return;
+            }
+
+            if (axisToFind == Axis.Y)
+            {
+                x = givenAxis;
+                y = UPDBMath.FindLeftPerpendicularVector(givenAxis);
+                return;
+            }
+
+            if (axisToFind == Axis.X)
+            {
+                x = UPDBMath.FindRightPerpendicularVector(givenAxis);
+                y = givenAxis;
+                return;
+            }
+
+            Debug.LogError("ERROR : method " + nameof(FindPerpToVec) + "return no axis possible to give");
+        }
+
+        #endregion
+
+        #region 3D
+
+        /// <summary>
+        /// find the vector perpendicular to the given ones
+        /// </summary>
+        /// <param name="givenAxisA">vec A</param>
+        /// <param name="givenAxisB">vec B perpendicular to A</param>
+        /// <param name="axisToFind">wich axis you give ? basically means that : x</param>
+        /// <returns></returns>
+        public static void FindPerpToVecs(Vector3 givenAxisA, Vector3 givenAxisB, Axis firstGivenAxis, Axis secondGivenAxis, ref Vector3 x, ref Vector3 y, ref Vector3 z)
+        {
+            if (firstGivenAxis == secondGivenAxis || (firstGivenAxis != Axis.X && firstGivenAxis != Axis.Y && firstGivenAxis != Axis.Z) || (secondGivenAxis != Axis.X && secondGivenAxis != Axis.Y && secondGivenAxis != Axis.Z))
+            {
+                Debug.LogError("ERROR : you setted something wrong with given axis, either first and second are equal, or one of them does not represent either x y or z");
+                return;
+            }
+
+            if (firstGivenAxis == Axis.X && secondGivenAxis == Axis.Y)
+            {
+                x = givenAxisA;
+                y = givenAxisB;
+                z = UPDBMath.FindThirdAxis(x, y);
+                return;
+            }
+            if (firstGivenAxis == Axis.Y && secondGivenAxis == Axis.X)
+            {
+                x = givenAxisB;
+                y = givenAxisA;
+                z = UPDBMath.FindThirdAxis(x, y);
+                return;
+            }
+
+            if (firstGivenAxis == Axis.Y && secondGivenAxis == Axis.Z)
+            {
+                y = givenAxisA;
+                z = givenAxisB;
+                x = UPDBMath.FindThirdAxis(y, z);
+                return;
+            }
+            if (firstGivenAxis == Axis.Z && secondGivenAxis == Axis.Y)
+            {
+                y = givenAxisB;
+                z = givenAxisA;
+                x = UPDBMath.FindThirdAxis(y, z);
+                return;
+            }
+
+            if (firstGivenAxis == Axis.X && secondGivenAxis == Axis.Z)
+            {
+                x = givenAxisA;
+                z = givenAxisB;
+                y = -UPDBMath.FindThirdAxis(x, z);
+
+                return;
+            }
+            if (firstGivenAxis == Axis.Z && secondGivenAxis == Axis.X)
+            {
+                x = givenAxisB;
+                z = givenAxisA;
+                y = -UPDBMath.FindThirdAxis(x, z);
+                return;
+            }
+
+            Debug.LogError("ERROR : method " + nameof(FindPerpToVec) + "return no axis possible to give");
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region Custom Debug
+
+        #region Debug Arrows
+
+        /// <summary>
+        /// draw a simple arrow going towards direction
+        /// </summary>
+        /// <param name="origin">start pos</param>
+        /// <param name="direction">direction of arrow</param>
+        public static void DebugDrawArrow(Vector3 origin, Vector3 direction)
+        {
+            float arrowSize = direction.magnitude / 10;
+            Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector3 posBase = origin + dirBase;
+            Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
+            Vector3 perpToPerpToBase = UPDBMath.FindThirdAxis(dirBase, perpToBase, true).normalized * (arrowSize * 0.25f);
+            Vector3 crossMinPosA = posBase - perpToBase;
+            Vector3 crossMaxPosA = posBase + perpToBase;
+            Vector3 crossMinPosB = posBase - perpToPerpToBase;
+            Vector3 crossMaxPosB = posBase + perpToPerpToBase;
+
+            //draw base
+            Debug.DrawRay(origin, dirBase);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPosA, crossMinPosB);
+            Debug.DrawLine(crossMaxPosA, crossMaxPosB);
+            Debug.DrawLine(crossMinPosB, crossMaxPosA);
+            Debug.DrawLine(crossMaxPosB, crossMinPosA);
+
+            //draw pin
+            Debug.DrawLine(crossMinPosA, origin + direction);
+            Debug.DrawLine(crossMaxPosA, origin + direction);
+            Debug.DrawLine(crossMinPosB, origin + direction);
+            Debug.DrawLine(crossMaxPosB, origin + direction);
+        }
+
+        /// <summary>
+        /// draw a simple arrow going towards direction
+        /// </summary>
+        /// <param name="origin">start pos</param>
+        /// <param name="direction">direction of arrow</param>
+        /// <param name="color">color of arrow</param>
+        public static void DebugDrawArrow(Vector3 origin, Vector3 direction, Color color)
+        {
+            float arrowSize = direction.magnitude / 10;
+            Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector3 posBase = origin + dirBase;
+            Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
+            Vector3 perpToPerpToBase = UPDBMath.FindThirdAxis(dirBase, perpToBase, true).normalized * (arrowSize * 0.25f);
+            Vector3 crossMinPosA = posBase - perpToBase;
+            Vector3 crossMaxPosA = posBase + perpToBase;
+            Vector3 crossMinPosB = posBase - perpToPerpToBase;
+            Vector3 crossMaxPosB = posBase + perpToPerpToBase;
+
+            //draw base
+            Debug.DrawRay(origin, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPosA, crossMinPosB, color);
+            Debug.DrawLine(crossMaxPosA, crossMaxPosB, color);
+            Debug.DrawLine(crossMinPosB, crossMaxPosA, color);
+            Debug.DrawLine(crossMaxPosB, crossMinPosA, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPosA, origin + direction, color);
+            Debug.DrawLine(crossMaxPosA, origin + direction, color);
+            Debug.DrawLine(crossMinPosB, origin + direction, color);
+            Debug.DrawLine(crossMaxPosB, origin + direction, color);
+        }
+
+        /// <summary>
+        /// draw an arrow from point start to end
+        /// </summary>
+        /// <param name="start">starting point</param>
+        /// <param name="end">end point</param>
+        public static void DebugDrawArrowLine(Vector3 start, Vector3 end)
+        {
+            Vector3 direction = end - start;
+            float arrowSize = direction.magnitude / 10;
+            Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector3 posBase = start + dirBase;
+            Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
+            Vector3 perpToPerpToBase = UPDBMath.FindThirdAxis(dirBase, perpToBase, true).normalized * (arrowSize * 0.25f);
+            Vector3 crossMinPosA = posBase - perpToBase;
+            Vector3 crossMaxPosA = posBase + perpToBase;
+            Vector3 crossMinPosB = posBase - perpToPerpToBase;
+            Vector3 crossMaxPosB = posBase + perpToPerpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPosA, crossMinPosB);
+            Debug.DrawLine(crossMaxPosA, crossMaxPosB);
+            Debug.DrawLine(crossMinPosB, crossMaxPosA);
+            Debug.DrawLine(crossMaxPosB, crossMinPosA);
+
+            //draw pin
+            Debug.DrawLine(crossMinPosA, end);
+            Debug.DrawLine(crossMaxPosA, end);
+            Debug.DrawLine(crossMinPosB, end);
+            Debug.DrawLine(crossMaxPosB, end);
+        }
+
+        /// <summary>
+        /// draw an arrow from point start to end
+        /// </summary>
+        /// <param name="start">starting point</param>
+        /// <param name="end">end point</param>
+        /// <param name="color">color of arrow</param>
+        public static void DebugDrawArrowLine(Vector3 start, Vector3 end, Color color)
+        {
+            Vector3 direction = end - start;
+            float arrowSize = direction.magnitude / 10;
+            Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector3 posBase = start + dirBase;
+            Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
+            Vector3 perpToPerpToBase = UPDBMath.FindThirdAxis(dirBase, perpToBase, true).normalized * (arrowSize * 0.25f);
+            Vector3 crossMinPosA = posBase - perpToBase;
+            Vector3 crossMaxPosA = posBase + perpToBase;
+            Vector3 crossMinPosB = posBase - perpToPerpToBase;
+            Vector3 crossMaxPosB = posBase + perpToPerpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPosA, crossMinPosB, color);
+            Debug.DrawLine(crossMaxPosA, crossMaxPosB, color);
+            Debug.DrawLine(crossMinPosB, crossMaxPosA, color);
+            Debug.DrawLine(crossMaxPosB, crossMinPosA, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPosA, end, color);
+            Debug.DrawLine(crossMaxPosA, end, color);
+            Debug.DrawLine(crossMinPosB, end, color);
+            Debug.DrawLine(crossMaxPosB, end, color);
+        }
+
+        /// <summary>
+        /// draw a simple arrow going towards direction, in 2D
+        /// </summary>
+        /// <param name="start">start pos</param>
+        /// <param name="direction">direction of arrow</param>
+        public static void DebugDrawArrow(Vector2 start, Vector2 direction)
+        {
+            float arrowSize = direction.magnitude / 10;
+            Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector2 posBase = start + dirBase;
+            Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
+            Vector2 crossMinPos = posBase - perpToBase;
+            Vector2 crossMaxPos = posBase + perpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPos, crossMaxPos);
+
+            //draw pin
+            Debug.DrawLine(crossMinPos, start + direction);
+            Debug.DrawLine(crossMaxPos, start + direction);
+
+        }
+
+        /// <summary>
+        /// draw a simple arrow going towards direction, in 2D
+        /// </summary>
+        /// <param name="origin">start pos</param>
+        /// <param name="direction">direction of arrow</param>
+        /// <param name="color">color of arrow</param>
+        public static void DebugDrawArrow(Vector2 origin, Vector2 direction, Color color)
+        {
+            float arrowSize = direction.magnitude / 10;
+            Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector2 posBase = origin + dirBase;
+            Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
+            Vector2 crossMinPos = posBase - perpToBase;
+            Vector2 crossMaxPos = posBase + perpToBase;
+
+            //draw base
+            Debug.DrawRay(origin, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPos, crossMaxPos, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPos, origin + direction, color);
+            Debug.DrawLine(crossMaxPos, origin + direction, color);
+
+        }
+
+        /// <summary>
+        /// draw an arrow from point start to end, in 2D
+        /// </summary>
+        /// <param name="start">start pos</param>
+        /// <param name="end">end pos</param>
+        public static void DebugDrawArrowLine(Vector2 start, Vector2 end)
+        {
+            Vector2 direction = end - start;
+            float arrowSize = direction.magnitude / 10;
+            Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector2 posBase = start + dirBase;
+            Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
+            Vector2 crossMinPos = posBase - perpToBase;
+            Vector2 crossMaxPos = posBase + perpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPos, crossMaxPos);
+
+            //draw pin
+            Debug.DrawLine(crossMinPos, end);
+            Debug.DrawLine(crossMaxPos, end);
+
+        }
+
+        /// <summary>
+        /// draw an arrow from point start to end, in 2D
+        /// </summary>
+        /// <param name="start">start pos</param>
+        /// <param name="end">end pos</param>
+        /// <param name="color">color of arrow</param>
+        public static void DebugDrawArrowLine(Vector2 start, Vector2 end, Color color)
+        {
+            Vector2 direction = end - start;
+            float arrowSize = direction.magnitude / 10;
+            Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector2 posBase = start + dirBase;
+            Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
+            Vector2 crossMinPos = posBase - perpToBase;
+            Vector2 crossMaxPos = posBase + perpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPos, crossMaxPos, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPos, end, color);
+            Debug.DrawLine(crossMaxPos, end, color);
+
+        }
+
+        #endregion
+
+        #region Debug Points
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        public static void DebugDrawPoint(Vector3 position)
+        {
+            float size = .1f;
+            Vector3 up = Vector3.up * size;
+            Vector3 right = Vector3.right * size;
+            Vector3 forward = Vector3.forward * size;
+
+            Debug.DrawLine(position - right, position + right);
+            Debug.DrawLine(position - up, position + up);
+            Debug.DrawLine(position - forward, position + forward);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        /// <param name="color">color of point</param>
+        public static void DebugDrawPoint(Vector3 position, Color color)
+        {
+            float size = .1f;
+            Vector3 up = Vector3.up * size;
+            Vector3 right = Vector3.right * size;
+            Vector3 forward = Vector3.forward * size;
+
+            Debug.DrawLine(position - right, position + right, color);
+            Debug.DrawLine(position - up, position + up, color);
+            Debug.DrawLine(position - forward, position + forward, color);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        /// <param name="adaptToSceneView">adapt point scale with scene view distance</param>
+        public static void DebugDrawPoint(Vector3 position, bool adaptToSceneView)
+        {
+            float size = adaptToSceneView && Camera.current ? Vector3.Distance(position, Camera.current.transform.position) * .025f : .1f;
+            Vector3 up = Vector3.up * size;
+            Vector3 right = Vector3.right * size;
+            Vector3 forward = Vector3.forward * size;
+
+            Debug.DrawLine(position - right, position + right);
+            Debug.DrawLine(position - up, position + up);
+            Debug.DrawLine(position - forward, position + forward);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        /// <param name="color">color of point</param>
+        /// <param name="adaptToSceneView">adapt point scale with scene view distance</param>
+        public static void DebugDrawPoint(Vector3 position, Color color, bool adaptToSceneView)
+        {
+            float size = adaptToSceneView && Camera.current ? Vector3.Distance(position, Camera.current.transform.position) * .025f : .1f;
+            Vector3 up = Vector3.up * size;
+            Vector3 right = Vector3.right * size;
+            Vector3 forward = Vector3.forward * size;
+
+            Debug.DrawLine(position - right, position + right, color);
+            Debug.DrawLine(position - up, position + up, color);
+            Debug.DrawLine(position - forward, position + forward, color);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        public static void DebugDrawPoint(Vector2 position)
+        {
+            float size = .1f;
+            Vector2 up = Vector2.up * size;
+            Vector2 right = Vector2.right * size;
+
+            Debug.DrawLine(position - right, position + right);
+            Debug.DrawLine(position - up, position + up);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        /// <param name="color">color of point</param>
+        public static void DebugDrawPoint(Vector2 position, Color color)
+        {
+            float size = .1f;
+            Vector2 up = Vector2.up * size;
+            Vector2 right = Vector2.right * size;
+
+            Debug.DrawLine(position - right, position + right, color);
+            Debug.DrawLine(position - up, position + up, color);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        /// <param name="adaptToSceneView">adapt point scale with scene view distance</param>
+        public static void DebugDrawPoint(Vector2 position, bool adaptToSceneView)
+        {
+            float size = adaptToSceneView && Camera.current ? Vector3.Distance(position, new Vector3(position.x, position.y, Camera.current.transform.position.z)) * .025f : .1f;
+            Vector2 up = Vector2.up * size;
+            Vector2 right = Vector2.right * size;
+
+            Debug.DrawLine(position - right, position + right);
+            Debug.DrawLine(position - up, position + up);
+        }
+
+        /// <summary>
+        /// draw a point
+        /// </summary>
+        /// <param name="position">position of point</param>
+        /// <param name="color">color of point</param>
+        /// <param name="adaptToSceneView">adapt point scale with scene view distance</param>
+        public static void DebugDrawPoint(Vector2 position, Color color, bool adaptToSceneView)
+        {
+            float size = adaptToSceneView && Camera.current ? Vector3.Distance(position, new Vector3(position.x, position.y, Camera.current.transform.position.z)) * .025f : .1f;
+            Vector2 up = Vector2.up * size;
+            Vector2 right = Vector2.right * size;
+
+            Debug.DrawLine(position - right, position + right, color);
+            Debug.DrawLine(position - up, position + up, color);
+        }
+
+        #endregion
+
+        #endregion
     }
 }

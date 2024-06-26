@@ -1,3 +1,4 @@
+using System;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -46,7 +47,7 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <returns></returns>
         public static int Proba(float probability)
         {
-            return Random.Range(0f, 1f) <= probability ? 1 : 0;
+            return UnityEngine.Random.Range(0f, 1f) <= probability ? 1 : 0;
         }
 
         /// <summary>
@@ -56,7 +57,80 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <returns></returns>
         public static bool Probool(float probability)
         {
-            return Random.Range(0f, 1f) <= probability ? true : false;
+            return UnityEngine.Random.Range(0f, 1f) <= probability ? true : false;
+        }
+
+        public static Vector2 FindRightPerpendicularVector(Vector2 vec)
+        {
+            return new Vector2(vec.y, -vec.x);
+        }
+
+        public static Vector2 FindLeftPerpendicularVector(Vector2 vec)
+        {
+            return new Vector2(-vec.y, vec.x);
+        }
+
+        public static Vector3 FindAnyPerpendicularVectorUpType(Vector3 vec)
+        {
+            if(vec == Vector3.zero)
+                return Vector3.zero;
+
+            if(vec.x < 0.0000001f && vec.y < 0.0000001f)
+                return new Vector3(0, 1, 0);
+
+            Vector3 perpVec = Vector3.zero;
+
+            perpVec.x = -vec.y;
+            perpVec.y = vec.x;
+            perpVec.z = 0;
+
+            return perpVec.normalized * vec.magnitude;
+        }
+
+        /// <summary>
+        /// return the third axis by default, that create a orthogonal system with the two given vectors, by default, vector length is average between the two given
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector3 FindThirdAxis(Vector3 vecA, Vector3 vecB)
+        {
+            return Vector3.Cross(vecA, vecB).normalized * ((vecA.magnitude + vecB.magnitude) / 2f);
+        }
+
+        /// <summary>
+        /// return the third axis by default, that create a orthogonal system with the two given vectors, by default, vector length is average between the two given
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <param name="isADominant">tell if magnitude of A will be used, set to false to use magnitude of B, or remove parameter to use average</param>
+        /// <returns></returns>
+        public static Vector3 FindThirdAxis(Vector3 vecA, Vector3 vecB, bool isADominant)
+        {
+            float mag = isADominant ? vecA.magnitude : vecB.magnitude;
+            return Vector3.Cross(vecA, vecB).normalized * mag;
+        }
+
+        /// <summary>
+        /// return the multiplication of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector3 VecTime(Vector3 vecA, Vector3 vecB)
+        {
+            return new Vector3(vecA.x * vecB.x, vecA.y * vecB.y, vecA.z * vecB.z);
+        }
+
+        /// <summary>
+        /// return the division of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector3 VecDivide(Vector3 vecA, Vector3 vecB)
+        {
+            return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
         }
 
         /// <summary>
