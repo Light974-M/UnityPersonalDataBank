@@ -2,6 +2,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Security.Policy;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UPDB.CoreHelper.UsableMethods.Structures;
 using static UnityEngine.UI.Image;
 
@@ -1603,7 +1604,7 @@ namespace UPDB.CoreHelper.UsableMethods
             float z = (vecToConvert.x * zAxisNormalized.x) + (vecToConvert.y * zAxisNormalized.y) + (vecToConvert.z * zAxisNormalized.z);
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
-            
+
             Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
@@ -1630,6 +1631,67 @@ namespace UPDB.CoreHelper.UsableMethods
 
             FindPerpToVecs(axisOneOfB, axisTwoOfB, firstAxis, secondAxis, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
 
+            Vector3 xAxisNormalized = xAxisOfB.normalized;
+            Vector3 yAxisNormalized = yAxisOfB.normalized;
+            Vector3 zAxisNormalized = zAxisOfB.normalized;
+
+            Vector3 axisMag = new Vector3(xAxisOfB.magnitude, yAxisOfB.magnitude, zAxisOfB.magnitude);
+
+            float x = (vecToConvert.x * xAxisNormalized.x) + (vecToConvert.y * xAxisNormalized.y) + (vecToConvert.z * xAxisNormalized.z);
+            float y = (vecToConvert.x * yAxisNormalized.x) + (vecToConvert.y * yAxisNormalized.y) + (vecToConvert.z * yAxisNormalized.z);
+            float z = (vecToConvert.x * zAxisNormalized.x) + (vecToConvert.y * zAxisNormalized.y) + (vecToConvert.z * zAxisNormalized.z);
+
+            Vector3 convertedNormalizedVec = new Vector3(x, y, z);
+
+            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+
+            return convertedVec;
+        }
+
+        //EXPERIMENTAL
+        /// <summary>
+        /// convert a given vector from coordinate system A to B
+        /// note 1 : vector type of conversion ignore the position, if you enter a point, it will consider it as a vector starting from origin of system and going to this position
+        /// note 2 : "to" type conversion need the x and y vec representing the system B given in system A coords
+        /// note 3 : "from" type conversion need the x and y vec representing the system A given in system B coords
+        /// note 4 : by default, take in count scale of given vectors
+        /// </summary>
+        /// <param name="vecToConvert">vector to convert, given in system A</param>
+        /// <param name="xAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
+        /// <param name="firstAxis">first axis given</param>
+        /// <param name="secondAxis">second axis given</param>
+        /// <returns></returns>
+        public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 axisOfB, Axis givenAxis)
+        {
+            Vector3 xAxisOfB = Vector3.zero;
+            Vector3 yAxisOfB = Vector3.zero;
+            Vector3 zAxisOfB = Vector3.zero;
+
+            //Vector3 originalAxisOfB = axisOfB;
+            //axisOfB = new Vector3(Mathf.Abs(axisOfB.x), Mathf.Abs(axisOfB.y), Mathf.Abs(axisOfB.z));
+            Vector3 axisTwoOfB = UPDBMath.FindAnyPerpendicularVectorUpType(axisOfB);
+
+            if (givenAxis == Axis.X)
+            {
+                FindPerpToVecs(axisOfB, axisTwoOfB, Axis.X, Axis.Y, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+            }
+            if(givenAxis == Axis.Y)
+            {
+                FindPerpToVecs(axisOfB, axisTwoOfB, Axis.Y, Axis.X, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+
+            }
+            if(givenAxis == Axis.Z)
+            {
+                FindPerpToVecs(axisOfB, axisTwoOfB, Axis.Z, Axis.Y, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
+
+            }
+
+
+            Debug.DrawRay(Vector3.zero, xAxisOfB);
+            Debug.DrawRay(Vector3.zero, yAxisOfB);
+            //Debug.DrawRay(Vector3.zero, zAxisOfB);
+            
             Vector3 xAxisNormalized = xAxisOfB.normalized;
             Vector3 yAxisNormalized = yAxisOfB.normalized;
             Vector3 zAxisNormalized = zAxisOfB.normalized;
@@ -2801,6 +2863,442 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Debug.DrawLine(position - right, position + right, color);
             Debug.DrawLine(position - up, position + up, color);
+        }
+
+        #endregion
+
+        #region DrawGrid
+
+        #region 2DOverrides
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCount">how many edges are rendered in three axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCount, Color gridColor)
+        {
+            Vector3 right = Vector3.right;
+            Vector3 up = Vector3.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, 0, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, 0, up, right, forward, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCount">how many edges are rendered in three axis ?</param>
+        /// <param name="localFrom">what is the object representing right, up, and forward axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCount, Transform localFrom, Color gridColor)
+        {
+            Vector3 right = localFrom.right;
+            Vector3 up = localFrom.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, 0, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, 0, up, right, forward, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCountX, int edgeCountY, Color gridColor)
+        {
+            Vector3 right = Vector3.right;
+            Vector3 up = Vector3.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, 0, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, 0, up, right, forward, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        /// <param name="positionType">position type of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCountX, int edgeCountY, Color gridColor, PositionRendredType positionType)
+        {
+            Vector3 right = Vector3.right;
+            Vector3 up = Vector3.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, 0, right, up, forward, gridColor, positionType);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, 0, up, right, forward, gridColor, positionType);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="scale">what are the scale of the three axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCountX, int edgeCountY, Vector3 scale, Color gridColor)
+        {
+            Vector3 right = Vector3.right * scale.x;
+            Vector3 up = Vector3.up * scale.y;
+            Vector3 forward = Vector3.forward * scale.z;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, 0, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, 0, up, right, forward, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="scale">what are the scale of the two axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        /// <param name="positionType">position type of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCountX, int edgeCountY, Vector2 scale, Color gridColor, PositionRendredType positionType)
+        {
+            Vector3 right = Vector3.right * scale.x;
+            Vector3 up = Vector3.up * scale.y;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, 0, right, up, forward, gridColor, positionType);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, 0, up, right, forward, gridColor, positionType);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="right">represent x axis of grid</param>
+        /// <param name="up">represent y axis of grid</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCountX, int edgeCountY, Vector3 right, Vector3 up, Color gridColor)
+        {
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, 0, right, up, Vector3.forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, 0, up, right, Vector3.forward, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="right">represent x axis of grid</param>
+        /// <param name="up">represent y axis of grid</param>
+        /// <param name="gridColor">color of grid</param>
+        /// <param name="positionType">position type of grid</param>
+        public static void DebugDrawGrid(Vector2 origin, int edgeCountX, int edgeCountY, Vector3 right, Vector3 up, Color gridColor, PositionRendredType positionType)
+        {
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, 0, right, up, Vector3.forward, gridColor, positionType);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, 0, up, right, Vector3.forward, gridColor, positionType);
+        }
+
+        #endregion
+
+        #region DrawGrid3D
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCount">how many edges are rendered in three axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCount, Color gridColor)
+        {
+            Vector3 right = Vector3.right;
+            Vector3 up = Vector3.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, edgeCount, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, edgeCount, up, right, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, edgeCount, forward, up, right, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCount">how many edges are rendered in three axis ?</param>
+        /// <param name="localFrom">what is the object representing right, up, and forward axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCount, Transform localFrom, Color gridColor)
+        {
+            Vector3 right = localFrom.right;
+            Vector3 up = localFrom.up;
+            Vector3 forward = localFrom.forward;
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, edgeCount, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, edgeCount, up, right, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCount != 0)
+                DrawLineSection(origin, edgeCount, edgeCount, edgeCount, forward, up, right, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="edgeCountZ">how many edges are rendered in z axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCountX, int edgeCountY, int edgeCountZ, Color gridColor)
+        {
+            Vector3 right = Vector3.right;
+            Vector3 up = Vector3.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, edgeCountZ, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, edgeCountZ, up, right, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountZ != 0)
+                DrawLineSection(origin, edgeCountZ, edgeCountY, edgeCountX, forward, up, right, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="edgeCountZ">how many edges are rendered in z axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        /// <param name="positionType">position type of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCountX, int edgeCountY, int edgeCountZ, Color gridColor, PositionRendredType positionType)
+        {
+            Vector3 right = Vector3.right;
+            Vector3 up = Vector3.up;
+            Vector3 forward = Vector3.forward;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, edgeCountZ, right, up, forward, gridColor, positionType);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, edgeCountZ, up, right, forward, gridColor, positionType);
+
+            if (edgeCountZ != 0)
+                DrawLineSection(origin, edgeCountZ, edgeCountY, edgeCountX, forward, up, right, gridColor, positionType);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="edgeCountZ">how many edges are rendered in z axis ?</param>
+        /// <param name="scale">what are the scale of the three axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCountX, int edgeCountY, int edgeCountZ, Vector3 scale, Color gridColor)
+        {
+            Vector3 right = Vector3.right * scale.x;
+            Vector3 up = Vector3.up * scale.y;
+            Vector3 forward = Vector3.forward * scale.z;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, edgeCountZ, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, edgeCountZ, up, right, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountZ != 0)
+                DrawLineSection(origin, edgeCountZ, edgeCountY, edgeCountX, forward, up, right, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="edgeCountZ">how many edges are rendered in z axis ?</param>
+        /// <param name="scale">what are the scale of the three axis ?</param>
+        /// <param name="gridColor">color of grid</param>
+        /// <param name="positionType">position type of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCountX, int edgeCountY, int edgeCountZ, Vector3 scale, Color gridColor, PositionRendredType positionType)
+        {
+            Vector3 right = Vector3.right * scale.x;
+            Vector3 up = Vector3.up * scale.y;
+            Vector3 forward = Vector3.forward * scale.z;
+
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, edgeCountZ, right, up, forward, gridColor, positionType);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, edgeCountZ, up, right, forward, gridColor, positionType);
+
+            if (edgeCountZ != 0)
+                DrawLineSection(origin, edgeCountZ, edgeCountY, edgeCountX, forward, up, right, gridColor, positionType);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="edgeCountZ">how many edges are rendered in z axis ?</param>
+        /// <param name="right">represent x axis of grid</param>
+        /// <param name="up">represent y axis of grid</param>
+        /// <param name="forward">represent z axis of grid</param>
+        /// <param name="gridColor">color of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCountX, int edgeCountY, int edgeCountZ, Vector3 right, Vector3 up, Vector3 forward, Color gridColor)
+        {
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, edgeCountZ, right, up, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, edgeCountZ, up, right, forward, gridColor, PositionRendredType.Centered);
+
+            if (edgeCountZ != 0)
+                DrawLineSection(origin, edgeCountZ, edgeCountY, edgeCountX, forward, up, right, gridColor, PositionRendredType.Centered);
+        }
+
+        /// <summary>
+        /// draw a grid, adapted for coordinate renderer
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountX">how many edges are rendered in x axis ?</param>
+        /// <param name="edgeCountY">how many edges are rendered in y axis ?</param>
+        /// <param name="edgeCountZ">how many edges are rendered in z axis ?</param>
+        /// <param name="right">represent x axis of grid</param>
+        /// <param name="up">represent y axis of grid</param>
+        /// <param name="forward">represent z axis of grid</param>
+        /// <param name="gridColor">color of grid</param>
+        /// <param name="positionType">position type of grid</param>
+        public static void DebugDrawGrid(Vector3 origin, int edgeCountX, int edgeCountY, int edgeCountZ, Vector3 right, Vector3 up, Vector3 forward, Color gridColor, PositionRendredType positionType)
+        {
+            if (edgeCountX != 0)
+                DrawLineSection(origin, edgeCountX, edgeCountY, edgeCountZ, right, up, forward, gridColor, positionType);
+
+            if (edgeCountY != 0)
+                DrawLineSection(origin, edgeCountY, edgeCountX, edgeCountZ, up, right, forward, gridColor, positionType);
+
+            if (edgeCountZ != 0)
+                DrawLineSection(origin, edgeCountZ, edgeCountY, edgeCountX, forward, up, right, gridColor, positionType);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// take given parameters, and draw a section of lines in the axisToDraw direction
+        /// </summary>
+        /// <param name="origin">what is the central point of grid</param>
+        /// <param name="edgeCountToDraw">how many edges are rendered in to draw axis ?</param>
+        /// <param name="edgeCountOne">how many edges are rendered in first axis ?</param>
+        /// <param name="edgeCountTwo">how many edges are rendered in second axis ?</param>
+        /// <param name="axisToDraw">axis to draw towards</param>
+        /// <param name="axisOne">first axis reprensenting second dimention axis</param>
+        /// <param name="axisTwo">second axis reprensenting third dimention axis</param>
+        /// <param name="gridColor"></param>
+        /// <param name="positionType"></param>
+        public static void DrawLineSection(Vector3 origin, int edgeCountToDraw, int edgeCountOne, int edgeCountTwo, Vector3 axisToDraw, Vector3 axisOne, Vector3 axisTwo, Color gridColor, PositionRendredType positionType)
+        {
+            Vector3 offset = TestGridOffsetType(edgeCountToDraw, edgeCountOne, edgeCountTwo, axisToDraw, axisOne, axisTwo, positionType);
+
+            for (int i = 0; i < edgeCountOne + 1; i++)
+            {
+                for (int j = 0; j < edgeCountTwo + 1; j++)
+                {
+                    Vector3 axisToDrawLength = axisToDraw * edgeCountToDraw;
+                    Vector3 lowPoint = origin;
+                    Vector3 highPoint = origin + axisToDrawLength;
+                    Vector3 firstAxisILength = axisOne * i;
+                    Vector3 secondAxisILength = axisTwo * j;
+                    Vector3 firstAndSecondAxisOffset = firstAxisILength + secondAxisILength;
+                    Vector3 A = lowPoint + firstAndSecondAxisOffset;
+                    Vector3 B = highPoint + firstAndSecondAxisOffset;
+
+                    Debug.DrawLine(A - offset, B - offset, gridColor);
+                }
+            }
+        }
+
+        /// <summary>
+        /// take the numbers of count lines to draw, and the third axis, and return the offset depending on the position type
+        /// </summary>
+        /// <param name="edgeCountToDraw">how many edges are rendered in to draw axis ?</param>
+        /// <param name="edgeCountOne">how many edges are rendered in first axis ?</param>
+        /// <param name="edgeCountTwo">how many edges are rendered in second axis ?</param>
+        /// <param name="axisToDraw">axis to draw towards</param>
+        /// <param name="axisOne">first axis reprensenting second dimention axis</param>
+        /// <param name="axisTwo">second axis reprensenting third dimention axis</param>
+        /// <param name="positionType"></param>
+        /// <returns></returns>
+        private static Vector3 TestGridOffsetType(int edgeCountToDraw, int edgeCountOne, int edgeCountTwo, Vector3 axisToDraw, Vector3 axisOne, Vector3 axisTwo, PositionRendredType positionType)
+        {
+            if (positionType == PositionRendredType.IntCentered)
+            {
+                Vector3 toDrawOffset = axisToDraw * (edgeCountToDraw / 2);
+                Vector3 firstOffset = axisOne * (edgeCountOne / 2);
+                Vector3 secondOffset = axisTwo * (edgeCountTwo / 2);
+
+                return toDrawOffset + firstOffset + secondOffset;
+            }
+            if (positionType == PositionRendredType.Edged)
+            {
+                return Vector3.zero;
+            }
+            if (positionType == PositionRendredType.Centered)
+            {
+                Vector3 toDrawOffset = axisToDraw * (edgeCountToDraw / 2f);
+                Vector3 firstOffset = axisOne * (edgeCountOne / 2f);
+                Vector3 secondOffset = axisTwo * (edgeCountTwo / 2f);
+
+                return toDrawOffset + firstOffset + secondOffset;
+            }
+
+            Debug.LogError("EXCEPTION : grid offset type takes a position type that doesn't exist !");
+            return Vector3.zero;
         }
 
         #endregion

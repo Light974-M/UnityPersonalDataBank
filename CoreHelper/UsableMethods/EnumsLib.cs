@@ -105,4 +105,11 @@ namespace UPDB.CoreHelper.UsableMethods
         QuickSave,
         Checkpoint
     }
+
+    public enum PositionRendredType
+    {
+        Centered,
+        IntCentered,
+        Edged,
+    }
 }
