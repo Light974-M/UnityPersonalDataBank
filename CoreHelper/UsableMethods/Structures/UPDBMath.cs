@@ -133,6 +133,16 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
             return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
         }
 
+        public static float ToDegrees(float radianValue)
+        {
+            return (radianValue / Mathf.PI) * 180;
+        }
+
+        public static float ToRadians(float degreesValue)
+        {
+            return (degreesValue / 180) * Mathf.PI;
+        }
+
         /// <summary>
         /// represent infinity with int value, return 2147483647, wich is max value of int type
         /// </summary>
