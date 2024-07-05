@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UPDB.CoreHelper.UsableMethods.Structures;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -724,7 +720,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis)
+        public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis);
         }
@@ -737,7 +733,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
+        public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisToFind);
         }
@@ -750,7 +746,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, ignoreScale);
         }
@@ -763,7 +759,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 VecWorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
+        public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisToFind, ignoreScale);
         }
@@ -780,7 +776,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis)
+        public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis);
         }
@@ -793,7 +789,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
+        public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisToFind);
         }
@@ -806,7 +802,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, ignoreScale);
         }
@@ -819,7 +815,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 VecLocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
+        public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisToFind, ignoreScale);
         }
@@ -1081,7 +1077,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
+        public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, xAxis, yAxis);
         }
@@ -1095,7 +1091,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
+        public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisToFind);
         }
@@ -1109,7 +1105,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, xAxis, yAxis, ignoreScale);
         }
@@ -1123,7 +1119,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 PointWorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
+        public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisToFind, ignoreScale);
         }
@@ -1141,7 +1137,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
+        public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, xAxis, yAxis);
         }
@@ -1155,7 +1151,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <returns></returns>
-        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
+        public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisToFind);
         }
@@ -1169,7 +1165,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
+        public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, xAxis, yAxis, ignoreScale);
         }
@@ -1183,7 +1179,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector2 PointLocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
+        public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisToFind, ignoreScale);
         }
@@ -1465,7 +1461,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, zAxis);
         }
@@ -1480,7 +1476,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <returns></returns>
-        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType);
         }
@@ -1493,7 +1489,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, zAxis, ignoreScale);
         }
@@ -1508,7 +1504,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 VecWorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
         }
@@ -1526,7 +1522,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="zAxis">axis representing local z axis</param>
         /// <returns></returns>
-        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, zAxis);
         }
@@ -1541,7 +1537,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <returns></returns>
-        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType);
         }
@@ -1555,7 +1551,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="zAxis">axis representing local z axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, zAxis, ignoreScale);
         }
@@ -1570,7 +1566,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 VecLocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
         }
@@ -1933,7 +1929,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <returns></returns>
-        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, xAxis, yAxis, zAxis);
         }
@@ -1949,7 +1945,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <returns></returns>
-        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType);
         }
@@ -1963,7 +1959,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, xAxis, yAxis, zAxis, ignoreScale);
         }
@@ -1979,7 +1975,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 PointWorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
         }
@@ -1998,7 +1994,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="zAxis">axis representing local z axis</param>
         /// <returns></returns>
-        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, xAxis, yAxis, zAxis);
         }
@@ -2014,7 +2010,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <returns></returns>
-        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
+        public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType);
         }
@@ -2029,7 +2025,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="zAxis">axis representing local z axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
+        public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, xAxis, yAxis, zAxis, ignoreScale);
         }
@@ -2045,7 +2041,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
         /// <returns></returns>
-        public static Vector3 PointLocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
+        public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
         }

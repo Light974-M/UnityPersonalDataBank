@@ -149,6 +149,16 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
             return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
         }
 
+        public static float ToDegrees(float radianValue)
+        {
+            return (radianValue / Mathf.PI) * 180;
+        }
+
+        public static float ToRadians(float degreesValue)
+        {
+            return (degreesValue / 180) * Mathf.PI;
+        }
+        
         #region Constants
 
         /// <summary>
@@ -184,7 +194,7 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         }
 
         /// <summary>
-        /// return the gravitationnal constant G = 6.6743 × 10-11 m3 kg-1 s-2
+        /// return the gravitationnal constant G = 6.6743 ï¿½ 10-11 m3 kg-1 s-2
         /// </summary>
         public static float G
         {
