@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -60,6 +61,21 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
             return UnityEngine.Random.Range(0f, 1f) <= probability ? true : false;
         }
 
+        public static bool IsPowerOf(int value, int power)
+        {
+            while (value > 1)
+            {
+                value = value / power;
+                int modulo = value % power;
+
+                if (modulo != 0 && value != 1)
+                    return false;
+            }
+
+
+            return true;
+        }
+
         public static Vector2 FindRightPerpendicularVector(Vector2 vec)
         {
             return new Vector2(vec.y, -vec.x);
@@ -72,10 +88,10 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
 
         public static Vector3 FindAnyPerpendicularVectorUpType(Vector3 vec)
         {
-            if(vec == Vector3.zero)
+            if (vec == Vector3.zero)
                 return Vector3.zero;
 
-            if(vec.x < 0.0000001f && vec.y < 0.0000001f)
+            if (vec.x < 0.0000001f && vec.y < 0.0000001f)
                 return new Vector3(0, 1, 0);
 
             Vector3 perpVec = Vector3.zero;
@@ -133,6 +149,8 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
             return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
         }
 
+        #region Constants
+
         /// <summary>
         /// represent infinity with int value, return 2147483647, wich is max value of int type
         /// </summary>
@@ -173,7 +191,162 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
             get { return 0.000000000066743f; }
         }
 
+        #endregion
 
+        #region BinaryOperators
+
+        public static BitArray Add(BitArray a, BitArray b)
+        {
+            int smallestLength = a.Length <= b.Length ? a.Length : b.Length;
+
+            if (!IsPowerOf(smallestLength, 2))
+            {
+                if (!IsPowerOf(a.Length, 2))
+                    Debug.LogError($"error : given BitArray {a.Length} doesn't fit the size for fixed decimal render, please insert an array with a length that is a power of 2");
+
+                if (!IsPowerOf(b.Length, 2))
+                    Debug.LogError($"error : given BitArray {b.Length} doesn't fit the size for fixed decimal render, please insert an array with a length that is a power of 2");
+
+                return new BitArray(0, false);
+            }
+
+            if (a.Length != b.Length)
+            {
+                BitArray smallestArray = a.Length <= b.Length ? a : b;
+                BitArray biggestArray = a.Length <= b.Length ? b : a;
+
+                BitArray biggestReplacer = new BitArray(smallestLength, false);
+                string integerPartReplacer = string.Empty;
+
+                for (int i = 1; i < biggestArray.Length; i++)
+                {
+                    if (integerPartReplacer == string.Empty && !biggestArray[i])
+                        continue;
+
+                    integerPartReplacer += biggestArray[i] ? '1' : '0';
+
+                    if (integerPartReplacer.Length >= smallestLength / 2)
+                        break;
+                }
+
+                for (int i = smallestLength / 2; i > 0; i--)
+                    biggestReplacer.Set(i, integerPartReplacer[i - 1] != '0');
+
+                for (int i = (smallestLength / 2) + 1, j = (biggestArray.Length / 2) + 1; i < biggestReplacer.Length && j < biggestArray.Length; i++, j++)
+                    biggestReplacer.Set(i, biggestArray[j]);
+
+                //add final values of clamped arrays
+                if (smallestArray.Length == a.Length)
+                    b = biggestReplacer;
+                else
+                    a = biggestReplacer;
+            }
+
+            BitArray result = new BitArray(smallestLength, false);
+
+            string decimalAddition = string.Empty;
+            BitAddResult adder = BitAdditionTable(false, false, false);
+
+            for (int i = result.Length - 1; i > result.Length / 2; i--)
+            {
+                if (a[i] == false && b[i] == false && decimalAddition == string.Empty)
+                    continue;
+
+                adder = BitAdditionTable(adder.Carry, a[i], b[i]);
+
+                char toAdd = adder.Value ? '1' : '0';
+                decimalAddition = toAdd + decimalAddition;
+            }
+
+            for (int i = (result.Length / 2) + 1, j = 0; i < result.Length && j < decimalAddition.Length; i++, j++)
+                result.Set(i, decimalAddition[j] != '0');
+
+            int endIndex = 0;
+
+            for (int i = 1; i <= result.Length / 2; i++)
+            {
+                if(a[i] || b[i] || i >= (result.Length / 2))
+                {
+                    endIndex = i; 
+                    break;
+                }
+            }
+
+            string integerAddition = string.Empty;
+            
+            for (int i = result.Length / 2; i >= endIndex; i--)
+            {
+                adder = BitAdditionTable(adder.Carry, a[i], b[i]);
+
+                char toAdd = adder.Value ? '1' : '0';
+                integerAddition = toAdd + integerAddition;
+            }
+
+            if(adder.Carry)
+                integerAddition = '1' + integerAddition;
+
+
+            string clampedIntegerAddition = string.Empty;
+
+            for (int i = 0; i < integerAddition.Length; i++)
+            {
+                clampedIntegerAddition += integerAddition[i];
+
+                if (clampedIntegerAddition.Length >= result.Length / 2)
+                    break;
+            }
+
+            for (int i = result.Length / 2, j = clampedIntegerAddition.Length - 1; i > 0 && j >= 0; i--, j--)
+            {
+                result.Set(i, clampedIntegerAddition[j] != '0');
+            }
+
+            return result;
+        }
+
+        public static BitAddResult BitAdditionTable(bool a, bool b, bool c)
+        {
+            if (a && b && c)
+                return new BitAddResult(true, true);
+
+            if ((!a && b && c) || (a && !b && c) || (a && b && !c))
+                return new BitAddResult(true, false);
+
+            if (a || b || c)
+                return new BitAddResult(false, true);
+
+            return new BitAddResult(false, false);
+        }
+
+        public struct BitAddResult
+        {
+            private bool _value;
+            private bool _carry;
+
+            #region Public API
+
+            public bool Value
+            {
+                get => _value; 
+                set => _value = value;
+            }
+
+            public bool Carry
+            {
+                get => _carry;
+                set => _carry = value;
+            }
+
+            #endregion
+
+            public BitAddResult(bool carry, bool value)
+            {
+                _value = value;
+                _carry = carry;
+            }
+        }
+
+        #endregion
     }
 
 }

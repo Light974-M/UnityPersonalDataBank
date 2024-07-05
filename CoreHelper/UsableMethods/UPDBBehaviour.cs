@@ -1,10 +1,10 @@
-using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
-using System.Security.Policy;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Rendering;
 using UPDB.CoreHelper.UsableMethods.Structures;
-using static UnityEngine.UI.Image;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -1676,12 +1676,12 @@ namespace UPDB.CoreHelper.UsableMethods
             {
                 FindPerpToVecs(axisOfB, axisTwoOfB, Axis.X, Axis.Y, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
             }
-            if(givenAxis == Axis.Y)
+            if (givenAxis == Axis.Y)
             {
                 FindPerpToVecs(axisOfB, axisTwoOfB, Axis.Y, Axis.X, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
 
             }
-            if(givenAxis == Axis.Z)
+            if (givenAxis == Axis.Z)
             {
                 FindPerpToVecs(axisOfB, axisTwoOfB, Axis.Z, Axis.Y, ref xAxisOfB, ref yAxisOfB, ref zAxisOfB);
 
@@ -1691,7 +1691,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Debug.DrawRay(Vector3.zero, xAxisOfB);
             Debug.DrawRay(Vector3.zero, yAxisOfB);
             //Debug.DrawRay(Vector3.zero, zAxisOfB);
-            
+
             Vector3 xAxisNormalized = xAxisOfB.normalized;
             Vector3 yAxisNormalized = yAxisOfB.normalized;
             Vector3 zAxisNormalized = zAxisOfB.normalized;
@@ -3304,5 +3304,279 @@ namespace UPDB.CoreHelper.UsableMethods
         #endregion
 
         #endregion
+
+        #region Binary Conversions
+
+        public static float BinaryToDecimal(string input)
+        {
+            string allocatedMemoryKey = "32bit";
+
+            if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
+            {
+                Debug.LogError($"error : no value named {allocatedMemoryKey} found in {nameof(DictionaryLib.BitAllocatedMemory)}");
+                return 0;
+            }
+
+            int allocatedMemory = (int)allocatedMemoryTry;
+
+            //get a BitArray out of binary input
+            BitArray inputRaw = BinaryInputToBitArray(input, allocatedMemoryKey);
+
+            float output = 0f;
+
+            for (int i = 1; i < inputRaw.Length; i++)
+            {
+                if (!inputRaw[i])
+                    continue;
+
+                int e = (allocatedMemory / 2) - i;
+
+                output += Mathf.Pow(2f, e);
+            }
+
+            return output;
+        }
+
+        public static BitArray BinaryInputToBitArray(string input, string allocatedMemoryKey)
+        {
+            if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
+            {
+                Debug.LogError($"error : no value named {allocatedMemoryKey} found in {nameof(DictionaryLib.BitAllocatedMemory)}");
+                return new BitArray(0, false);
+            }
+
+            int allocatedMemory = (int)allocatedMemoryTry;
+
+            BitArray convertedInput = new BitArray(allocatedMemory, false);
+
+            if (input == string.Empty)
+                return convertedInput;
+
+            bool isNegative = input[0] == DictionaryLib.BaseNumerationAPIReader["Substractor"];
+            convertedInput.Set(0, isNegative);
+            string normalizedInput = input;
+
+            //get positive or negative informations and remove the - symbol
+            if (isNegative)
+            {
+                normalizedInput = string.Empty;
+
+                for (int i = 1; i < input.Length; i++)
+                    normalizedInput += input[i];
+            }
+
+            string integerPart = string.Empty;
+            string decimalPart = string.Empty;
+
+            //isolate integer part
+            int j = 0;
+
+            for (int i = 0; i < normalizedInput.Length; i++)
+            {
+                if (normalizedInput[i] == DictionaryLib.BaseNumerationAPIReader["Separator"] || normalizedInput[i] == DictionaryLib.BaseNumerationAPIReader["AlternativeSeparator"])
+                {
+                    if (i == 0)
+                        integerPart += DictionaryLib.BaseNumerationCaractersList.KeyByValue(0);
+
+                    j = i + 1;
+                    break;
+                }
+
+                integerPart += normalizedInput[i];
+                j = i + 1;
+            }
+
+            //isolate decimal part(fraction part)
+            int init = j;
+            for (j = init; j < normalizedInput.Length; j++)
+            {
+                decimalPart += normalizedInput[j];
+
+                if (decimalPart.Length >= (allocatedMemory / 2) - 1)
+                    break;
+            }
+
+            //remove useless 0 of integer part
+            string shortenIntegerPart = string.Empty;
+
+            for (int i = 0; i < integerPart.Length; i++)
+            {
+                if (ConvertCharToBaseNumerationValue(integerPart[i]) != 0 || i == integerPart.Length - 1)
+                {
+                    shortenIntegerPart += integerPart[i];
+                    continue;
+                }
+
+                if (shortenIntegerPart != string.Empty)
+                    shortenIntegerPart += integerPart[i];
+
+                if (shortenIntegerPart.Length >= allocatedMemory / 2)
+                    break;
+            }
+
+            //remove useless 0 of decimal part
+            string invertedShortenDecimalPart = string.Empty;
+
+            for (int i = decimalPart.Length - 1; i >= 0; i--)
+            {
+                if (ConvertCharToBaseNumerationValue(decimalPart[i]) != 0)
+                {
+                    invertedShortenDecimalPart += decimalPart[i];
+                    continue;
+                }
+
+                if (invertedShortenDecimalPart != string.Empty)
+                    invertedShortenDecimalPart += decimalPart[i];
+            }
+
+            string shortenDecimalPart = string.Empty;
+
+            for (int i = invertedShortenDecimalPart.Length - 1; i >= 0; i--)
+                shortenDecimalPart += invertedShortenDecimalPart[i];
+
+
+            //add integer part to bitArray
+            for (int i = allocatedMemory / 2; i > 0; i--)
+            {
+                int integerPartIndex = (i - 1) - ((allocatedMemory / 2) - shortenIntegerPart.Length);
+
+                if (integerPartIndex < 0)
+                    break;
+
+                convertedInput.Set(i, ConvertCharToBaseNumerationValue(shortenIntegerPart[integerPartIndex]) != 0);
+            }
+
+            //add decimal part to bitArray
+            for (int i = (allocatedMemory / 2) + 1; i < convertedInput.Length; i++)
+            {
+                int decimalPartIndex = i - ((allocatedMemory / 2) + 1);
+
+                if (decimalPartIndex >= shortenDecimalPart.Length)
+                    break;
+
+                convertedInput.Set(i, ConvertCharToBaseNumerationValue(shortenDecimalPart[decimalPartIndex]) != 0);
+            }
+
+            return convertedInput;
+        }
+
+        public static string DecimalToBinary(float input)
+        {
+            string allocatedMemoryKey = "32bit";
+
+            BitArray bitArrayOutput = DecimalInputToBitArray(input, allocatedMemoryKey);
+
+            string output = BitArrayToBinaryOutput(bitArrayOutput);
+
+            return output;
+        }
+
+        public static BitArray DecimalInputToBitArray(float input, string allocatedMemoryKey)
+        {
+            if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
+            {
+                Debug.LogError($"error : no value named {allocatedMemoryKey} found in {nameof(DictionaryLib.BitAllocatedMemory)}");
+                return new BitArray(0, false);
+            }
+
+            int allocatedMemory = (int)allocatedMemoryTry;
+
+            BitArray convertedInput = new BitArray(allocatedMemory, false);
+
+            //set value of negative/positive in bitArray
+            convertedInput.Set(0, input < 0);
+            
+            //initialize values
+            float normalizedInput = Mathf.Abs(input);
+            int integerPart = Mathf.FloorToInt(normalizedInput);
+            float decimalPart = normalizedInput - integerPart;
+
+            //get binary value of integer part
+            string reversedIntegerValue = string.Empty;
+
+            do
+            {
+                reversedIntegerValue += DictionaryLib.BaseNumerationCaractersList.KeyByValue(integerPart % 2);
+                integerPart = integerPart / 2;
+            } while (integerPart > 0);
+
+            string formatedIntegerValue = string.Empty;
+
+            for (int i = reversedIntegerValue.Length - 1; i >= 0; i--)
+            {
+                formatedIntegerValue += reversedIntegerValue[i];
+
+                if (formatedIntegerValue.Length >= allocatedMemory / 2)
+                    break;
+            }
+
+            //add integer part to BitArray
+            for (int i = allocatedMemory / 2, j = formatedIntegerValue.Length - 1; i > 0 && j >= 0; i--, j--)
+            {
+                convertedInput.Set(i, ConvertCharToBaseNumerationValue(formatedIntegerValue[j]) != 0);
+            }
+
+            for (int i = (allocatedMemory / 2) + 1; i < convertedInput.Length; i++)
+            {
+                decimalPart *= 2f;
+                int flooredValue = Mathf.FloorToInt(decimalPart);
+                decimalPart -= flooredValue;
+
+                convertedInput.Set(i, flooredValue != 0);
+            }
+
+            return convertedInput;
+        }
+
+        public static string BitArrayToBinaryOutput(BitArray input)
+        {
+            if (!UPDBMath.IsPowerOf(input.Length, 2))
+            {
+                Debug.LogError("error : given BitArray doesn't fit the size for fixed decimal render, please insert an array with a length that is a power of 2");
+                return string.Empty;
+            }
+
+            string reversedOutput = string.Empty;
+
+            for (int i = input.Length - 1; i > 0; i--)
+            {
+                if (i == (input.Length / 2))
+                    reversedOutput += DictionaryLib.BaseNumerationAPIReader["Separator"];
+
+                if (!input[i] && reversedOutput == string.Empty)
+                    continue;
+
+                reversedOutput += input[i] ? DictionaryLib.BaseNumerationCaractersList.KeyByValue(1) : DictionaryLib.BaseNumerationCaractersList.KeyByValue(0);
+
+            }
+
+            string output = string.Empty;
+            int endIndex = reversedOutput[0] == DictionaryLib.BaseNumerationAPIReader["Separator"] ? 1 : 0;
+
+            for (int i = reversedOutput.Length - 1; i >= endIndex; i--)
+            {
+                if (i > endIndex && ConvertCharToBaseNumerationValue(reversedOutput[i]) == 0 && output == string.Empty)
+                    continue;
+
+                output += reversedOutput[i];
+            }
+
+            string substractor = input[0] ? DictionaryLib.BaseNumerationAPIReader["Substractor"].ToString() : string.Empty;
+            output = substractor + output;
+
+            return output;
+        }
+
+        public static int ConvertCharToBaseNumerationValue(char input)
+        {
+            if (DictionaryLib.BaseNumerationCaractersList.TryGetValue(input, out int output))
+                return output;
+
+            return -1;
+        }
+
+        #endregion
+
+        
     }
 }
