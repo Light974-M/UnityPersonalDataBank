@@ -2554,6 +2554,41 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
+        /// draw a simple arrow going towards direction
+        /// </summary>
+        /// <param name="origin">start pos</param>
+        /// <param name="direction">direction of arrow</param>
+        /// <param name="color">color of arrow</param>
+        /// <param name="arrowSize">between 0 and 1</param>
+        public static void DebugDrawArrow(Vector3 origin, Vector3 direction, Color color, float arrowSize)
+        {
+            arrowSize = direction.magnitude * arrowSize;
+            Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector3 posBase = origin + dirBase;
+            Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
+            Vector3 perpToPerpToBase = UPDBMath.FindThirdAxis(dirBase, perpToBase, true).normalized * (arrowSize * 0.25f);
+            Vector3 crossMinPosA = posBase - perpToBase;
+            Vector3 crossMaxPosA = posBase + perpToBase;
+            Vector3 crossMinPosB = posBase - perpToPerpToBase;
+            Vector3 crossMaxPosB = posBase + perpToPerpToBase;
+
+            //draw base
+            Debug.DrawRay(origin, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPosA, crossMinPosB, color);
+            Debug.DrawLine(crossMaxPosA, crossMaxPosB, color);
+            Debug.DrawLine(crossMinPosB, crossMaxPosA, color);
+            Debug.DrawLine(crossMaxPosB, crossMinPosA, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPosA, origin + direction, color);
+            Debug.DrawLine(crossMaxPosA, origin + direction, color);
+            Debug.DrawLine(crossMinPosB, origin + direction, color);
+            Debug.DrawLine(crossMaxPosB, origin + direction, color);
+        }
+
+        /// <summary>
         /// draw an arrow from point start to end
         /// </summary>
         /// <param name="start">starting point</param>
@@ -2597,6 +2632,42 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             Vector3 direction = end - start;
             float arrowSize = direction.magnitude / 10;
+            Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector3 posBase = start + dirBase;
+            Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
+            Vector3 perpToPerpToBase = UPDBMath.FindThirdAxis(dirBase, perpToBase, true).normalized * (arrowSize * 0.25f);
+            Vector3 crossMinPosA = posBase - perpToBase;
+            Vector3 crossMaxPosA = posBase + perpToBase;
+            Vector3 crossMinPosB = posBase - perpToPerpToBase;
+            Vector3 crossMaxPosB = posBase + perpToPerpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPosA, crossMinPosB, color);
+            Debug.DrawLine(crossMaxPosA, crossMaxPosB, color);
+            Debug.DrawLine(crossMinPosB, crossMaxPosA, color);
+            Debug.DrawLine(crossMaxPosB, crossMinPosA, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPosA, end, color);
+            Debug.DrawLine(crossMaxPosA, end, color);
+            Debug.DrawLine(crossMinPosB, end, color);
+            Debug.DrawLine(crossMaxPosB, end, color);
+        }
+
+        /// <summary>
+        /// draw an arrow from point start to end
+        /// </summary>
+        /// <param name="start">starting point</param>
+        /// <param name="end">end point</param>
+        /// <param name="color">color of arrow</param>
+        /// <param name="arrowSize">between 0 and 1</param>
+        public static void DebugDrawArrowLine(Vector3 start, Vector3 end, Color color, float arrowSize)
+        {
+            Vector3 direction = end - start;
+            arrowSize = direction.magnitude * arrowSize;
             Vector3 dirBase = direction.normalized * (direction.magnitude - arrowSize);
             Vector3 posBase = start + dirBase;
             Vector3 perpToBase = UPDBMath.FindAnyPerpendicularVectorUpType(dirBase).normalized * (arrowSize * 0.25f);
@@ -2676,6 +2747,34 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
+        /// draw a simple arrow going towards direction, in 2D
+        /// </summary>
+        /// <param name="origin">start pos</param>
+        /// <param name="direction">direction of arrow</param>
+        /// <param name="color">color of arrow</param>
+        /// <param name="arrowSize">between 0 and 1</param>
+        public static void DebugDrawArrow(Vector2 origin, Vector2 direction, Color color, float arrowSize)
+        {
+            arrowSize = direction.magnitude * arrowSize;
+            Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector2 posBase = origin + dirBase;
+            Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
+            Vector2 crossMinPos = posBase - perpToBase;
+            Vector2 crossMaxPos = posBase + perpToBase;
+
+            //draw base
+            Debug.DrawRay(origin, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPos, crossMaxPos, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPos, origin + direction, color);
+            Debug.DrawLine(crossMaxPos, origin + direction, color);
+
+        }
+
+        /// <summary>
         /// draw an arrow from point start to end, in 2D
         /// </summary>
         /// <param name="start">start pos</param>
@@ -2712,6 +2811,35 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             Vector2 direction = end - start;
             float arrowSize = direction.magnitude / 10;
+            Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
+            Vector2 posBase = start + dirBase;
+            Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
+            Vector2 crossMinPos = posBase - perpToBase;
+            Vector2 crossMaxPos = posBase + perpToBase;
+
+            //draw base
+            Debug.DrawRay(start, dirBase, color);
+
+            //draw cross borders
+            Debug.DrawLine(crossMinPos, crossMaxPos, color);
+
+            //draw pin
+            Debug.DrawLine(crossMinPos, end, color);
+            Debug.DrawLine(crossMaxPos, end, color);
+
+        }
+
+        /// <summary>
+        /// draw an arrow from point start to end, in 2D
+        /// </summary>
+        /// <param name="start">start pos</param>
+        /// <param name="end">end pos</param>
+        /// <param name="color">color of arrow</param>
+        /// <param name="arrowSize">between 0 and 1</param>
+        public static void DebugDrawArrowLine(Vector2 start, Vector2 end, Color color, float arrowSize)
+        {
+            Vector2 direction = end - start;
+            arrowSize = direction.magnitude * arrowSize;
             Vector2 dirBase = direction.normalized * (direction.magnitude - arrowSize);
             Vector2 posBase = start + dirBase;
             Vector2 perpToBase = UPDBMath.FindRightPerpendicularVector(direction).normalized * (arrowSize * 0.25f);
@@ -3300,6 +3428,173 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region DrawCube
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="right">right face of cube direction</param>
+        /// <param name="up">up face of cube direction</param>
+        /// <param name="forward">forward face of cube direction</param>
+        /// <param name="color">color of drawn cube</param>
+        /// <param name="sideWireOne">draw first side wires</param>
+        /// <param name="sideWireTwo">draw second side wires</param>
+        /// <param name="internalWireOne">draw first inside the cube wire</param>
+        /// <param name="internalWireTwo">draw second inside the cube wire</param>
+        /// <param name="internalWireThree">draw third inside the cube wire</param>
+        /// <param name="internalWireFour">draw fourth inside the cube wire</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward, Color color, bool sideWireOne, bool sideWireTwo, bool internalWireOne, bool internalWireTwo, bool internalWireThree, bool internalWireFour)
+        {
+            Vector3 halfScale = scale / 2;
+
+            Vector3 localPointA = new Vector3(-halfScale.x, -halfScale.y, -halfScale.z);
+            Vector3 localPointB = new Vector3(+halfScale.x, -halfScale.y, -halfScale.z);
+            Vector3 localPointC = new Vector3(-halfScale.x, -halfScale.y, +halfScale.z);
+            Vector3 localPointD = new Vector3(+halfScale.x, -halfScale.y, +halfScale.z);
+            Vector3 localPointE = new Vector3(-halfScale.x, +halfScale.y, -halfScale.z);
+            Vector3 localPointF = new Vector3(+halfScale.x, +halfScale.y, -halfScale.z);
+            Vector3 localPointG = new Vector3(-halfScale.x, +halfScale.y, +halfScale.z);
+            Vector3 localPointH = new Vector3(+halfScale.x, +halfScale.y, +halfScale.z);
+
+            Vector3 globalPointA = Point3LocalToWorld(localPointA, position, right, up, forward);
+            Vector3 globalPointB = Point3LocalToWorld(localPointB, position, right, up, forward);
+            Vector3 globalPointC = Point3LocalToWorld(localPointC, position, right, up, forward);
+            Vector3 globalPointD = Point3LocalToWorld(localPointD, position, right, up, forward);
+            Vector3 globalPointE = Point3LocalToWorld(localPointE, position, right, up, forward);
+            Vector3 globalPointF = Point3LocalToWorld(localPointF, position, right, up, forward);
+            Vector3 globalPointG = Point3LocalToWorld(localPointG, position, right, up, forward);
+            Vector3 globalPointH = Point3LocalToWorld(localPointH, position, right, up, forward);
+
+            Debug.DrawLine(globalPointA, globalPointB, color);
+            Debug.DrawLine(globalPointA, globalPointC, color);
+            Debug.DrawLine(globalPointB, globalPointD, color);
+            Debug.DrawLine(globalPointC, globalPointD, color);
+            Debug.DrawLine(globalPointE, globalPointF, color);
+            Debug.DrawLine(globalPointE, globalPointG, color);
+            Debug.DrawLine(globalPointF, globalPointH, color);
+            Debug.DrawLine(globalPointG, globalPointH, color);
+            Debug.DrawLine(globalPointA, globalPointE, color);
+            Debug.DrawLine(globalPointB, globalPointF, color);
+            Debug.DrawLine(globalPointC, globalPointG, color);
+            Debug.DrawLine(globalPointD, globalPointH, color);
+
+            if (sideWireOne)
+            {
+                Debug.DrawLine(globalPointB, globalPointC, color);
+                Debug.DrawLine(globalPointE, globalPointH, color);
+                Debug.DrawLine(globalPointB, globalPointH, color);
+                Debug.DrawLine(globalPointC, globalPointE, color);
+                Debug.DrawLine(globalPointA, globalPointF, color);
+                Debug.DrawLine(globalPointD, globalPointG, color);
+            }
+
+            if (sideWireTwo)
+            {
+                Debug.DrawLine(globalPointA, globalPointD, color);
+                Debug.DrawLine(globalPointF, globalPointG, color);
+                Debug.DrawLine(globalPointF, globalPointD, color);
+                Debug.DrawLine(globalPointA, globalPointG, color);
+                Debug.DrawLine(globalPointB, globalPointE, color);
+                Debug.DrawLine(globalPointC, globalPointH, color);
+            }
+
+            if (internalWireOne)
+                Debug.DrawLine(globalPointA, globalPointH, color);
+
+            if (internalWireTwo)
+                Debug.DrawLine(globalPointB, globalPointG, color);
+
+            if (internalWireThree)
+                Debug.DrawLine(globalPointC, globalPointF, color);
+
+            if (internalWireFour)
+                Debug.DrawLine(globalPointD, globalPointE, color);
+        }
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="right">right face of cube direction</param>
+        /// <param name="up">up face of cube direction</param>
+        /// <param name="forward">forward face of cube direction</param>
+        /// <param name="color">color of drawn cube</param>
+        /// <param name="sideWireOne">draw first side wires</param>
+        /// <param name="sideWireTwo">draw second side wires</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward, Color color, bool sideWireOne, bool sideWireTwo)
+        {
+            DebugDrawCube(position, scale, right, up, forward, color, sideWireOne, sideWireTwo, false, false, false, false);
+        }
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="right">right face of cube direction</param>
+        /// <param name="up">up face of cube direction</param>
+        /// <param name="forward">forward face of cube direction</param>
+        /// <param name="color">color of drawn cube</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward, Color color)
+        {
+            DebugDrawCube(position, scale, right, up, forward, color, false, false, false, false, false, false);
+        }
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="right">right face of cube direction</param>
+        /// <param name="up">up face of cube direction</param>
+        /// <param name="forward">forward face of cube direction</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward)
+        {
+            DebugDrawCube(position, scale, right, up, forward, Color.white, false, false, false, false, false, false);
+        }
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="spaceRefTransform">transform that gives cube direction</param>
+        /// <param name="sideWireOne">draw first side wires</param>
+        /// <param name="sideWireTwo">draw second side wires</param>
+        /// <param name="color">color of drawn cube</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Transform spaceRefTransform, Color color, bool sideWireOne, bool sideWireTwo)
+        {
+            DebugDrawCube(position, scale, spaceRefTransform.right, spaceRefTransform.up, spaceRefTransform.forward, color, sideWireOne, sideWireTwo, false, false, false, false);
+        }
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="spaceRefTransform">transform that gives cube direction</param>
+        /// <param name="color">color of drawn cube</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Transform spaceRefTransform, Color color)
+        {
+            DebugDrawCube(position, scale, spaceRefTransform.right, spaceRefTransform.up, spaceRefTransform.forward, color, false, false, false, false, false, false);
+        }
+
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="spaceRefTransform">transform that gives cube direction</param>
+        public static void DebugDrawCube(Vector3 position, Vector3 scale, Transform spaceRefTransform)
+        {
+            DebugDrawCube(position, scale, spaceRefTransform.right, spaceRefTransform.up, spaceRefTransform.forward, Color.white, false, false, false, false, false, false);
+        }
+
+        #endregion
+
         #endregion
 
         #region Binary Conversions
@@ -3482,7 +3777,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             //set value of negative/positive in bitArray
             convertedInput.Set(0, input < 0);
-            
+
             //initialize values
             float normalizedInput = Mathf.Abs(input);
             int integerPart = Mathf.FloorToInt(normalizedInput);
@@ -3574,6 +3869,46 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
-        
+        #region RayIntersectionCalculations
+
+        public static bool FindIntersectionWithHeight(Vector3 origin, Vector3 direction, float h, out float t)
+        {
+            t = 0f;
+            if (direction.y == 0)
+            {
+                // Si la direction en y est nulle, la ligne est parallèle au plan y = h
+                if (origin.y == h)
+                {
+                    // La ligne est dans le plan y = h, il y a une infinité de solutions
+                    t = 0f; // t peut être n'importe quel nombre
+                    return true;
+                }
+                else
+                {
+                    // La ligne ne traverse jamais y = h
+                    return false;
+                }
+            }
+
+            // Calculer t
+            t = (h - origin.y) / direction.y;
+            return true;
+        }
+
+        public static Vector3 GetIntersectionPointWithHeight(Vector3 origin, Vector3 direction, float t)
+        {
+            return origin + t * direction;
+        }
+
+        public static Vector3 GetPointOfVectorWithHeight(Vector3 origin, Vector3 direction, float height)
+        {
+            if (FindIntersectionWithHeight(origin, direction, height, out float t))
+                return GetIntersectionPointWithHeight(origin, direction, t);
+
+            Debug.LogWarning("No intersection found.");
+            return Vector3.zero;
+        }
+
+        #endregion
     }
 }

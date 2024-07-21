@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7236221506643340317}
   m_Layer: 0
-  m_Name: MazeTilePlaceHolder1
+  m_Name: CircularMazePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -10,6 +10,14 @@ namespace UPDB.CoreHelper.UsableMethods
         Y,
         Z,
         W,
+        XY,
+        YZ,
+        XZ,
+        XYZ,
+        XW,
+        YW,
+        ZW,
+        XYZW,
     }
 
     public enum Direction

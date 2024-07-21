@@ -149,6 +149,112 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
             return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
         }
 
+        /// <summary>
+        /// add a vector and a number for the given axis
+        /// </summary>
+        /// <param name="vecToAdd">the vector3 to add with float</param>
+        /// <param name="toAdd">float parameter of number to add</param>
+        /// <param name="axisToAdd">axis wich vector3 is gonna add with float</param>
+        /// <returns></returns>
+        public static Vector3 VecAndFloatAdd(Vector3 vecToAdd, float toAdd, Axis axisToAdd)
+        {
+            if(axisToAdd == Axis.X)
+            {
+                vecToAdd.x += toAdd;
+                return vecToAdd;
+            }
+            if (axisToAdd == Axis.Y)
+            {
+                vecToAdd.y += toAdd;
+                return vecToAdd;
+            }
+            if (axisToAdd == Axis.Z)
+            {
+                vecToAdd.z += toAdd;
+                return vecToAdd;
+            }
+            if (axisToAdd == Axis.XY)
+            {
+                vecToAdd.x += toAdd;
+                vecToAdd.y += toAdd;
+                return vecToAdd;
+            }
+            if (axisToAdd == Axis.YZ)
+            {
+                vecToAdd.y += toAdd;
+                vecToAdd.z += toAdd;
+                return vecToAdd;
+            }
+            if (axisToAdd == Axis.XZ)
+            {
+                vecToAdd.x += toAdd;
+                vecToAdd.z += toAdd;
+                return vecToAdd;
+            }
+            if (axisToAdd == Axis.XYZ)
+            {
+                vecToAdd.x += toAdd;
+                vecToAdd.y += toAdd;
+                vecToAdd.z += toAdd;
+                return vecToAdd;
+            }
+
+            return vecToAdd;
+        }
+
+        /// <summary>
+        /// add a vector and a number for the given axis
+        /// </summary>
+        /// <param name="vecToRemove">the vector3 to add with float</param>
+        /// <param name="toRemove">float parameter of number to add</param>
+        /// <param name="axisToRemove">axis wich vector3 is gonna add with float</param>
+        /// <returns></returns>
+        public static Vector3 VecAndFloatRemove(Vector3 vecToRemove, float toRemove, Axis axisToRemove)
+        {
+            if (axisToRemove == Axis.X)
+            {
+                vecToRemove.x -= toRemove;
+                return vecToRemove;
+            }
+            if (axisToRemove == Axis.Y)
+            {
+                vecToRemove.y -= toRemove;
+                return vecToRemove;
+            }
+            if (axisToRemove == Axis.Z)
+            {
+                vecToRemove.z -= toRemove;
+                return vecToRemove;
+            }
+            if (axisToRemove == Axis.XY)
+            {
+                vecToRemove.x -= toRemove;
+                vecToRemove.y -= toRemove;
+                return vecToRemove;
+            }
+            if (axisToRemove == Axis.YZ)
+            {
+                vecToRemove.y -= toRemove;
+                vecToRemove.z -= toRemove;
+                return vecToRemove;
+            }
+            if (axisToRemove == Axis.XZ)
+            {
+                vecToRemove.x -= toRemove;
+                vecToRemove.z -= toRemove;
+                return vecToRemove;
+            }
+            if (axisToRemove == Axis.XYZ)
+            {
+                vecToRemove.x -= toRemove;
+                vecToRemove.y -= toRemove;
+                vecToRemove.z -= toRemove;
+                return vecToRemove;
+            }
+
+            return vecToRemove;
+        }
+
         public static float ToDegrees(float radianValue)
         {
             return (radianValue / Mathf.PI) * 180;
