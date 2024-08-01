@@ -1,5 +1,5 @@
 using UnityEngine;
-using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CoreHelper.CustomScriptOrderMethods
 {

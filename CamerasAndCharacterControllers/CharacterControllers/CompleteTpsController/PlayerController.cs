@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 #endif
 using UPDB.CoreHelper;
-using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsController
 {

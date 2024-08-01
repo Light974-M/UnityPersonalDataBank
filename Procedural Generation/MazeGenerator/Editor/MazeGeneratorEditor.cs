@@ -132,11 +132,22 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
                 GUIContent proceduralMeshGenerationContent = new GUIContent("Procedural Mesh Generation", "if enable, use a generative system for mesh instead of using prefab objects");
                 myTarget.ProceduralMeshGeneration = EditorGUILayout.Toggle(proceduralMeshGenerationContent, myTarget.ProceduralMeshGeneration);
 
-                GUIContent wallPrefabContent = new GUIContent("Wall Prefab", "use a prefab to build wall(if procedural mesh is disabled)");
-                myTarget.WallPrefab = (GameObject)EditorGUILayout.ObjectField(wallPrefabContent, myTarget.WallPrefab, typeof(GameObject), true);
+                if (myTarget.ProceduralMeshGeneration)
+                {
+                    GUIContent proceduralMeshContent = new GUIContent("procedural Mesh", "store the generated mesh of procedural generation");
+                    myTarget.ProceduralMesh = (Mesh)EditorGUILayout.ObjectField(proceduralMeshContent, myTarget.ProceduralMesh, typeof(Mesh), true);
 
-                GUIContent wallBorderPrefabContent = new GUIContent("Wall Border Prefab", "use a prefab to build wall borders(if procedural mesh is disabled)");
-                myTarget.WallBorderPrefab = (GameObject)EditorGUILayout.ObjectField(wallBorderPrefabContent, myTarget.WallBorderPrefab, typeof(GameObject), true);
+                    GUIContent proceduralMeshMaterialContent = new GUIContent("procedural Mesh Material", "material used for each section of maze");
+                    myTarget.ProceduralMeshMaterial = (Material)EditorGUILayout.ObjectField(proceduralMeshMaterialContent, myTarget.ProceduralMeshMaterial, typeof(Material), true);
+                }
+                else
+                {
+                    GUIContent wallPrefabContent = new GUIContent("Wall Prefab", "use a prefab to build wall(if procedural mesh is disabled)");
+                    myTarget.WallPrefab = (GameObject)EditorGUILayout.ObjectField(wallPrefabContent, myTarget.WallPrefab, typeof(GameObject), true);
+
+                    GUIContent wallBorderPrefabContent = new GUIContent("Wall Border Prefab", "use a prefab to build wall borders(if procedural mesh is disabled)");
+                    myTarget.WallBorderPrefab = (GameObject)EditorGUILayout.ObjectField(wallBorderPrefabContent, myTarget.WallBorderPrefab, typeof(GameObject), true);
+                }
             }
             EditorGUILayout.EndVertical();
 

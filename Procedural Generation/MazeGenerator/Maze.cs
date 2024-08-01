@@ -176,11 +176,7 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
             int originY = UnityEngine.Random.Range(0, _height);
 
             _rootOfMaze = _cellsArray[originX, originY];
-            //_rootOfMaze.Propagate();
             _generationUpdater.ToCallCell = _rootOfMaze;
-
-            //if (_linkedMaze.GenerationUpdater.ToCallCell != null)
-            //    _linkedMaze.OnMazeGenerationUpdateRequest();
 
             if (_generationUpdater.UpdateType == GenerationUpdateType.ManualUpdate)
                 return;

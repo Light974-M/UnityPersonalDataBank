@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UPDB.CoreHelper.UsableMethods.Structures;
+using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -180,6 +180,16 @@ namespace UPDB.CoreHelper.UsableMethods
             }
 
             return matchList.ToArray();
+        }
+
+        public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
+        {
+            return Quaternion.Inverse(parentRotation) * worldRotation;
+        }
+
+        public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
+        {
+            return localRotation * parentRotation;
         }
 
         #region AutoLerp
@@ -3908,6 +3918,126 @@ namespace UPDB.CoreHelper.UsableMethods
             Debug.LogWarning("No intersection found.");
             return Vector3.zero;
         }
+
+        #endregion
+
+        #region Procedural Mesh Drawing
+
+        #region No Saved Vertices
+
+        public static void CreateMeshTriangle(ref List<Vector3> vertices, ref List<int> triangles, Vector3 pos1, Vector3 pos2, Vector3 pos3)
+        {
+            vertices.Add(pos1);
+            vertices.Add(pos2);
+            vertices.Add(pos3);
+            triangles.Add(vertices.Count - 3);
+            triangles.Add(vertices.Count - 2);
+            triangles.Add(vertices.Count - 1);
+        }
+
+        public static void AddMeshTriangleOneVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, int linkedPos1, Vector3 pos2, Vector3 pos3)
+        {
+            triangles.Add(linkedPos1);
+
+            vertices.Add(pos2);
+            vertices.Add(pos3);
+
+            triangles.Add(vertices.Count - 2);
+            triangles.Add(vertices.Count - 1);
+        }
+
+        public static void AddMeshTriangleTwoVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, int linkedPos1, int linkedPos2, Vector3 pos3)
+        {
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos2);
+
+            vertices.Add(pos3);
+
+            triangles.Add(vertices.Count - 1);
+        }
+
+        public static void AddMeshTriangleThreeVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, int linkedPos1, int linkedPos2, int linkedPos3)
+        {
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos2);
+            triangles.Add(linkedPos3);
+        }
+
+        public static void CreateQuad(ref List<Vector3> vertices, ref List<int> triangles, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
+        {
+            CreateMeshTriangle(ref vertices, ref triangles, pos1, pos2, pos3);
+            AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, vertices.Count - 1, vertices.Count - 2, pos4);
+        }
+
+        #endregion
+
+        #region Vertices Library Save
+
+        public static void CreateMeshTriangle(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, Vector3 pos1, Vector3 pos2, Vector3 pos3)
+        {
+            vertices.Add(pos1);
+            vertices.Add(pos2);
+            vertices.Add(pos3);
+            triangles.Add(vertices.Count - 3);
+            triangles.Add(vertices.Count - 2);
+            triangles.Add(vertices.Count - 1);
+
+            if (verticesLibrary == null)
+                verticesLibrary = new Dictionary<Vector3, int>();
+
+            verticesLibrary.Add(pos1, vertices.Count - 3);
+            verticesLibrary.Add(pos2, vertices.Count - 2);
+            verticesLibrary.Add(pos3, vertices.Count - 1);
+        }
+
+        public static void AddMeshTriangleOneVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, Vector3 pos2, Vector3 pos3)
+        {
+            triangles.Add(linkedPos1);
+
+            vertices.Add(pos2);
+            vertices.Add(pos3);
+
+            triangles.Add(vertices.Count - 2);
+            triangles.Add(vertices.Count - 1);
+
+            if (verticesLibrary == null)
+                verticesLibrary = new Dictionary<Vector3, int>();
+
+            verticesLibrary.Add(pos2, vertices.Count - 2);
+            verticesLibrary.Add(pos3, vertices.Count - 1);
+        }
+
+        public static void AddMeshTriangleTwoVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, int linkedPos2, Vector3 pos3)
+        {
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos2);
+
+            vertices.Add(pos3);
+
+            triangles.Add(vertices.Count - 1);
+
+            if (verticesLibrary == null)
+                verticesLibrary = new Dictionary<Vector3, int>();
+
+            verticesLibrary.Add(pos3, vertices.Count - 1);
+        }
+
+        public static void CreateQuad(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
+        {
+            CreateMeshTriangle(ref vertices, ref triangles, ref verticesLibrary, pos1, pos2, pos3);
+            AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, ref verticesLibrary, vertices.Count - 1, vertices.Count - 2, pos4);
+        }
+
+        public static void AddQuadOneVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
+        {
+
+        }
+
+        //public static void AddQuadTwoVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, int linkedPos2, Vector3 pos3, Vector3 pos4)
+        //{
+
+        //} 
+        #endregion
 
         #endregion
     }

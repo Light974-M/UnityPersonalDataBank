@@ -32,6 +32,12 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
         [SerializeField]
         private GameObject _wallBorderPrefab;
 
+        [SerializeField]
+        private Mesh _proceduralMesh;
+
+        [SerializeField]
+        private Material _proceduralMeshMaterial;
+
 
         [Header("Debug parameters")]
         [SerializeField]
@@ -277,6 +283,18 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
         {
             get { return _wallBorderPrefab; }
             set { _wallBorderPrefab = value; }
+        }
+
+        public Mesh ProceduralMesh
+        {
+            get { return _proceduralMesh; }
+            set { _proceduralMesh = value; }
+        }
+
+        public Material ProceduralMeshMaterial
+        {
+            get { return _proceduralMeshMaterial; }
+            set { _proceduralMeshMaterial = value; }
         }
 
         #endregion
@@ -843,15 +861,66 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
                 OnPrefabMeshBuild();
         }
 
+
+        /********************************************MAZE PROCEDURAL MESH BUILD METHODS***********************************************/
+
         private void OnProceduralMeshBuild()
         {
+            ClearGameObjects();
 
+            MeshFilter filter = null;
+            MeshRenderer renderer = null;
+
+            if (!MazeObject.TryGetComponent(out filter))
+                filter = MazeObject.AddComponent<MeshFilter>();
+
+            if (!MazeObject.TryGetComponent(out renderer))
+                renderer = MazeObject.AddComponent<MeshRenderer>();
+
+            renderer.material = _proceduralMeshMaterial;
+
+            _proceduralMesh = new Mesh();
+            _proceduralMesh.name = "Procedural Mesh";
+
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> triangles = new List<int>();
+            List<Vector3> normals = new List<Vector3>();
+            List<Color> colors = new List<Color>();
+
+            Dictionary<Vector3, int> verticesLibrary = new Dictionary<Vector3, int>();
+
+            Vector3 a = Vector3.zero;
+            Vector3 b = Vector3.up;
+            Vector3 c = Vector3.right;
+            Vector3 d = new Vector3(1, 1, 0);
+            Vector3 e = new Vector3(0, 0, 1);
+            Vector3 f = new Vector3(1, 0, 1);
+            Vector3 g = new Vector3(0, 1, 1);
+            Vector3 h = new Vector3(1, 1, 1);
+
+            _proceduralMesh.vertices = vertices.ToArray();
+            _proceduralMesh.triangles = triangles.ToArray();
+            _proceduralMesh.colors = colors.ToArray();
+
+            _proceduralMesh.CalculateNormals();
+            _proceduralMesh.RecalculateBounds();
+            _proceduralMesh.RecalculateTangents();
+
+            filter.mesh = _proceduralMesh;
         }
+
+        /********************************************MAZE PREFAB BUILD METHODS***********************************************/
 
         private void OnPrefabMeshBuild()
         {
-            if (!_wallPrefab)
+            if (!_wallPrefab || !_wallBorderPrefab)
                 return;
+
+            if (MazeObject.TryGetComponent(out MeshFilter filter))
+                IntelliDestroy(filter);
+
+            if (MazeObject.TryGetComponent(out MeshRenderer renderer))
+                IntelliDestroy(renderer);
 
             ClearGameObjects();
 
