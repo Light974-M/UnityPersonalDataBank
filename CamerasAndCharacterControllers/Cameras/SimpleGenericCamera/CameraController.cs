@@ -24,6 +24,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         [SerializeField, Tooltip("degrees of angles to clamp camera vertically")]
         private Vector2 _verticalBorders = new Vector2(-89, 89);
 
+        [SerializeField, Tooltip("transform to rotate on y axis, null means this transform")]
+        private Transform _horizontalPivot;
+
+        [SerializeField, Tooltip("transform to rotate on x axis, null means this transform")]
+        private Transform _verticalPivot;
+
         [SerializeField, Tooltip("do camera use input system or native input ?")]
         private bool _inputSystem = true;
 
@@ -221,6 +227,18 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             set { _isTesting = value; }
         }
 
+        public Transform HorizontalPivot
+        {
+            get { return _horizontalPivot; }
+            set { _horizontalPivot = value; }
+        }
+
+        public Transform VerticalPivot
+        {
+            get { return _verticalPivot; }
+            set { _verticalPivot = value; }
+        }
+
         #endregion
 
         /// <summary>
@@ -264,13 +282,17 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 _inputValue = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - _inputValueMemo;
                 _inputValueMemo = Input.mousePosition;
             }
+
+            Transform horizontalPivot = _horizontalPivot ? _horizontalPivot : transform;
+            Transform verticalPivot = _verticalPivot ? _verticalPivot : transform;
             
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 
             _rotation.x = Mathf.Clamp(_rotation.x, _verticalBorders.x, _verticalBorders.y);
 
-            transform.eulerAngles = new Vector3(_rotation.x, _rotation.y, 0.0f);
+            horizontalPivot.eulerAngles = new Vector3(horizontalPivot.eulerAngles.x, _rotation.y, 0.0f);
+            verticalPivot.eulerAngles = new Vector3(_rotation.x, verticalPivot.eulerAngles.y, 0.0f);
         }
 
         /// <summary>
