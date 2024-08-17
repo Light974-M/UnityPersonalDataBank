@@ -18,6 +18,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /*****************************************DEFAULT*******************************************/
         [Space, Header("DEFAULT"), Space]
 
+        [SerializeField, Tooltip("do camera use input system or native input ?")]
+        private bool _inputSystem = true;
+
         [SerializeField, Tooltip("speed of mouse look in X and Y")]
         private Vector2 _lookSpeed = Vector2.one * 0.2f;
 
@@ -30,8 +33,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         [SerializeField, Tooltip("transform to rotate on x axis, null means this transform")]
         private Transform _verticalPivot;
 
-        [SerializeField, Tooltip("do camera use input system or native input ?")]
-        private bool _inputSystem = true;
+        [SerializeField, Tooltip("if enabled, will hide the cursor while focused")]
+        private bool _hideCursor = true;
+
+        [SerializeField, Tooltip("type of constraint for mouse")]
+        private CursorLockMode _cursorLockState = CursorLockMode.Locked;
 
 
         /*************************************CAMERA EFFECTS***************************************/
@@ -226,17 +232,25 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             get => _isTesting;
             set { _isTesting = value; }
         }
-
         public Transform HorizontalPivot
         {
             get { return _horizontalPivot; }
             set { _horizontalPivot = value; }
         }
-
         public Transform VerticalPivot
         {
             get { return _verticalPivot; }
             set { _verticalPivot = value; }
+        }
+        public bool HideCursor
+        {
+            get { return _hideCursor; }
+            set { _hideCursor = value; }
+        }
+        public CursorLockMode CursorLockState
+        {
+            get { return _cursorLockState; }
+            set { _cursorLockState = value; }
         }
 
         #endregion
@@ -251,8 +265,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _velocityLimitedValueMemo = _defaultFOV;
             _cameraVelocityMemo = Vector3.zero;
             _cameraPosMemo = transform.position;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+
+            Cursor.lockState = _cursorLockState;
+            Cursor.visible = !_hideCursor;
         }
 
         /// <summary>
@@ -260,6 +275,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private void Update()
         {
+            Cursor.lockState = _cursorLockState;
+            Cursor.visible = !_hideCursor;
+
             Look();
 
             if (_cameraFXTarget)
