@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5019908366023849683
+--- !u!114 &-9018084743536061967
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ScreenCutoutShaderMat
-  m_Shader: {fileID: -6465566751694194690, guid: 0a0741da7354d60428186dd21f544bc8, type: 3}
+  m_Name: BlackHoleV1
+  m_Shader: {fileID: -6465566751694194690, guid: ace982c0acd957c43809e1bef149ffeb, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,10 +29,10 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
+  m_LockedProperties: _HorizonOutlineStrength
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -80,10 +80,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Texture:
-        m_Texture: {fileID: 8400000, guid: 3358fb58ff52c0e4a9465f9594408f43, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -109,20 +105,29 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _DistortionClamp: 0.2
+    - _DistortionExponent: 7
+    - _DistortionPower: 2
+    - _DistortionRougness: 0.6
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FlipX: 0
-    - _FlipY: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HorizonOutline: 0.47
+    - _HorizonOutlineBrightness: 1
+    - _HorizonOutlineRoughness: 50
+    - _HorizonOutlineStrength: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _OutlineRadius: 0.2
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Radius: 0.3
     - _ReceiveShadows: 1
+    - _ScreenSpaceScale: 1.5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -131,14 +136,18 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _round_precision: 100
-    - _scale: 200
-    - _useSceneTexture: 0
+    - _dista_ce: 1.204
+    - _distortionExponent: 4
+    - _lensingPower: 0.09
+    - _lensingRoughness: 1.07
+    - _test: 10
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _HorizonColor: {r: 0, g: 0, b: 0, a: 1}
+    - _HorizonOutlineColor: {r: 0.990566, g: 0.7341654, b: 0.36912602, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Tile: {r: 1, g: 1, b: 0, a: 0}
-    - _offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Test: {r: 0, g: 0, b: 0, a: 0}
+    - _test: {r: 2, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
