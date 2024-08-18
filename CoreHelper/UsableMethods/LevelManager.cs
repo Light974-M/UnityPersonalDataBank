@@ -18,7 +18,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
         [SerializeField, Tooltip("base parameters of level start")]
         protected LevelStartInfo _baseStartInfo;
-        
+
 
         #region Public API
 
@@ -78,10 +78,13 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void LoadLevel()
         {
-            Transform player = GameObject.FindWithTag("Player").transform;
+            GameObject playerObj = GameObject.FindWithTag("Player");
 
-            if (player)
-                player.position = _baseStartInfo.PlayerStartPos;
+            if (!playerObj)
+                return;
+
+            Transform player = playerObj.transform;
+            player.position = _baseStartInfo.PlayerStartPos;
         }
 
         /// <summary>

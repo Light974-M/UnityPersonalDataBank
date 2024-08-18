@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-using Unity.VisualScripting;
-using UnityEngine.Animations;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsController
 {
-    public class PlayerController : UPDBBehaviour
+    public class PlayerController : Singleton<PlayerController>
     {
         #region Serialized API
 
@@ -22,6 +20,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
         [SerializeField]
         private float _jumpStrength = 100;
+
+        [SerializeField]
+        private float _jumpFallofSpeed = 20;
 
         /********************************EVENTS**********************************/
         [Space, Header("EVENTS"), Space]
@@ -54,8 +55,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
         #endregion
 
         // Start is called before the first frame update
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (!_playerInput)
                 if (!TryGetComponent(out _playerInput))
                     _playerInput = gameObject.AddComponent<PlayerInput>();
@@ -67,11 +70,15 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
         private void Update()
         {
-            OnLandMove();
+            if (GameManager.Instance.IsCharacterControllable)
+                OnLandMove();
 
             JumpVelocityUpdate();
 
             Gravitymanager();
+
+            if (_charaController.isGrounded == true)
+                _velocity.y = 0;
 
             //if scheme(controller) change, call an event to reorganise controller
             if (_playerInput.currentControlScheme != _schemeMemo)
@@ -80,7 +87,6 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
             //register last input scheme
             _schemeMemo = _playerInput.currentControlScheme;
         }
-
 
         /***************************************CUSTOM FUNCTIONS*****************************************/
 
@@ -95,8 +101,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
         private void JumpVelocityUpdate()
         {
-            _charaController.Move(_velocity);
-            _velocity.y = _velocity.y > 0 ? _velocity.y - Time.deltaTime : 0;
+            _charaController.Move(_velocity * Time.deltaTime);
+            _velocity.y = _velocity.y > 0 ? _velocity.y - Time.deltaTime * _jumpFallofSpeed : 0;
         }
 
         private void Gravitymanager()
@@ -113,8 +119,11 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
         public void OnJumpAction(InputAction.CallbackContext callback)
         {
-            if (_charaController.isGrounded)
-                _velocity.y = _jumpStrength * Time.deltaTime;
+            if (callback.started)
+            {
+                if (_charaController.isGrounded && GameManager.Instance.IsCharacterControllable)
+                    _velocity.y = _jumpStrength; 
+            }
         }
 
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 #if INPUT_SYSTEM_PRESENT
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 #endif
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
@@ -111,6 +111,16 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private Vector2 _currentLookSpeed = Vector2.zero;
 
+        /// <summary>
+        /// last value of _hideCursor
+        /// </summary>
+        private bool _hideCursorMemo = false;
+
+        /// <summary>
+        /// last value of _cursorLockState
+        /// </summary>
+        private CursorLockMode _cursorLockStateMemo = CursorLockMode.Locked;
+
 
         /*************************************CAMERA EFFECTS***************************************/
 
@@ -180,12 +190,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public bool FOVSystem
         {
             get => _fOVSystem;
-            set { _fOVSystem = value;}
+            set { _fOVSystem = value; }
         }
         public bool CameraShakeSystem
         {
             get => _cameraShakeSystem;
-            set { _cameraShakeSystem = value;}
+            set { _cameraShakeSystem = value; }
         }
         public float DefaultFOV
         {
@@ -195,7 +205,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public Vector2 FOVMinMax
         {
             get => _fOVMinMax;
-            set { _fOVMinMax = value;}
+            set { _fOVMinMax = value; }
         }
         public float FOVIntensity
         {
@@ -210,12 +220,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public float FOVVelocityClamp
         {
             get => _fOVVelocityClamp;
-            set { _fOVVelocityClamp = value;}
+            set { _fOVVelocityClamp = value; }
         }
         public float FOVAccelerationClampIncrement
         {
             get => _fOVAccelerationClampIncrement;
-            set { _fOVAccelerationClampIncrement = value;}
+            set { _fOVAccelerationClampIncrement = value; }
         }
         public float ShakeTime
         {
@@ -275,10 +285,10 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private void Update()
         {
-            Cursor.lockState = _cursorLockState;
-            Cursor.visible = !_hideCursor;
+            CursorModesUpdate();
 
-            Look();
+            if (GameManager.Instance.IsCharacterControllable)
+                Look();
 
             if (_cameraFXTarget)
                 CameraEffects();
@@ -288,6 +298,18 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             if (_cameraFXTarget && _fOVSystem)
                 UpdateCameraVelocity();
+        }
+
+        private void CursorModesUpdate()
+        {
+            if (_cursorLockState != _cursorLockStateMemo)
+                Cursor.lockState = _cursorLockState;
+
+            if (_hideCursor != _hideCursorMemo)
+                Cursor.visible = !_hideCursor;
+
+            _cursorLockStateMemo = _cursorLockState;
+            _hideCursorMemo = _hideCursor;
         }
 
         /// <summary>
@@ -303,7 +325,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 
             Transform horizontalPivot = _horizontalPivot ? _horizontalPivot : transform;
             Transform verticalPivot = _verticalPivot ? _verticalPivot : transform;
-            
+
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 

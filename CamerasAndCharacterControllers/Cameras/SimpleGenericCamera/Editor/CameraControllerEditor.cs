@@ -1,7 +1,5 @@
-using Codice.Client.Common.GameUI;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
