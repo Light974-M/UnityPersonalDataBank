@@ -1,8 +1,3 @@
-using System.CodeDom;
-using System.Collections.Generic;
-using UnityEditorInternal;
-using UnityEngine;
-
 namespace UPDB.CoreHelper
 {
     public class URL

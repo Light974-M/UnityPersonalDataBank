@@ -147,18 +147,18 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 return;
 
             // Draw main LineTrace or LineTraces of RaycastPositions, useful for debugging
-            Handles.color = _springArmColor;
+            //Handles.color = _springArmColor;
 
-            if (_showRaycasts)
-                foreach (Vector3 raycastPosition in _raycastPositions)
-                    Handles.DrawAAPolyLine(_springArmLineWidth, 2, transform.position, raycastPosition);
-            else
-                Handles.DrawAAPolyLine(_springArmLineWidth, 2, transform.position, _endPoint);
+            //if (_showRaycasts)
+            //    foreach (Vector3 raycastPosition in _raycastPositions)
+            //        Handles.DrawAAPolyLine(_springArmLineWidth, 2, transform.position, raycastPosition);
+            //else
+            //    Handles.DrawAAPolyLine(_springArmLineWidth, 2, transform.position, _endPoint);
 
             // Draw collisionProbe, useful for debugging
-            Handles.color = new Color(0.2f, 0.75f, 0.2f, 0.15f);
+            //Handles.color = new Color(0.2f, 0.75f, 0.2f, 0.15f);
 
-            Handles.SphereHandleCap(0, _socketPosition, Quaternion.identity, 2 * _collisionProbeSize, EventType.Repaint);
+            //Handles.SphereHandleCap(0, _socketPosition, Quaternion.identity, 2 * _collisionProbeSize, EventType.Repaint);
         }
 
         /// <summary>
