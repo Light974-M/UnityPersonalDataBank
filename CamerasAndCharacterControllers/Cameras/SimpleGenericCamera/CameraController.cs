@@ -1,6 +1,7 @@
 using UnityEngine;
 #if INPUT_SYSTEM_PRESENT
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 #endif
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
@@ -458,6 +459,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             if (_inputSystem)
                 _inputValue = callback.ReadValue<Vector2>();
+        }
+
+        public void SetMouseSensitivityValue(Slider slider)
+        {
+            _lookSpeed = Vector2.one * slider.value;
         }
 
         /// <summary>
