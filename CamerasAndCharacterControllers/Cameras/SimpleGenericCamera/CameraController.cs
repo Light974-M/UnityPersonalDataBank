@@ -277,6 +277,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _cameraVelocityMemo = Vector3.zero;
             _cameraPosMemo = transform.position;
 
+            Transform horizontalPivot = _horizontalPivot ? _horizontalPivot : transform;
+            Transform verticalPivot = _verticalPivot ? _verticalPivot : transform;
+
+            _rotation.x = verticalPivot.eulerAngles.x;
+            _rotation.y = horizontalPivot.eulerAngles.y;
+
             Cursor.lockState = _cursorLockState;
             Cursor.visible = !_hideCursor;
         }

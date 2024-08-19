@@ -14,6 +14,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
 
         /***************************INPUT PARAMETERS*****************************/
+        [Space, Header("INPUT PARAMETERS"), Space]
 
         [SerializeField]
         private Vector2 _moveSpeed = Vector3.one;
@@ -29,6 +30,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
         [SerializeField, Tooltip("event triggered when user scheme changes")]
         private UnityEvent _onSchemeChange;
+
+        /***************************PHYSIC INTERACTION PARAMETERS*****************************/
+        [Space, Header("PHYSIC INTERACTION PARAMETERS"), Space]
+
+        [SerializeField]
+        private float _pushPhysicedObjectStrength = 1;
 
         #endregion
 
@@ -86,6 +93,17 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsCont
 
             //register last input scheme
             _schemeMemo = _playerInput.currentControlScheme;
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if (hit.gameObject)
+            {
+                if (hit.gameObject.tag == "PushableObject" && hit.gameObject.TryGetComponent(out Rigidbody rb))
+                {
+                    rb.AddForce((hit.gameObject.transform.position - transform.position).normalized * _pushPhysicedObjectStrength);
+                }
+            }
         }
 
         /***************************************CUSTOM FUNCTIONS*****************************************/
