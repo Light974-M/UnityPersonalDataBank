@@ -486,8 +486,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <summary>
         /// OnDrawGizmos is called each time scene refresh
         /// </summary>
-        private void OnDrawGizmosSelected()
+        protected override void OnDrawGizmosSelected()
         {
+            base.OnDrawGizmosSelected();
+
             if (!Application.isPlaying)
                 Init();
 
@@ -859,104 +861,6 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             _controller.height = AutoLerp(_startHeight, _targetHeight, _crouchTime, ref _crouchLerpTimer);
             _controller.center = new Vector3(_controller.center.x, -0.9985f + (_controller.height / 2), _controller.center.z);
         }
-
-        /// <summary>
-        /// make a lerp automatically(based on delta time update rate) with Vector2, between a and b, in a specific time
-        /// </summary>
-        /// <param name="a">start point</param>
-        /// <param name="b">end point</param>
-        /// <param name="lerpTime">time to make lerp</param>
-        /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
-        private Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer)
-        {
-            //create a null vector 2
-            Vector2 value = Vector2.zero;
-
-            //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
-            if (timer < lerpTime)
-            {
-                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1)
-                value = Vector2.Lerp(a, b, timer / lerpTime);
-
-                //update timer value
-                timer += Time.deltaTime;
-            }
-            else
-            {
-                timer = lerpTime;
-                value = b;
-            }
-
-            //return value updated
-            return value;
-        }
-
-        /// <summary>
-        /// make a lerp automatically(based on delta time update rate) with Vector2, between a and b, in a specific time
-        /// </summary>
-        /// <param name="a">start point</param>
-        /// <param name="b">end point</param>
-        /// <param name="lerpTime">time to make lerp</param>
-        /// <param name="timer">timer to store lerp progression</param>
-        /// /// <param name="smoothTimer">curve to offset timer and make things smooth</param>
-        /// <returns></returns>
-        private Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
-        {
-            //create a null vector 2
-            Vector2 value = Vector2.zero;
-
-            //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
-            if (timer < lerpTime)
-            {
-                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1) applyied to the animation curve value
-                value = Vector2.Lerp(a, b, smoothTimer.Evaluate(timer / lerpTime));
-
-                //update timer value
-                timer += Time.deltaTime;
-            }
-            else
-            {
-                timer = lerpTime;
-                value = b;
-            }
-
-            //return value updated
-            return value;
-        }
-
-        /// <summary>
-        /// make a lerp automatically(based on delta time update rate) with float, between a and b, in a specific time
-        /// </summary>
-        /// <param name="a">start point</param>
-        /// <param name="b">end point</param>
-        /// <param name="lerpTime">time to make lerp</param>
-        /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
-        private float AutoLerp(float a, float b, float lerpTime, ref float timer)
-        {
-            //create a null value
-            float value = 0;
-
-            //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
-            if (timer < lerpTime)
-            {
-                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1)
-                value = Mathf.Lerp(a, b, timer / lerpTime);
-
-                //update timer value
-                timer += Time.deltaTime;
-            }
-            else
-            {
-                timer = lerpTime;
-                value = b;
-            }
-
-            //return value updated
-            return value;
-        }
-
 
 #if INPUT_SYSTEM_PRESENT
         #region Input System Functions
