@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsController
@@ -95,6 +96,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsCont
 
         private void Update()
         {
+            if (!GameManager.Instance.IsCharacterControllable)
+                return;
+
             if (_rb != null)
                 Move();
             else

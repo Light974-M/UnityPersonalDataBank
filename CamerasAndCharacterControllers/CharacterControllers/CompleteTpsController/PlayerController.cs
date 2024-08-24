@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 #endif
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.Usable;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsController
 {
@@ -13,7 +14,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
     /// Tps Controller of player movements and actions
     /// </summary>
     [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Controller")]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : UPDBBehaviour
     {
         #region Serialized API
 

@@ -17,6 +17,9 @@ namespace UPDB.CoreHelper.Usable
         [SerializeField, Tooltip("tell if player can control character")]
         private bool _isCharacterControllable = true;
 
+        private bool _isPausedMemo = false;
+        private float _timeScaleDuringPauseSave = 0;
+
         #region Public API
 
         public bool IsPaused
@@ -48,6 +51,8 @@ namespace UPDB.CoreHelper.Usable
             base.Awake();
 
             DontDestroyOnLoad(gameObject);
+
+            _isPausedMemo = _isPaused;
         }
 
         private void OnEnable()
@@ -60,9 +65,12 @@ namespace UPDB.CoreHelper.Usable
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        protected virtual void Update()
         {
-            Initialize();
+            if (_isPaused != _isPausedMemo)
+                OnSwitchPauseAction();
+
+            _isPausedMemo = _isPaused;
         }
 
         protected override void OnDrawGizmos()
@@ -73,6 +81,24 @@ namespace UPDB.CoreHelper.Usable
                 hideFlags = HideFlags.HideInInspector;
             else
                 hideFlags = HideFlags.None;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Initialize();
+        }
+
+        protected virtual void OnSwitchPauseAction()
+        {
+            if(_isPaused)
+            {
+                _timeScaleDuringPauseSave = Time.timeScale;
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = _timeScaleDuringPauseSave;
+            }
         }
     }
 

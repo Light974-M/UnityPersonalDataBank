@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFreeCamera
 {
@@ -24,6 +25,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFreeCamera
         // Update is called once per frame
         void Update()
         {
+            if (!GameManager.Instance.IsCharacterControllable || GameManager.Instance.IsPaused)
+                return;
+
             if (Input.GetKey(KeyCode.W))
             {
                 transform.position += transform.forward * _moveSpeed * Time.deltaTime;

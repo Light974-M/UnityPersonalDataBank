@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera
@@ -50,6 +51,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera
 
         private void Update()
         {
+            if (!GameManager.Instance.IsCharacterControllable || GameManager.Instance.IsPaused)
+                return;
+
             Look();
         }
 
