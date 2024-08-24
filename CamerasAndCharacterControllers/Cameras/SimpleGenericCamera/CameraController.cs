@@ -1,8 +1,10 @@
 using UnityEngine;
 #if INPUT_SYSTEM_PRESENT
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 #endif
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
@@ -18,6 +20,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /*****************************************DEFAULT*******************************************/
         [Space, Header("DEFAULT"), Space]
 
+        [SerializeField, Tooltip("do camera use input system or native input ?")]
+        private bool _inputSystem = true;
+
         [SerializeField, Tooltip("speed of mouse look in X and Y")]
         private Vector2 _lookSpeed = Vector2.one * 0.2f;
 
@@ -30,8 +35,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         [SerializeField, Tooltip("transform to rotate on x axis, null means this transform")]
         private Transform _verticalPivot;
 
-        [SerializeField, Tooltip("do camera use input system or native input ?")]
-        private bool _inputSystem = true;
+        [SerializeField, Tooltip("if enabled, will hide the cursor while focused")]
+        private bool _hideCursor = true;
+
+        [SerializeField, Tooltip("type of constraint for mouse")]
+        private CursorLockMode _cursorLockState = CursorLockMode.Locked;
 
 
         /*************************************CAMERA EFFECTS***************************************/
@@ -105,6 +113,16 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private Vector2 _currentLookSpeed = Vector2.zero;
 
+        /// <summary>
+        /// last value of _hideCursor
+        /// </summary>
+        private bool _hideCursorMemo = false;
+
+        /// <summary>
+        /// last value of _cursorLockState
+        /// </summary>
+        private CursorLockMode _cursorLockStateMemo = CursorLockMode.Locked;
+
 
         /*************************************CAMERA EFFECTS***************************************/
 
@@ -174,12 +192,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public bool FOVSystem
         {
             get => _fOVSystem;
-            set { _fOVSystem = value;}
+            set { _fOVSystem = value; }
         }
         public bool CameraShakeSystem
         {
             get => _cameraShakeSystem;
-            set { _cameraShakeSystem = value;}
+            set { _cameraShakeSystem = value; }
         }
         public float DefaultFOV
         {
@@ -189,7 +207,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public Vector2 FOVMinMax
         {
             get => _fOVMinMax;
-            set { _fOVMinMax = value;}
+            set { _fOVMinMax = value; }
         }
         public float FOVIntensity
         {
@@ -204,12 +222,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         public float FOVVelocityClamp
         {
             get => _fOVVelocityClamp;
-            set { _fOVVelocityClamp = value;}
+            set { _fOVVelocityClamp = value; }
         }
         public float FOVAccelerationClampIncrement
         {
             get => _fOVAccelerationClampIncrement;
-            set { _fOVAccelerationClampIncrement = value;}
+            set { _fOVAccelerationClampIncrement = value; }
         }
         public float ShakeTime
         {
@@ -226,17 +244,25 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             get => _isTesting;
             set { _isTesting = value; }
         }
-
         public Transform HorizontalPivot
         {
             get { return _horizontalPivot; }
             set { _horizontalPivot = value; }
         }
-
         public Transform VerticalPivot
         {
             get { return _verticalPivot; }
             set { _verticalPivot = value; }
+        }
+        public bool HideCursor
+        {
+            get { return _hideCursor; }
+            set { _hideCursor = value; }
+        }
+        public CursorLockMode CursorLockState
+        {
+            get { return _cursorLockState; }
+            set { _cursorLockState = value; }
         }
 
         #endregion
@@ -251,8 +277,15 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             _velocityLimitedValueMemo = _defaultFOV;
             _cameraVelocityMemo = Vector3.zero;
             _cameraPosMemo = transform.position;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+
+            Transform horizontalPivot = _horizontalPivot ? _horizontalPivot : transform;
+            Transform verticalPivot = _verticalPivot ? _verticalPivot : transform;
+
+            _rotation.x = verticalPivot.eulerAngles.x;
+            _rotation.y = horizontalPivot.eulerAngles.y;
+
+            Cursor.lockState = _cursorLockState;
+            Cursor.visible = !_hideCursor;
         }
 
         /// <summary>
@@ -260,7 +293,13 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private void Update()
         {
-            Look();
+            if (GameManager.Instance.IsPaused)
+                return;
+
+            CursorModesUpdate();
+
+            if (GameManager.Instance.IsCharacterControllable)
+                Look();
 
             if (_cameraFXTarget)
                 CameraEffects();
@@ -270,6 +309,18 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             if (_cameraFXTarget && _fOVSystem)
                 UpdateCameraVelocity();
+        }
+
+        private void CursorModesUpdate()
+        {
+            if (_cursorLockState != _cursorLockStateMemo)
+                Cursor.lockState = _cursorLockState;
+
+            if (_hideCursor != _hideCursorMemo)
+                Cursor.visible = !_hideCursor;
+
+            _cursorLockStateMemo = _cursorLockState;
+            _hideCursorMemo = _hideCursor;
         }
 
         /// <summary>
@@ -285,7 +336,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 
             Transform horizontalPivot = _horizontalPivot ? _horizontalPivot : transform;
             Transform verticalPivot = _verticalPivot ? _verticalPivot : transform;
-            
+
             Vector2 mouse = new Vector2(_inputValue.x * _currentLookSpeed.x, _inputValue.y * _currentLookSpeed.y);
             _rotation += new Vector2(-mouse.y, mouse.x);
 
@@ -418,6 +469,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             if (_inputSystem)
                 _inputValue = callback.ReadValue<Vector2>();
+        }
+
+        public void SetMouseSensitivityValue(Slider slider)
+        {
+            _lookSpeed = Vector2.one * slider.value;
         }
 
         /// <summary>

@@ -1,7 +1,5 @@
-using Codice.Client.Common.GameUI;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 {
@@ -19,6 +17,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             {
                 EditorGUILayout.LabelField("DEFAULT");
 
+                GUIContent inputSystemContent = new GUIContent(nameof(myTarget.InputSystem), "do camera use input system or native input ?");
+                myTarget.InputSystem = EditorGUILayout.Toggle(inputSystemContent, myTarget.InputSystem);
+
                 GUIContent lookSpeedContent = new GUIContent(nameof(myTarget.LookSpeed), "speed of mouse look in X and Y");
                 myTarget.LookSpeed = EditorGUILayout.Vector2Field(lookSpeedContent, myTarget.LookSpeed);
 
@@ -31,8 +32,11 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
                 GUIContent verticalPivotContent = new GUIContent(nameof(myTarget.VerticalPivot), "transform to rotate on x axis, null means this transform");
                 myTarget.VerticalPivot = (Transform)EditorGUILayout.ObjectField(verticalPivotContent, myTarget.VerticalPivot, typeof(Transform), true);
 
-                GUIContent inputSystemContent = new GUIContent(nameof(myTarget.InputSystem), "do camera use input system or native input ?");
-                myTarget.InputSystem = EditorGUILayout.Toggle(inputSystemContent, myTarget.InputSystem);
+                GUIContent hideCursorContent = new GUIContent(nameof(myTarget.HideCursor), "if enabled, will hide the cursor while focused");
+                myTarget.HideCursor = EditorGUILayout.Toggle(hideCursorContent, myTarget.HideCursor);
+
+                GUIContent cursorLockStateContent = new GUIContent(nameof(myTarget.CursorLockState), "type of constraint for mouse");
+                myTarget.CursorLockState = (CursorLockMode)EditorGUILayout.EnumPopup(cursorLockStateContent, myTarget.CursorLockState);
             }
             EditorGUILayout.EndVertical();
 

@@ -18,8 +18,8 @@ namespace UPDB.CoreHelper
         public const string Cameras = nameof(Cameras);
         public const string CharacterControllers = nameof(CharacterControllers);
         public const string CustomScriptOrderMethods = nameof(CustomScriptOrderMethods);
-        public const string ExtensionMethods = nameof(ExtensionMethods);
         public const string UsableMethods = nameof(UsableMethods);
+        public const string Usable = nameof(Usable);
         public const string RotationDetector = nameof(RotationDetector);
         public const string NativeTools = nameof(NativeTools);
         public const string SaveStateManager = nameof(SaveStateManager);

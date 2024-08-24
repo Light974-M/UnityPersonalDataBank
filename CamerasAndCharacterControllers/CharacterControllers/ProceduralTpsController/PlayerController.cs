@@ -3,6 +3,7 @@ using UnityEngine;
 using UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera;
 using UPDB.CoreHelper.UsableMethods;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTpsController
 {
@@ -96,6 +97,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
 
         private void Update()
         {
+            if(!GameManager.Instance.IsCharacterControllable || GameManager.Instance.IsPaused) 
+                return;
+
             if (_rb != null)
                 Move();
             else

@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 #endif
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsController
@@ -22,17 +23,16 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
 #if INPUT_SYSTEM_PRESENT
         [SerializeField, Tooltip("used player input, used to link input system")]
-        private PlayerInput _playerInput;
+        private PlayerInput _playerInput; 
 #endif
-
         [SerializeField, Tooltip("character controller component used to move player")]
         private CharacterController _controller;
 
         [SerializeField, Tooltip("GameObject that represent player components in one parent object")]
         private Transform _playerTargetPivot;
 
-        [SerializeField, Tooltip("linked camera pivot, if one")]
-        private Transform _linkedCameraPivot;
+        [SerializeField, Tooltip("linked camera, if one")]
+        private Transform _linkedCamera;
 
         /*********************************ROTATION********************************/
         [Space, Header("ROTATION"), Space]
@@ -210,27 +210,6 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// smooth version of input value, used in rotations, to make a smooth turning effect
         /// </summary>
         private Vector2 _smoothedInputValue = Vector2.zero;
-
-        /// <summary>
-        /// take same direction as camera pivot but avoiding x direction
-        /// </summary>
-        private Transform _lookDirObj = null;
-
-        private Transform LookDirObj
-        {
-            get
-            {
-                //check if rotation object is set
-                if (!_lookDirObj)
-                {
-                    _lookDirObj = new GameObject("PlayerLookDirection").transform;
-                    _lookDirObj.SetParent(transform);
-                    Debug.LogWarning("created rotation dir object" + _lookDirObj.name);
-                }
-
-                return _lookDirObj;
-            }
-        }
 
         /**********************************JUMP AND PHYSIC**********************************/
 
@@ -466,7 +445,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 _onSchemeChange.Invoke();
 
             //register last input scheme
-            _schemeMemo = _playerInput.currentControlScheme;
+            _schemeMemo = _playerInput.currentControlScheme; 
+            Debug.Log("EEEEE");
 #endif
 
             //test jump input
@@ -510,13 +490,11 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         {
             base.OnDrawGizmosSelected();
 
+            if (!Application.isPlaying)
+                Init();
+
             //draw isGrounded collider preview
             Gizmos.DrawWireSphere(transform.position + _isGroundedPosition, _isGroundedScale);
-        }
-
-        protected override void OnSceneSelected()
-        {
-            Init();
         }
 
         /*********************************************************CUSTOM FUNCTIONS************************************************************/
@@ -535,7 +513,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             //if player input component reference is null, try to get component in gameObject, or create one
             if (_playerInput == null)
                 if (!TryGetComponent(out _playerInput))
-                    _playerInput = gameObject.AddComponent<PlayerInput>();
+                    _playerInput = gameObject.AddComponent<PlayerInput>(); 
 #endif
 
             //if player rotation pivot reference is null
@@ -551,14 +529,14 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     _playerTargetPivot = new GameObject("PlayerTargetPivot").transform.parent = transform;
             }
 
-            if (_linkedCameraPivot == null)
+            if (_linkedCamera == null)
             {
                 if (Camera.main)
-                    _linkedCameraPivot = Camera.main.transform;
+                    _linkedCamera = Camera.main.transform;
                 else if (FindObjectOfType<Camera>())
-                    _linkedCameraPivot = FindObjectOfType<Camera>().transform;
+                    _linkedCamera = FindObjectOfType<Camera>().transform;
                 else
-                    _linkedCameraPivot = transform;
+                    _linkedCamera = transform;
             }
         }
 
@@ -576,15 +554,12 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 #if INPUT_SYSTEM_PRESENT
                 //if player is on keyboard, use a function to prevent rotation from clipping by adding a square function to input dir
                 if (_playerInput.currentControlScheme == "KeyboardAndMouse")
-                    PreventRotationFromClipping(ref _smoothedInputValue);
+                    PreventRotationFromClipping(ref _smoothedInputValue); 
 #endif
 
-                //set pos and rot of rotation obj
-                LookDirObj.position = _linkedCameraPivot.position;
-                LookDirObj.eulerAngles = new Vector3(0, _linkedCameraPivot.eulerAngles.y, _linkedCameraPivot.eulerAngles.z);
-
-                //rotate player toward object forward
-                transform.rotation = Quaternion.LookRotation(_lookDirObj.forward);
+                //make the parent object look forward the camera, to make all basic calculation
+                transform.LookAt(new Vector3(_linkedCamera.position.x, transform.position.y, _linkedCamera.position.z));
+                transform.eulerAngles += new Vector3(0, 180, 0);
 
                 //make different calculs depending on rotation mode
                 if (_rotationMode == PlayerRotationMode.Free)
@@ -599,7 +574,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     //get end point of new direction vector
                     Vector3 position = transform.position + dir;
 
-                    //make player look at the end point(so that it look at the new direction)
+                    //make player loo at the end point(so that it look at the new direction)
                     _playerTargetPivot.LookAt(position);
                 }
                 else if (_rotationMode == PlayerRotationMode.Clamped)
@@ -886,7 +861,6 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             _controller.height = AutoLerp(_startHeight, _targetHeight, _crouchTime, ref _crouchLerpTimer);
             _controller.center = new Vector3(_controller.center.x, -0.9985f + (_controller.height / 2), _controller.center.z);
         }
-
 
 #if INPUT_SYSTEM_PRESENT
         #region Input System Functions

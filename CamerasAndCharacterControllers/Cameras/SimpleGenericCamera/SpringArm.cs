@@ -62,7 +62,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         private float _springArmLineWidth = 6f;
 
         [SerializeField, Tooltip("is scene view render every detailled raycast of arm instead of just a line ?")]
-        private bool _showRaycasts = false; 
+        private bool _showRaycasts = false;
 
         #endregion
 
@@ -146,7 +146,9 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             if (!_visualDebugging)
                 return;
 
-            // Draw main LineTrace or LineTraces of RaycastPositions, useful for debugging
+#if UNITY_EDITOR
+            //Draw main LineTrace or LineTraces of RaycastPositions, useful for debugging
+
             Handles.color = _springArmColor;
 
             if (_showRaycasts)
@@ -155,10 +157,12 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
             else
                 Handles.DrawAAPolyLine(_springArmLineWidth, 2, transform.position, _endPoint);
 
-            // Draw collisionProbe, useful for debugging
+            //Draw collisionProbe, useful for debugging
+
             Handles.color = new Color(0.2f, 0.75f, 0.2f, 0.15f);
 
             Handles.SphereHandleCap(0, _socketPosition, Quaternion.identity, 2 * _collisionProbeSize, EventType.Repaint);
+#endif
         }
 
         /// <summary>
@@ -222,5 +226,5 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
 
             _targetCamera.transform.position = Vector3.SmoothDamp(_targetCamera.transform.position, _socketPosition, ref _collisionTestVelocity, _smoothness);
         }
-    } 
+    }
 }

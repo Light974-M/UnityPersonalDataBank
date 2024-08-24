@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CoreHelper;
-using UPDB.CoreHelper.ExtensionMethods;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Data.SplineTool

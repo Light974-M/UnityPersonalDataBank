@@ -1,0 +1,2 @@
+access all tags in project : UnityEditorInternal.InternalEditorUtility.tags
+check null value of a native class instance : ReferenceEquals(Class instance, null)    PS : ReferenceEquals(A, B) test a real reference test 100% solid between A and B
