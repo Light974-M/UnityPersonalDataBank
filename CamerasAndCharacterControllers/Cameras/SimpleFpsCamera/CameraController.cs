@@ -10,7 +10,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFpsCamera
     /// <summary>
     /// simple fps camera controller, can be used with fps controller or alone
     /// </summary>
-    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/SimpleFpsCamera/README.md"), AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.SimpleFpsCamera + "/Fps Camera Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/SimpleFpsCamera/README.md")]
+    [AddComponentMenu(NamespaceID.CamerasPath + "/" + NamespaceID.SimpleFpsCamera + "/Fps Camera Controller")]
     public class CameraController : UPDBBehaviour
     {
         [SerializeField, Tooltip("camera used to render fps game view")]

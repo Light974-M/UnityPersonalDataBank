@@ -6,9 +6,10 @@ using UPDB.CoreHelper;
 namespace UPDB.Physic.GravityManager
 {
     ///<summary>
-    /// 
+    /// allow to control static gravity value by rotating a real object
     ///</summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.GravityManager + "/gravityManager")]
+    [HelpURL(URL.baseURL + "/tree/main/Physic/GravityManager/README.md")]
+    [AddComponentMenu(NamespaceID.PhysicPath + "/" + NamespaceID.GravityManager + "/Gravity Manager")]
     public class GravityManager : UPDBBehaviour
     {
 

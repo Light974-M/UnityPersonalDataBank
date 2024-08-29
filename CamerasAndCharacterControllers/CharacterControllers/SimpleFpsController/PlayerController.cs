@@ -2,9 +2,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UPDB.CoreHelper.Usable;
+using UPDB.CoreHelper;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SimpleFpsController
 {
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/SimpleFpsController/README.md")]
+    [AddComponentMenu(NamespaceID.CharacterControllersPath + "/" + NamespaceID.SimpleFreeCamera + "/Free Camera Controller")]
     public class PlayerController : Singleton<PlayerController>
     {
         #region Serialized API

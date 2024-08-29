@@ -6,9 +6,10 @@ using UPDB.CoreHelper;
 namespace UPDB.Physic.RAPhysic
 {
     /// <summary>
-    /// main class of RAPhysic
+    /// main class of RAPhysic, make object a physiced body that affect all bodies arround
     /// </summary>
-    [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md"), AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.RAPhysic + "/RAPhysics Affector")]
+    [HelpURL(URL.baseURL + "/tree/main/Physics/RAPhysic/README.md")]
+    [AddComponentMenu(NamespaceID.PhysicPath + "/" + NamespaceID.RAPhysic + "/RAPhysic Affector")]
     public class Affector : UPDBBehaviour
     {
         #region Serialized And Public Variables

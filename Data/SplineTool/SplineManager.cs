@@ -8,7 +8,9 @@ namespace UPDB.Data.SplineTool
     /// <summary>
     /// manage spline system for every kind of object
     /// </summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Data + "/" + NamespaceID.SplineTool + "/Spline Manager"), ExecuteAlways]
+    [HelpURL(URL.baseURL + "/tree/main/Data/SplineManager/README.md")]
+    [AddComponentMenu(NamespaceID.DataPath + "/" + NamespaceID.SplineTool + "/Spline Manager")]
+    [ExecuteAlways]
     public class SplineManager : UPDBBehaviour
     {
         #region Serialized API

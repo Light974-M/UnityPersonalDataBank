@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Sound.EngineGear
 {
-    public class EngineManager : MonoBehaviour
+    [HelpURL(URL.baseURL + "/tree/main/Sound/EngineGear/README.md")]
+    [AddComponentMenu(NamespaceID.SoundPath + "/" + NamespaceID.EngineGear + "/Engine Gear Sound Mixer")]
+    public class EngineManager : UPDBBehaviour
     {
         [SerializeField]
         private AudioSource audioSource;

@@ -1,10 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UPDB.CoreHelper.CustomPropertyAttributes;
+using UPDB.CoreHelper;
 
 namespace UPDB.ProceduralGeneration.ProShapeBuilder
 {
+    [HelpURL(URL.baseURL + "/tree/main/ProceduralGeneration/ProShapeBuilder/README.md")]
+    [AddComponentMenu(NamespaceID.ProceduralGenerationPath + "/" + NamespaceID.ProShapeBuilder + "/Cube Mesh Builder")]
     public class CubeMeshBuilder : ShapeMeshBuilder
     {
         [SerializeField, Tooltip("number of quad for each axis of draw cube")]

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Physic.AutoRotate
@@ -6,6 +7,8 @@ namespace UPDB.Physic.AutoRotate
     /// <summary>
     /// rotate constantly an object when instantiated
     /// </summary>
+    [HelpURL(URL.baseURL + "/tree/main/Physic/AutoRotate/README.md")]
+    [AddComponentMenu(NamespaceID.PhysicPath + "/" + NamespaceID.AutoRotate + "/Auto Rotate")]
     public class AutoRotate : UPDBBehaviour
     {
         //variables you can see in the inspector

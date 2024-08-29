@@ -10,7 +10,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.SpriteTpsCont
     ///<summary>
     /// component for third person controller movements input with sprite fake renderer
     ///</summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.SpriteTpsController + "/Tps Sprite Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/SpriteTpsController/README.md")]
+    [AddComponentMenu(NamespaceID.CharacterControllersPath + "/" + NamespaceID.SpriteTpsController + "/Tps Sprite Controller")]
     public class PlayerController : UPDBBehaviour
     {
         #region Serialized And Public Variables

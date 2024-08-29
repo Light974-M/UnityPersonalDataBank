@@ -12,7 +12,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
     /// <summary>
     /// usefull generic camera controller, can be used with fps or tps controller or alone(or wathever controller you want, simply drag script into object that will be rotated)
     /// </summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.SimpleGenericCamera + "/Generic Camera Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/SimpleGenericCamera/README.md")]
+    [AddComponentMenu(NamespaceID.CamerasPath + "/" + NamespaceID.SimpleGenericCamera + "/Generic Camera Controller")]
     public class CameraController : UPDBBehaviour
     {
         #region Serialized API

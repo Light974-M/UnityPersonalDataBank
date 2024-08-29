@@ -11,7 +11,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.Smooth25DCameraController
     /// 
     /// </summary>
     /// 
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.Smooth25DCameraController + "/2.5D Camera Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/README.md")]
+    [AddComponentMenu(NamespaceID.CamerasPath + "/" + NamespaceID.Smooth25DCameraController + "/2.5D Camera Controller")]
     public class CameraController : UPDBBehaviour
     {
         #region SerializedVariable

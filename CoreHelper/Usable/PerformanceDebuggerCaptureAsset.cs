@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace UPDB.CoreHelper.Usable
 {
-    [CreateAssetMenu(fileName = "new Capture Asset", menuName = "UPDB/CoreHelper/Usable/PerformanceDebugger Capture Asset")]
+
+    [CreateAssetMenu(fileName = "new Capture Asset", menuName = NamespaceID.UsablePath + "/PerformanceDebugger Capture Asset")]
     public class PerformanceDebuggerCaptureAsset : ScriptableObject
     {
         [SerializeField, Tooltip("capture fps and average fps at a certain time to make precise tests")]
