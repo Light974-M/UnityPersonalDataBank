@@ -6,7 +6,8 @@ using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsController
 {
-    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/RbFpsController/README.md"), AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.RbFpsController + "/Fps Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/RbFpsController/README.md")]
+    [AddComponentMenu(NamespaceID.CharacterControllersPath + "/" + NamespaceID.RbFpsController + "/Fps Controller")]
     public class PlayerController : UPDBBehaviour
     {
         #region Serialized And Public Variables

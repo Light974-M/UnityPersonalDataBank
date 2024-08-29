@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.ProceduralGeneration.ProShapeBuilder;
 
 namespace UPDB.ProceduralGeneration.ProShapeBuilder
 {
+    [HelpURL(URL.baseURL + "/tree/main/Proceduralgeneration/ProShapeBuilder/README.md")]
+    [AddComponentMenu(NamespaceID.ProceduralGenerationPath + "/" + NamespaceID.ProShapeBuilder + "/Tetrahedron Mesh Builder")]
     public class TetrahedronMeshBuilder : ShapeMeshBuilder
     {
         [SerializeField, Tooltip("tell what base scale should look like")]

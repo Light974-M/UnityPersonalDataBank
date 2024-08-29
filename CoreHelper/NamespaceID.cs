@@ -1,3 +1,5 @@
+using System.Security.Policy;
+
 namespace UPDB.CoreHelper
 {
     public class NamespaceID
@@ -43,6 +45,7 @@ namespace UPDB.CoreHelper
         public const string EngineGear = nameof(EngineGear);
 
         public const string SimpleFpsCamera = nameof(SimpleFpsCamera);
+        public const string SimpleFreeCamera = nameof(SimpleFreeCamera);
         public const string SimpleGenericCamera = nameof(SimpleGenericCamera);
         public const string Smooth25DCameraController = nameof(Smooth25DCameraController);
         public const string TpsCamera = nameof(TpsCamera);
@@ -54,5 +57,42 @@ namespace UPDB.CoreHelper
         public const string SimpleGridLevel = nameof(SimpleGridLevel);
         public const string MenuUIController = nameof(MenuUIController);
         public const string ClassicMazeGenerator = nameof(ClassicMazeGenerator);
+
+        /*******************************COMBINATION OF PATHS*********************************/
+
+        //CamerasAndCharacterControllers
+        public const string CamerasAndCharacterControllersPath = UPDB + "/" + CamerasAndCharacterControllers;
+        public const string CamerasPath = CamerasAndCharacterControllersPath + "/" + Cameras;
+        public const string CharacterControllersPath = CamerasAndCharacterControllersPath + "/" + CharacterControllers;
+
+        //CoreHelper
+        public const string CoreHelperPath = UPDB + "/" + CoreHelper;
+        public const string CustomPropertyAttributesPath = CoreHelperPath + "/" + CustomPropertyAttributes;
+        public const string CustomScriptOrderMethodsPath = CoreHelperPath + "/" + CustomScriptOrderMethods;
+        public const string UsableMethodsPath = CoreHelperPath + "/" + UsableMethods;
+        public const string UsablePath = CoreHelperPath + "/" + Usable;
+
+        //CustomInput
+        public const string CustomInputPath = UPDB + "/" + CustomInput;
+
+
+        //Data
+        public const string DataPath = UPDB + "/" + Data;
+
+
+        //Physic
+        public const string PhysicPath = UPDB + "/" + Physic;
+
+
+        //ProceduralGeneration
+        public const string ProceduralGenerationPath = UPDB + "/" + ProceduralGeneration;
+
+
+        //Shaders
+        public const string ShadersPath = UPDB + "/" + Shaders;
+
+
+        //Sound
+        public const string SoundPath = UPDB + "/" + Sound;
     }
 }

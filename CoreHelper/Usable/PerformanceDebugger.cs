@@ -1,15 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Policy;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.CoreHelper.Usable
 {
-    [AddComponentMenu("UPDB/CoreHelper/Usable/Performance Debugger")]
+    [AddComponentMenu(NamespaceID.UsablePath + "/Performance Debugger")]
     public class PerformanceDebugger : Singleton<PerformanceDebugger>
     {
         #region Serialized API

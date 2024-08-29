@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleFreeCamera
 {
+    /// <summary>
+    /// simple fps camera controller, can be used with fps controller or alone
+    /// </summary>
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/SimpleFreeCamera/README.md")]
+    [AddComponentMenu(NamespaceID.CamerasPath + "/" + NamespaceID.SimpleFreeCamera + "/Free Camera Controller")]
     public class SimpleFreeCamera : MonoBehaviour
     {
         [SerializeField, Tooltip("speed of cam moves")]

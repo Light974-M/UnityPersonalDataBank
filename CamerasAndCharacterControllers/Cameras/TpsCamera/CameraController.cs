@@ -8,7 +8,8 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.TpsCamera
     /// <summary>
     /// simple tps camera controller, can be used with fps controller or alone
     /// </summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.Cameras + "/" + NamespaceID.TpsCamera + "/Tps Camera Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/Cameras/TpsCamera/README.md")]
+    [AddComponentMenu(NamespaceID.CamerasPath + "/" + NamespaceID.TpsCamera + "/Tps Camera Controller")]
     public class CameraController : UPDBBehaviour
     {
         [SerializeField, Tooltip("Camera pivot linked to this Player(where you have to put camera script)")]

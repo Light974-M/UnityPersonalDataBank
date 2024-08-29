@@ -8,7 +8,8 @@ namespace UPDB.Physic.CustomTimeScale
     ///<summary>
     /// allow full control on time axis
     ///</summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.Physic + "/" + NamespaceID.CustomTimeScale + "/TimeController")]
+    [HelpURL(URL.baseURL + "/tree/main/Physic/CustomTimeScale/README.md")]
+    [AddComponentMenu(NamespaceID.PhysicPath + "/" + NamespaceID.CustomTimeScale + "/Time Controller")]
     public class TimeController : UPDBBehaviour
     {
 

@@ -9,7 +9,7 @@ namespace UPDB.CoreHelper.UsableMethods
     ///<summary>
     /// UPDB methods that does not use extensions, callable in every classes that derives from monoBehaviour
     ///</summary>
-    public class UPDBBehaviour : MonoBehaviour
+    public abstract class UPDBBehaviour : MonoBehaviour
     {
         /******************************************************NATIVE METHODS***********************************************************/
 

@@ -6,7 +6,8 @@ using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.ProceduralGeneration.MazeGenerator
 {
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/" + NamespaceID.MazeGenerator)]
+    [HelpURL(URL.baseURL + "/tree/main/ProceduralGeneration/MazeGenerator/README.md")]
+    [AddComponentMenu(NamespaceID.ProceduralGenerationPath + "/" + NamespaceID.MazeGenerator + "/Maze Generator")]
     public class MazeGenerator : UPDBBehaviour
     {
         [Header("Maze Render Parameters")]

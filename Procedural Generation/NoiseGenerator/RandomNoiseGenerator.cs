@@ -6,7 +6,7 @@ namespace UPDB.ProceduralGeneration.NoiseGenerator
     ///<summary>
     /// 
     ///</summary>
-    [CreateAssetMenu(fileName = "NewRandomNoiseGenerator", menuName = NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/NoiseGenerator")]
+    [CreateAssetMenu(fileName = "New RandomNoiseGenerator", menuName = NamespaceID.ProceduralGenerationPath + "/Noise Generator")]
     public class RandomNoiseGenerator : NoiseTextureGenerator
     {
         [SerializeField, Range(0, 1)]

@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 
 namespace UPDB.ProceduralGeneration.ProShapeBuilder
 {
-	public class OctahedronMeshBuilder : ShapeMeshBuilder
+    [HelpURL(URL.baseURL + "/tree/main/ProceduralGeneration/ProShapeBuilder/README.md")]
+    [AddComponentMenu(NamespaceID.ProceduralGenerationPath + "/" + NamespaceID.ProShapeBuilder + "/Octahedron Mesh Builder")]
+    public class OctahedronMeshBuilder : ShapeMeshBuilder
 	{
         [SerializeField, Tooltip("tell what base scale should look like")]
         private BaseScaleUnitOfSolid _baseScaleType;

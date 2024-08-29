@@ -13,7 +13,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
     /// <summary>
     /// Tps Controller of player movements and actions
     /// </summary>
-    [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.CamerasAndCharacterControllers + "/" + NamespaceID.CharacterControllers + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Controller")]
+    [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/CompleteTpsController/README.md")]
+    [AddComponentMenu(NamespaceID.CharacterControllersPath + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Controller")]
     public class PlayerController : UPDBBehaviour
     {
         #region Serialized API
