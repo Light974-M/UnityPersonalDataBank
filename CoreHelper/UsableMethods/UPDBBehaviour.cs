@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
+using UPDB.Data.SplineTool;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -192,7 +193,12 @@ namespace UPDB.CoreHelper.UsableMethods
             return localRotation * parentRotation;
         }
 
-        #region AutoLerp
+        /************************************************UTILITY METHODS COLLECTIONS****************************************************/
+
+
+        //LERP TOOLS
+
+        #region Auto Lerp
 
         /// <summary>
         /// make a lerp automatically(based on delta time update rate) with float, between a and b, in a specific time
@@ -333,27 +339,15 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static float AutoLerp(float a, float b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
+        public static float AutoLerp(float a, float b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             float value = 0;
 
             if (timer < lerpTime)
             {
-                //normalize value of timer for curve time
-                float lastKeyTime = smoothTimer.keys[smoothTimer.length - 1].time;
-                float firstKeyTime = smoothTimer.keys[0].time;
-                float timerBaseValue = (timer / lerpTime);
+                float timerNormalized = (timer / lerpTime);
+                value = Mathf.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
 
-                float timerScaledValue = (timerBaseValue * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-                float timerCurveValue = smoothTimer.Evaluate(timerScaledValue);
-
-                //normalize also value of curve
-                float lastKeyValue = smoothTimer.keys[smoothTimer.length - 1].value;
-                float firstKeyValue = smoothTimer.keys[0].value;
-
-                float timerCurveValueNormalized = (timerCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-                value = Mathf.Lerp(a, b, timerCurveValueNormalized);
                 timer += Time.deltaTime;
             }
             else
@@ -374,7 +368,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
+        public static Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             //create a null vector 2
             Vector2 value = Vector2.zero;
@@ -382,22 +376,8 @@ namespace UPDB.CoreHelper.UsableMethods
             //if timer has not reach lerp time, update lerp state, if it has, put timer to lerp time, and value to end state
             if (timer < lerpTime)
             {
-                //normalize value of timer for curve time
-                float lastKeyTime = smoothTimer.keys[smoothTimer.length - 1].time;
-                float firstKeyTime = smoothTimer.keys[0].time;
-                float timerBaseValue = (timer / lerpTime);
-
-                float timerScaledValue = (timerBaseValue * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-                float timerCurveValue = smoothTimer.Evaluate(timerScaledValue);
-
-                //normalize also value of curve
-                float lastKeyValue = smoothTimer.keys[smoothTimer.length - 1].value;
-                float firstKeyValue = smoothTimer.keys[0].value;
-
-                float timerCurveValueNormalized = (timerCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-                //update value to a lerp between a and b, with timer / lerp timer for T (value between 0 and 1) applyied to the animation curve value
-                value = Vector2.Lerp(a, b, timerCurveValueNormalized);
+                float timerNormalized = (timer / lerpTime);
+                value = Vector2.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
 
                 //update timer value
                 timer += Time.deltaTime;
@@ -421,27 +401,15 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Vector3 AutoLerp(Vector3 a, Vector3 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
+        public static Vector3 AutoLerp(Vector3 a, Vector3 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             Vector3 value = Vector3.zero;
 
             if (timer < lerpTime)
             {
-                //normalize value of timer for curve time
-                float lastKeyTime = smoothTimer.keys[smoothTimer.length - 1].time;
-                float firstKeyTime = smoothTimer.keys[0].time;
-                float timerBaseValue = (timer / lerpTime);
+                float timerNormalized = (timer / lerpTime);
+                value = Vector3.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
 
-                float timerScaledValue = (timerBaseValue * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-                float timerCurveValue = smoothTimer.Evaluate(timerScaledValue);
-
-                //normalize also value of curve
-                float lastKeyValue = smoothTimer.keys[smoothTimer.length - 1].value;
-                float firstKeyValue = smoothTimer.keys[0].value;
-
-                float timerCurveValueNormalized = (timerCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-                value = Vector3.Lerp(a, b, timerCurveValueNormalized);
                 timer += Time.deltaTime;
             }
             else
@@ -462,27 +430,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Vector4 AutoLerp(Vector4 a, Vector4 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
+        public static Vector4 AutoLerp(Vector4 a, Vector4 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             Vector4 value = Vector4.zero;
 
             if (timer < lerpTime)
             {
-                //normalize value of timer for curve time
-                float lastKeyTime = smoothTimer.keys[smoothTimer.length - 1].time;
-                float firstKeyTime = smoothTimer.keys[0].time;
-                float timerBaseValue = (timer / lerpTime);
-
-                float timerScaledValue = (timerBaseValue * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-                float timerCurveValue = smoothTimer.Evaluate(timerScaledValue);
-
-                //normalize also value of curve
-                float lastKeyValue = smoothTimer.keys[smoothTimer.length - 1].value;
-                float firstKeyValue = smoothTimer.keys[0].value;
-
-                float timerCurveValueNormalized = (timerCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-                value = Vector4.Lerp(a, b, timerCurveValueNormalized);
+                float timerNormalized = (timer / lerpTime);
+                value = Vector4.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
 
                 timer += Time.deltaTime;
             }
@@ -504,27 +459,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Quaternion AutoLerp(Quaternion a, Quaternion b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
+        public static Quaternion AutoLerp(Quaternion a, Quaternion b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             Quaternion value = Quaternion.identity;
 
             if (timer < lerpTime)
             {
-                //normalize value of timer for curve time
-                float lastKeyTime = smoothTimer.keys[smoothTimer.length - 1].time;
-                float firstKeyTime = smoothTimer.keys[0].time;
-                float timerBaseValue = (timer / lerpTime);
-
-                float timerScaledValue = (timerBaseValue * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-                float timerCurveValue = smoothTimer.Evaluate(timerScaledValue);
-
-                //normalize also value of curve
-                float lastKeyValue = smoothTimer.keys[smoothTimer.length - 1].value;
-                float firstKeyValue = smoothTimer.keys[0].value;
-
-                float timerCurveValueNormalized = (timerCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-                value = Quaternion.Lerp(a, b, timerCurveValueNormalized);
+                float timerNormalized = (timer / lerpTime);
+                value = Quaternion.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
 
                 timer += Time.deltaTime;
             }
@@ -539,7 +481,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
-        #region CurveLerp
+        #region Curve Lerp
 
         /// <summary>
         /// make a lerp with an added curve shape to time value
@@ -549,22 +491,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static float CurveLerp(float a, float b, float t, AnimationCurve shape)
+        public static float CurveLerp(float a, float b, float t, ref AnimationCurve shape)
         {
-            //normalize value of timer for curve time
-            float lastKeyTime = shape.keys[shape.length - 1].time;
-            float firstKeyTime = shape.keys[0].time;
-
-            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-            float timeCurveValue = shape.Evaluate(timeScaledValue);
-
-            //normalize also value of curve
-            float lastKeyValue = shape.keys[shape.length - 1].value;
-            float firstKeyValue = shape.keys[0].value;
-
-            float timerCurveValueNormalized = (timeCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-            return Mathf.Lerp(a, b, timerCurveValueNormalized);
+            return Mathf.Lerp(a, b, GetShapedTime(t, ref shape));
         }
 
         /// <summary>
@@ -575,22 +504,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Vector2 CurveLerp(Vector2 a, Vector2 b, float t, AnimationCurve shape)
+        public static Vector2 CurveLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape)
         {
-            //normalize value of timer for curve time
-            float lastKeyTime = shape.keys[shape.length - 1].time;
-            float firstKeyTime = shape.keys[0].time;
-
-            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-            float timeCurveValue = shape.Evaluate(timeScaledValue);
-
-            //normalize also value of curve
-            float lastKeyValue = shape.keys[shape.length - 1].value;
-            float firstKeyValue = shape.keys[0].value;
-
-            float timerCurveValueNormalized = (timeCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-            return Vector2.Lerp(a, b, timerCurveValueNormalized);
+            return Vector2.Lerp(a, b, GetShapedTime(t, ref shape));
         }
 
         /// <summary>
@@ -601,22 +517,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Vector3 CurveLerp(Vector3 a, Vector3 b, float t, AnimationCurve shape)
+        public static Vector3 CurveLerp(Vector3 a, Vector3 b, float t, ref AnimationCurve shape)
         {
-            //normalize value of timer for curve time
-            float lastKeyTime = shape.keys[shape.length - 1].time;
-            float firstKeyTime = shape.keys[0].time;
-
-            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-            float timeCurveValue = shape.Evaluate(timeScaledValue);
-
-            //normalize also value of curve
-            float lastKeyValue = shape.keys[shape.length - 1].value;
-            float firstKeyValue = shape.keys[0].value;
-
-            float timerCurveValueNormalized = (timeCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-            return Vector3.Lerp(a, b, timerCurveValueNormalized);
+            return Vector3.Lerp(a, b, GetShapedTime(t, ref shape));
         }
 
         /// <summary>
@@ -627,22 +530,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Vector4 CurveLerp(Vector4 a, Vector4 b, float t, AnimationCurve shape)
+        public static Vector4 CurveLerp(Vector4 a, Vector4 b, float t, ref AnimationCurve shape)
         {
-            //normalize value of timer for curve time
-            float lastKeyTime = shape.keys[shape.length - 1].time;
-            float firstKeyTime = shape.keys[0].time;
-
-            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-            float timeCurveValue = shape.Evaluate(timeScaledValue);
-
-            //normalize also value of curve
-            float lastKeyValue = shape.keys[shape.length - 1].value;
-            float firstKeyValue = shape.keys[0].value;
-
-            float timerCurveValueNormalized = (timeCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-            return Vector4.Lerp(a, b, timerCurveValueNormalized);
+            return Vector4.Lerp(a, b, GetShapedTime(t, ref shape));
         }
 
         /// <summary>
@@ -653,25 +543,198 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns></returns>
-        public static Quaternion CurveLerp(Quaternion a, Quaternion b, float t, AnimationCurve shape)
+        public static Quaternion CurveLerp(Quaternion a, Quaternion b, float t, ref AnimationCurve shape)
         {
-            //normalize value of timer for curve time
-            float lastKeyTime = shape.keys[shape.length - 1].time;
-            float firstKeyTime = shape.keys[0].time;
-
-            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
-            float timeCurveValue = shape.Evaluate(timeScaledValue);
-
-            //normalize also value of curve
-            float lastKeyValue = shape.keys[shape.length - 1].value;
-            float firstKeyValue = shape.keys[0].value;
-
-            float timerCurveValueNormalized = (timeCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
-
-            return Quaternion.Lerp(a, b, timerCurveValueNormalized);
+            return Quaternion.Lerp(a, b, GetShapedTime(t, ref shape));
         }
 
         #endregion
+
+        #region Unbounded Lerp
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, lerp will still calculate to make value pass under a, or over b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static float UnboundedLerp(float a, float b, float t)
+        {
+            return a + ((b - a) * t);
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, lerp will still calculate to make value pass under a, or over b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector2 UnboundedLerp(Vector2 a, Vector2 b, float t)
+        {
+            return a + ((b - a) * t);
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, lerp will still calculate to make value pass under a, or over b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector3 UnboundedLerp(Vector3 a, Vector3 b, float t)
+        {
+            return a + ((b - a) * t);
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, lerp will still calculate to make value pass under a, or over b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector4 UnboundedLerp(Vector4 a, Vector4 b, float t)
+        {
+            return a + ((b - a) * t);
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, you can't directly with t value, but you can if you set a value over final key or under initial key of curve
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static float UnboundedLerp(float a, float b, float t, ref AnimationCurve shape)
+        {
+            return a + ((b - a) * GetShapedTime(t, ref shape));
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, you can't directly with t value, but you can if you set a value over final key or under initial key of curve
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector2 UnboundedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape)
+        {
+            return a + ((b - a) * GetShapedTime(t, ref shape));
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, you can't directly with t value, but you can if you set a value over final key or under initial key of curve
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector3 UnboundedLerp(Vector3 a, Vector3 b, float t, ref AnimationCurve shape)
+        {
+            return a + ((b - a) * GetShapedTime(t, ref shape));
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, you can't directly with t value, but you can if you set a value over final key or under initial key of curve
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector4 UnboundedLerp(Vector4 a, Vector4 b, float t, ref AnimationCurve shape)
+        {
+            return a + ((b - a) * GetShapedTime(t, ref shape));
+        }
+
+        #endregion
+
+        #region Unbounded Shaped Lerp
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, lerp will still calculate to make value pass under a, or over b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <returns></returns>
+        public static Vector2 UnboundedShapedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve valueShape)
+        {
+            Vector2 value = a + ((b - a) * t);
+
+            return GetShapedValue(a, b, value, t, ref valueShape);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// read t value in animation curve, first key and last key of curve gives the considered "0" and "1" both in x and y
+        /// </summary>
+        /// <param name="t">time value between 0 and 1(usually)</param>
+        /// <param name="shape">curve to read from</param>
+        /// <returns></returns>
+        public static float GetShapedTime(float t, ref AnimationCurve shape)
+        {
+            //if curve isn't readable or null, create a linear curve
+            if (shape == null || shape.keys.Length < 2)
+                shape = AnimationCurve.Linear(0, 0, 1, 1);
+
+            //normalize value of timer for curve time
+            float lastKeyTime = shape.keys[shape.length - 1].time;
+            float firstKeyTime = shape.keys[0].time;
+
+            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
+            float timeCurveValue = shape.Evaluate(timeScaledValue);
+
+            //normalize also value of curve
+            float lastKeyValue = shape.keys[shape.length - 1].value;
+            float firstKeyValue = shape.keys[0].value;
+
+            return (timeCurveValue - firstKeyValue) / (lastKeyValue - firstKeyValue);
+        }
+
+        /// <summary>
+        /// read t value in animation curve, first key and last key of curve gives the considered "0" and "1" in x, and keep y value raw
+        /// </summary>
+        /// <param name="t">time value between 0 and 1(usually)</param>
+        /// <param name="shape">curve to read from</param>
+        /// <returns></returns>
+        public static float GetShapedTimeRawValue(float t, ref AnimationCurve shape)
+        {
+            //if curve isn't readable or null, create a linear curve
+            if (shape == null || shape.keys.Length < 2)
+                shape = AnimationCurve.Linear(0, 0, 1, 1);
+
+            //normalize value of timer for curve time
+            float lastKeyTime = shape.keys[shape.length - 1].time;
+            float firstKeyTime = shape.keys[0].time;
+
+            float timeScaledValue = (t * (lastKeyTime - firstKeyTime)) + firstKeyTime;
+            float timeCurveValue = shape.Evaluate(timeScaledValue);
+
+            return timeCurveValue;
+        }
+
+        public static Vector2 GetShapedValue(Vector2 start, Vector2 end, Vector2 value, float time, ref AnimationCurve shape)
+        {
+            if (time < 0 || time > 1)
+                return value;
+
+            Vector2 boundDir = end - start;
+            Vector2 valueDir = value - start;
+            Vector2 clampedValueDir = valueDir / boundDir.magnitude;
+
+            float valueToAdd = GetShapedTimeRawValue(clampedValueDir.magnitude, ref shape);
+
+            Vector2 verticalVec = FindPerpToVec(boundDir.normalized, Axis.Y);
+            verticalVec *= valueToAdd;
+
+            return value + verticalVec;
+        }
+
+
+        //VECTOR AND ROTATION CALCULATIONS TOOLS
 
         #region Custom LookRotation
 
@@ -715,7 +778,6 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
-
 
         #region Vector2CoordinateConversion
 
@@ -1456,7 +1518,6 @@ namespace UPDB.CoreHelper.UsableMethods
         #endregion
 
         #endregion
-
 
         #region Vector3CoordinateConversion
 
@@ -2359,7 +2420,6 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
-
         #region FindPerpendicularVector
 
         #region 2D
@@ -2491,6 +2551,8 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+
+        //DEBUG TOOLS
 
         #region Custom Debug
 
@@ -3607,8 +3669,16 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+
+        //OTHERS
+
         #region Binary Conversions
 
+        /// <summary>
+        /// convert a given binary input into decimal, from string to float, using BitArray for calculations
+        /// </summary>
+        /// <param name="input">binary input</param>
+        /// <returns></returns>
         public static float BinaryToDecimal(string input)
         {
             string allocatedMemoryKey = "32bit";
@@ -3639,6 +3709,12 @@ namespace UPDB.CoreHelper.UsableMethods
             return output;
         }
 
+        /// <summary>
+        /// convert a binary input given in string into a real BitArray binary input
+        /// </summary>
+        /// <param name="input">binary input in string</param>
+        /// <param name="allocatedMemoryKey">allocated memory bits</param>
+        /// <returns></returns>
         public static BitArray BinaryInputToBitArray(string input, string allocatedMemoryKey)
         {
             if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
@@ -3762,6 +3838,11 @@ namespace UPDB.CoreHelper.UsableMethods
             return convertedInput;
         }
 
+        /// <summary>
+        /// convert a given decimal input into binary, from float to string, using BitArray for calculations
+        /// </summary>
+        /// <param name="input">decimal input in float</param>
+        /// <returns></returns>
         public static string DecimalToBinary(float input)
         {
             string allocatedMemoryKey = "32bit";
@@ -3773,6 +3854,12 @@ namespace UPDB.CoreHelper.UsableMethods
             return output;
         }
 
+        /// <summary>
+        /// convert a decimal input into a bit array binary output
+        /// </summary>
+        /// <param name="input">decimal input in float</param>
+        /// <param name="allocatedMemoryKey">allocated memory bits</param>
+        /// <returns></returns>
         public static BitArray DecimalInputToBitArray(float input, string allocatedMemoryKey)
         {
             if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
@@ -3830,6 +3917,11 @@ namespace UPDB.CoreHelper.UsableMethods
             return convertedInput;
         }
 
+        /// <summary>
+        /// convert a bitArray binary input into a readable and displayable string output
+        /// </summary>
+        /// <param name="input">bit array binary input</param>
+        /// <returns></returns>
         public static string BitArrayToBinaryOutput(BitArray input)
         {
             if (!UPDBMath.IsPowerOf(input.Length, 2))
@@ -3869,6 +3961,11 @@ namespace UPDB.CoreHelper.UsableMethods
             return output;
         }
 
+        /// <summary>
+        /// take a char and return it's int value of baseNumeration dictionnary, this is used if you want, for example, the 1 character, to not be taken as a 1 value
+        /// </summary>
+        /// <param name="input">character</param>
+        /// <returns></returns>
         public static int ConvertCharToBaseNumerationValue(char input)
         {
             if (DictionaryLib.BaseNumerationCaractersList.TryGetValue(input, out int output))
@@ -3881,6 +3978,14 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #region RayIntersectionCalculations
 
+        /// <summary>
+        /// take a ray in arguments, and a height, and return if the ray intersect the height at a certain point, and if true, calculate the intersection direction multiplier t
+        /// </summary>
+        /// <param name="origin">origin of ray</param>
+        /// <param name="direction">direction of ray</param>
+        /// <param name="h">height to intersect</param>
+        /// <param name="t">the intersection direction multiplier, multiply this to direction to get the vector that intersect the height</param>
+        /// <returns></returns>
         public static bool FindIntersectionWithHeight(Vector3 origin, Vector3 direction, float h, out float t)
         {
             t = 0f;
@@ -3905,11 +4010,25 @@ namespace UPDB.CoreHelper.UsableMethods
             return true;
         }
 
+        /// <summary>
+        /// given the t value of direction, calculate the intersection point
+        /// </summary>
+        /// <param name="origin">origin of ray</param>
+        /// <param name="direction">direction of ray</param>
+        /// <param name="t">t value of direction calculated by FindIntersectionWithHeight</param>
+        /// <returns></returns>
         public static Vector3 GetIntersectionPointWithHeight(Vector3 origin, Vector3 direction, float t)
         {
             return origin + t * direction;
         }
 
+        /// <summary>
+        /// automatically search for a point, with the two methods above, an return vector3.zero if no intersection found
+        /// </summary>
+        /// <param name="origin">origin of ray</param>
+        /// <param name="direction">direction of ray</param>
+        /// <param name="height">height to intersect</param>
+        /// <returns></returns>
         public static Vector3 GetPointOfVectorWithHeight(Vector3 origin, Vector3 direction, float height)
         {
             if (FindIntersectionWithHeight(origin, direction, height, out float t))
@@ -3925,6 +4044,14 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #region No Saved Vertices
 
+        /// <summary>
+        /// create a new serie of vertices and one triangle
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="pos1">pos of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
         public static void CreateMeshTriangle(ref List<Vector3> vertices, ref List<int> triangles, Vector3 pos1, Vector3 pos2, Vector3 pos3)
         {
             vertices.Add(pos1);
@@ -3935,6 +4062,14 @@ namespace UPDB.CoreHelper.UsableMethods
             triangles.Add(vertices.Count - 1);
         }
 
+        /// <summary>
+        /// create two new vertices and one triangle attached to the two and one given vertex in list
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
         public static void AddMeshTriangleOneVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, int linkedPos1, Vector3 pos2, Vector3 pos3)
         {
             triangles.Add(linkedPos1);
@@ -3946,6 +4081,14 @@ namespace UPDB.CoreHelper.UsableMethods
             triangles.Add(vertices.Count - 1);
         }
 
+        /// <summary>
+        /// create one new vertex and one triangle attached to this vertex and two given vertex in list
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="linkedPos2">index of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
         public static void AddMeshTriangleTwoVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, int linkedPos1, int linkedPos2, Vector3 pos3)
         {
             triangles.Add(linkedPos1);
@@ -3956,23 +4099,67 @@ namespace UPDB.CoreHelper.UsableMethods
             triangles.Add(vertices.Count - 1);
         }
 
-        public static void AddMeshTriangleThreeVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, int linkedPos1, int linkedPos2, int linkedPos3)
+        /// <summary>
+        /// create a new triangle attached to three given vertex in list
+        /// </summary>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="linkedPos2">index of second vertex</param>
+        /// <param name="linkedPos3">index of third vertex</param>
+        public static void AddMeshTriangleThreeVertexLinked(ref List<int> triangles, int linkedPos1, int linkedPos2, int linkedPos3)
         {
             triangles.Add(linkedPos1);
             triangles.Add(linkedPos2);
             triangles.Add(linkedPos3);
         }
 
+        /// <summary>
+        /// create a new serie of vertices and two triangle to form a quad
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="pos1">pos of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
+        /// <param name="pos4">pos of fourth vertex</param>
         public static void CreateQuad(ref List<Vector3> vertices, ref List<int> triangles, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
         {
             CreateMeshTriangle(ref vertices, ref triangles, pos1, pos2, pos3);
             AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, vertices.Count - 1, vertices.Count - 2, pos4);
         }
 
+        /// <summary>
+        /// create two new triangle attached to four given vertex in list to form a quad
+        /// </summary>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="linkedPos2">index of second vertex</param>
+        /// <param name="linkedPos3">index of third vertex</param>
+        /// <param name="linkedPos4">index of fourth vertex</param>
+        public static void AddQuadFourVerticesLinked(ref List<int> triangles, int linkedPos1, int linkedPos2, int linkedPos3, int linkedPos4)
+        {
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos2);
+            triangles.Add(linkedPos3);
+
+            triangles.Add(linkedPos2);
+            triangles.Add(linkedPos4);
+            triangles.Add(linkedPos3);
+        }
+
         #endregion
 
         #region Vertices Library Save
 
+        /// <summary>
+        /// create a new serie of vertices and one triangle
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="verticesLibrary">vertices library to write on and read from</param>
+        /// <param name="pos1">pos of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
         public static void CreateMeshTriangle(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, Vector3 pos1, Vector3 pos2, Vector3 pos3)
         {
             vertices.Add(pos1);
@@ -3990,6 +4177,15 @@ namespace UPDB.CoreHelper.UsableMethods
             verticesLibrary.Add(pos3, vertices.Count - 1);
         }
 
+        /// <summary>
+        /// create two new vertices and one triangle attached to the two and one given vertex in list
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="verticesLibrary">vertices library to write on and read from</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
         public static void AddMeshTriangleOneVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, Vector3 pos2, Vector3 pos3)
         {
             triangles.Add(linkedPos1);
@@ -4007,6 +4203,15 @@ namespace UPDB.CoreHelper.UsableMethods
             verticesLibrary.Add(pos3, vertices.Count - 1);
         }
 
+        /// <summary>
+        /// create one new vertex and one triangle attached to this vertex and two given vertex in list
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="verticesLibrary">vertices library to write on and read from</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="linkedPos2">index of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
         public static void AddMeshTriangleTwoVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, int linkedPos2, Vector3 pos3)
         {
             triangles.Add(linkedPos1);
@@ -4022,23 +4227,25 @@ namespace UPDB.CoreHelper.UsableMethods
             verticesLibrary.Add(pos3, vertices.Count - 1);
         }
 
+        /// <summary>
+        /// create a new serie of vertices and two triangle to form a quad
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="verticesLibrary">vertices library to write on and read from</param>
+        /// <param name="pos1">pos of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
+        /// <param name="pos4">pos of fourth vertex</param>
         public static void CreateQuad(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
         {
             CreateMeshTriangle(ref vertices, ref triangles, ref verticesLibrary, pos1, pos2, pos3);
             AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, ref verticesLibrary, vertices.Count - 1, vertices.Count - 2, pos4);
         }
 
-        public static void AddQuadOneVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, Vector3 pos2, Vector3 pos3, Vector3 pos4)
-        {
-
-        }
-
-        //public static void AddQuadTwoVertexLinked(ref List<Vector3> vertices, ref List<int> triangles, ref Dictionary<Vector3, int> verticesLibrary, int linkedPos1, int linkedPos2, Vector3 pos3, Vector3 pos4)
-        //{
-
-        //} 
         #endregion
 
         #endregion
+
     }
 }
