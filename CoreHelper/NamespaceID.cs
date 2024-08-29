@@ -17,6 +17,7 @@ namespace UPDB.CoreHelper
         public const string StateMachineTool = nameof(StateMachineTool);
         public const string Cameras = nameof(Cameras);
         public const string CharacterControllers = nameof(CharacterControllers);
+        public const string CustomPropertyAttributes = nameof(CustomPropertyAttributes);
         public const string CustomScriptOrderMethods = nameof(CustomScriptOrderMethods);
         public const string UsableMethods = nameof(UsableMethods);
         public const string Usable = nameof(Usable);

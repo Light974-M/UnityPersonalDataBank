@@ -53,6 +53,14 @@ namespace UPDB.CoreHelper.UsableMethods
             return evaluatedTime;
         }
 
+        /// <summary>
+        /// try getting the key of a dictionnary given it's value
+        /// </summary>
+        /// <typeparam name="T">key type</typeparam>
+        /// <typeparam name="W">value type</typeparam>
+        /// <param name="dict">dictionary</param>
+        /// <param name="val">value to search</param>
+        /// <returns></returns>
         public static T KeyByValue<T, W>(this Dictionary<T, W> dict, W val)
         {
             T key = default;

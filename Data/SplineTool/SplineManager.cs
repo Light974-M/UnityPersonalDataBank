@@ -344,8 +344,12 @@ namespace UPDB.Data.SplineTool
 
             Quaternion rotation = Quaternion.Lerp(lerpStartRot, target.KeysRotationOverrideList[activeKey], time);
 
+            AnimationCurve curve = _usedSpline.KeyPoints[activeKey].RotationLerpShape;
+
             if (_usedSpline.KeyPoints[activeKey].RotationLerpShape.keys.Length > 1)
-                rotation = CurveLerp(lerpStartRot, target.KeysRotationOverrideList[activeKey], time, _usedSpline.KeyPoints[activeKey].RotationLerpShape);
+                rotation = CurveLerp(lerpStartRot, target.KeysRotationOverrideList[activeKey], time, ref curve);
+
+            _usedSpline.KeyPoints[activeKey].RotationLerpShape = curve;
 
             return rotation;
         }
