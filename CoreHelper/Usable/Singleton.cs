@@ -19,7 +19,7 @@ namespace UPDB.CoreHelper.Usable
 
         public bool HideInInspector
         {
-            get => hideInInspector; 
+            get => hideInInspector;
             set => hideInInspector = value;
         }
 
@@ -89,10 +89,26 @@ namespace UPDB.CoreHelper.Usable
         /// </summary>
         protected void Initialize()
         {
+            MakeInstanceUniqueAndNotNull();
+        }
+
+        private void MakeInstanceUniqueAndNotNull()
+        {
             if (_instance == null)
+            {
                 _instance = this as T;
-            else if (_instance != this as T)
-                IntelliDestroy(this);
+                return;
+            }
+
+            if (_instance != this as T)
+            {
+                if (IsGameObjectEmpty(gameObject, this))
+                    IntelliDestroy(gameObject);
+                else
+                    IntelliDestroy(this);
+
+                return;
+            }
         }
     }
 }

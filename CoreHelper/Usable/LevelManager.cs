@@ -10,7 +10,7 @@ namespace UPDB.CoreHelper.Usable
     /// <summary>
     /// singleton manager of scenes global properties, unique scene properties are stored in children classes of levelManager
     /// </summary>
-    public abstract class LevelManager : Singleton<LevelManager>
+    public abstract class LevelManager<T> : Singleton<T> where T : Component
     {
         [SerializeField, Tooltip("name of level")]
         protected string _levelName = "";
@@ -29,6 +29,18 @@ namespace UPDB.CoreHelper.Usable
 
 
         #region Public API
+
+        public string LevelName
+        {
+            get { return _levelName; }
+            set { _levelName = value; }
+        }
+
+        public int LevelIndex
+        {
+            get { return _levelIndex; }
+            set { _levelIndex = value; }
+        }
 
         [Serializable]
         public class LevelStartInfo

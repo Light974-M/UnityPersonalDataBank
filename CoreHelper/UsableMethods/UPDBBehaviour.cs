@@ -56,7 +56,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// try to find Object, and, if not, let an exception parameter
         /// </summary>
         /// <param name="variable">variable that will assign the TryFindObjectOfType value</param>
-        /// <returns></returns>
+        /// <returns>the state of searching, true if object was found, false if no objects were found</returns>
         public static bool TryFindObjectOfType<T>(out T variable) where T : Object
         {
             variable = FindObjectOfType<T>();
@@ -69,7 +69,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <typeparam name="T"></typeparam>
         /// <param name="list1"></param>
         /// <param name="list2"></param>
-        /// <returns></returns>
+        /// <returns>if the given lists are the same or not</returns>
         public static bool AreSameList<T>(List<T> list1, List<T> list2) where T : UnityEngine.Object
         {
             bool isSame = true;
@@ -94,7 +94,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="rotation">actual rotation</param>
         /// <param name="previousRotation">last rotation(only need a variable, value is automatically updated</param>
         /// <param name="timeDelta">is deltaTime, fixedDeltaTime, or other ?</param>
-        /// <returns></returns>
+        /// <returns>the angular velocity of the given rotation delta</returns>
         public static Vector3 GetAngularVelocity(Quaternion rotation, ref Quaternion previousRotation, float timeDelta)
         {
             Quaternion deltaRotation = rotation * Quaternion.Inverse(previousRotation);
@@ -113,7 +113,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <summary>
         /// destroy instance in play or in editor intelligently
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">objetc to destroy</param>
         public static void IntelliDestroy(Object obj)
         {
             if (Application.isPlaying)
@@ -128,7 +128,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="value">value to clamp</param>
         /// <param name="min">min born(0 for a list)</param>
         /// <param name="max">max born(length - 1 for a list)</param>
-        /// <returns></returns>
+        /// <returns>loop and clamped value</returns>
         public static int LoopClamp(int value, int min, int max)
         {
             bool isLastValueOutbound = value > max;
@@ -157,7 +157,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <typeparam name="T">parent class, if none, put System.Object</typeparam>
         /// <param name="type">generic class to search for</param>
-        /// <returns></returns>
+        /// <returns>the generic class found</returns>
         public static T[] FindObjectsOfTypeGeneric<T>(System.Type type) where T : Object
         {
             T[] objList = FindObjectsOfType<T>();
@@ -183,15 +183,56 @@ namespace UPDB.CoreHelper.UsableMethods
             return matchList.ToArray();
         }
 
+        /// <summary>
+        /// get the rotation locally from another rotation
+        /// </summary>
+        /// <param name="worldRotation">rotation to calculate</param>
+        /// <param name="parentRotation">parent rotation considered as the origin</param>
+        /// <returns>the local rotation</returns>
         public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
         {
             return Quaternion.Inverse(parentRotation) * worldRotation;
         }
 
+        /// <summary>
+        /// get the rotation in world rotation, given a local rotation
+        /// </summary>
+        /// <param name="localRotation">rotation to calculate</param>
+        /// <param name="parentRotation">parent rotation considered as the origin</param>
+        /// <returns>the world rotation</returns>
         public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
         {
             return localRotation * parentRotation;
         }
+
+        /// <summary>
+        /// return true if gameObject has no components
+        /// </summary>
+        /// <param name="obj">object to test</param>
+        /// <returns>if the gameObject is null</returns>
+        public static bool IsGameObjectEmpty(GameObject obj)
+        {
+            Component[] components = obj.GetComponents<Component>();
+
+            return components.Length <= 1;
+        }
+
+        /// <summary>
+        /// return true if gameObject has no components
+        /// </summary>
+        /// <param name="obj">object to test</param>
+        /// <returns>if the gameObject is null</returns>
+        public static bool IsGameObjectEmpty(GameObject obj, Component exclude)
+        {
+            Component[] components = obj.GetComponents<Component>();
+
+            foreach (Component component in components)
+                if(component != obj.transform && component != exclude)
+                    return false;
+
+            return true;
+        }
+
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
 
@@ -207,7 +248,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static float AutoLerp(float a, float b, float lerpTime, ref float timer)
         {
             float value = 0;
@@ -233,7 +274,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer)
         {
             Vector2 value = Vector2.zero;
@@ -259,7 +300,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Vector3 AutoLerp(Vector3 a, Vector3 b, float lerpTime, ref float timer)
         {
             Vector3 value = Vector3.zero;
@@ -285,7 +326,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Vector4 AutoLerp(Vector4 a, Vector4 b, float lerpTime, ref float timer)
         {
             Vector4 value = Vector4.zero;
@@ -311,7 +352,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Quaternion AutoLerp(Quaternion a, Quaternion b, float lerpTime, ref float timer)
         {
             Quaternion value = Quaternion.identity;
@@ -338,7 +379,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static float AutoLerp(float a, float b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             float value = 0;
@@ -367,7 +408,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             //create a null vector 2
@@ -400,7 +441,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Vector3 AutoLerp(Vector3 a, Vector3 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             Vector3 value = Vector3.zero;
@@ -429,7 +470,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Vector4 AutoLerp(Vector4 a, Vector4 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             Vector4 value = Vector4.zero;
@@ -458,7 +499,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="lerpTime">time to make lerp</param>
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the value of lerp with the current time</returns>
         public static Quaternion AutoLerp(Quaternion a, Quaternion b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
         {
             Quaternion value = Quaternion.identity;
@@ -490,7 +531,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the lerp value at t read from shape curve</returns>
         public static float CurveLerp(float a, float b, float t, ref AnimationCurve shape)
         {
             return Mathf.Lerp(a, b, GetShapedTime(t, ref shape));
@@ -503,7 +544,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the lerp value at t read from shape curve</returns>
         public static Vector2 CurveLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape)
         {
             return Vector2.Lerp(a, b, GetShapedTime(t, ref shape));
@@ -516,7 +557,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the lerp value at t read from shape curve</returns>
         public static Vector3 CurveLerp(Vector3 a, Vector3 b, float t, ref AnimationCurve shape)
         {
             return Vector3.Lerp(a, b, GetShapedTime(t, ref shape));
@@ -529,7 +570,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the lerp value at t read from shape curve</returns>
         public static Vector4 CurveLerp(Vector4 a, Vector4 b, float t, ref AnimationCurve shape)
         {
             return Vector4.Lerp(a, b, GetShapedTime(t, ref shape));
@@ -542,7 +583,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="b">end point</param>
         /// <param name="t">time t representing lerp progression</param>
         /// /// <param name="shape">curve to offset t and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
-        /// <returns></returns>
+        /// <returns>the lerp value at t read from shape curve</returns>
         public static Quaternion CurveLerp(Quaternion a, Quaternion b, float t, ref AnimationCurve shape)
         {
             return Quaternion.Lerp(a, b, GetShapedTime(t, ref shape));
@@ -558,7 +599,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static float UnboundedLerp(float a, float b, float t)
         {
             return a + ((b - a) * t);
@@ -570,7 +611,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static Vector2 UnboundedLerp(Vector2 a, Vector2 b, float t)
         {
             return a + ((b - a) * t);
@@ -582,7 +623,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static Vector3 UnboundedLerp(Vector3 a, Vector3 b, float t)
         {
             return a + ((b - a) * t);
@@ -594,7 +635,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static Vector4 UnboundedLerp(Vector4 a, Vector4 b, float t)
         {
             return a + ((b - a) * t);
@@ -606,7 +647,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static float UnboundedLerp(float a, float b, float t, ref AnimationCurve shape)
         {
             return a + ((b - a) * GetShapedTime(t, ref shape));
@@ -618,7 +659,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static Vector2 UnboundedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape)
         {
             return a + ((b - a) * GetShapedTime(t, ref shape));
@@ -630,7 +671,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static Vector3 UnboundedLerp(Vector3 a, Vector3 b, float t, ref AnimationCurve shape)
         {
             return a + ((b - a) * GetShapedTime(t, ref shape));
@@ -642,7 +683,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <returns>the lerp value</returns>
         public static Vector4 UnboundedLerp(Vector4 a, Vector4 b, float t, ref AnimationCurve shape)
         {
             return a + ((b - a) * GetShapedTime(t, ref shape));
@@ -658,12 +699,234 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="a">init pos</param>
         /// <param name="b">final pos</param>
         /// <param name="t">value of lerp</param>
-        /// <returns></returns>
+        /// <param name="valueShape">curve modifier of value output</param>
+        /// <returns>the lerp value</returns>
         public static Vector2 UnboundedShapedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve valueShape)
         {
             Vector2 value = a + ((b - a) * t);
 
             return GetShapedValue(a, b, value, t, ref valueShape);
+        }
+
+        /// <summary>
+        /// make a manual lerp calculation to allow overpassing bounds 0 and 1, lerp will still calculate to make value pass under a, or over b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <param name="shape">curve modifier of t</param>
+        /// <param name="valueShape">curve modifier of value output</param>
+        /// <returns></returns>
+        public static Vector2 UnboundedShapedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape, ref AnimationCurve valueShape)
+        {
+            Vector2 value = a + ((b - a) * GetShapedTime(t, ref shape));
+
+            return GetShapedValue(a, b, value, t, ref valueShape);
+        }
+
+        #endregion
+
+        #region Unbounded Inverse Lerp
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(float a, float b, float value)
+        {
+            return (value - a) / (b - a);
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(Vector2 a, Vector2 b, Vector2 value)
+        {
+            Vector2 time = UPDBMath.Divide(value - a, b - a);
+
+            if (time.x != time.y)
+            {
+                Debug.LogWarning("warning : given value of inverse lerp do not exist between ");
+                return 0;
+            }
+
+            return time.x;
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(Vector3 a, Vector3 b, Vector3 value)
+        {
+            Vector3 time = UPDBMath.Divide(value - a, b - a);
+
+            if (time.x != time.y)
+            {
+                Debug.LogWarning("warning : given value of inverse lerp do not exist between ");
+                return 0;
+            }
+
+            return time.x;
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(Vector4 a, Vector4 b, Vector4 value)
+        {
+            Vector4 time = UPDBMath.Divide(value - a, b - a);
+
+            if (time.x != time.y)
+            {
+                Debug.LogWarning("warning : given value of inverse lerp do not exist between ");
+                return 0;
+            }
+
+            return time.x;
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <param name="shape">shape of getted time</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(float a, float b, float value, ref AnimationCurve shape)
+        {
+            float t = (value - a) / (b - a);
+            return GetShapedTime(t, ref shape);
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <param name="shape">shape of getted time</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(Vector2 a, Vector2 b, Vector2 value, ref AnimationCurve shape)
+        {
+            Vector2 time = UPDBMath.Divide(value - a, b - a);
+
+            if (time.x != time.y)
+            {
+                Debug.LogWarning("warning : given value of inverse lerp do not exist between ");
+                return 0;
+            }
+
+            return GetShapedTime(time.x, ref shape);
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <param name="shape">shape of getted time</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(Vector3 a, Vector3 b, Vector3 value, ref AnimationCurve shape)
+        {
+            Vector3 time = UPDBMath.Divide(value - a, b - a);
+
+            if (time.x != time.y)
+            {
+                Debug.LogWarning("warning : given value of inverse lerp do not exist between ");
+                return 0;
+            }
+
+            return GetShapedTime(time.x, ref shape);
+        }
+
+        /// <summary>
+        /// make a manual inverse lerp calculation to allow overpassing bounds a and b, lerp will still calculate to make value pass under 0, or over 1
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="value">value of lerp</param>
+        /// <param name="shape">shape of getted time</param>
+        /// <returns>the inverse lerp value</returns>
+        public static float UnboundedInverseLerp(Vector4 a, Vector4 b, Vector4 value, ref AnimationCurve shape)
+        {
+            Vector4 time = UPDBMath.Divide(value - a, b - a);
+
+            if (time.x != time.y)
+            {
+                Debug.LogWarning("warning : given value of inverse lerp do not exist between ");
+                return 0;
+            }
+
+            return GetShapedTime(time.x, ref shape);
+        }
+
+        #endregion
+
+        #region Normalized Coordinate Lerp
+
+        /// <summary>
+        /// make a lerp that, instead of asking a value between 0 and 1, ask a position in coordinates, and return the normalized position between a and b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <param name="unlockBounds">allow t value to be inferior or superior to a and b bounds</param>
+        /// <returns>the position of value normalized between a and b</returns>
+        public static Vector2 NormalizedCoordinateLerp(Vector2 a, Vector2 b, Vector2 t, bool unlockBounds)
+        {
+            if (unlockBounds)
+                return new Vector2(UnboundedLerp(a.x, b.x, t.x), UnboundedLerp(a.y, b.y, t.y));
+
+            return new Vector2(Mathf.Lerp(a.x, b.x, t.x), Mathf.Lerp(a.y, b.y, t.y));
+        }
+
+        /// <summary>
+        /// make a lerp that, instead of asking a value between 0 and 1, ask a position in coordinates, and return the normalized position between a and b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <param name="unlockBounds">allow t value to be inferior or superior to a and b bounds</param>
+        /// <returns>the position of value normalized between a and b</returns>
+        public static Vector3 NormalizedCoordinateLerp(Vector3 a, Vector3 b, Vector3 t, bool unlockBounds)
+        {
+            if (unlockBounds)
+                return new Vector3(UnboundedLerp(a.x, b.x, t.x), UnboundedLerp(a.y, b.y, t.y), UnboundedLerp(a.z, b.z, t.z));
+
+            return new Vector3(Mathf.Lerp(a.x, b.x, t.x), Mathf.Lerp(a.y, b.y, t.y), Mathf.Lerp(a.z, b.z, t.z));
+        }
+
+        /// <summary>
+        /// make a lerp that, instead of asking a value between 0 and 1, ask a position in coordinates, and return the normalized position between a and b
+        /// </summary>
+        /// <param name="a">init pos</param>
+        /// <param name="b">final pos</param>
+        /// <param name="t">value of lerp</param>
+        /// <param name="unlockBounds">allow t value to be inferior or superior to a and b bounds</param>
+        /// <returns>the position of value normalized between a and b</returns>
+        public static Vector4 NormalizedCoordinateLerp(Vector4 a, Vector4 b, Vector4 t, bool unlockBounds)
+        {
+            if (unlockBounds)
+                return new Vector4(UnboundedLerp(a.x, b.x, t.x), UnboundedLerp(a.y, b.y, t.y), UnboundedLerp(a.z, b.z, t.z), UnboundedLerp(a.w, b.w, t.w));
+
+            return new Vector4(Mathf.Lerp(a.x, b.x, t.x), Mathf.Lerp(a.y, b.y, t.y), Mathf.Lerp(a.z, b.z, t.z), Mathf.Lerp(a.w, b.w, t.w));
         }
 
         #endregion
@@ -673,7 +936,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="t">time value between 0 and 1(usually)</param>
         /// <param name="shape">curve to read from</param>
-        /// <returns></returns>
+        /// <returns>the time read in shape curve</returns>
         public static float GetShapedTime(float t, ref AnimationCurve shape)
         {
             //if curve isn't readable or null, create a linear curve
@@ -699,7 +962,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="t">time value between 0 and 1(usually)</param>
         /// <param name="shape">curve to read from</param>
-        /// <returns></returns>
+        /// <returns>the raw value of curve at time position</returns>
         public static float GetShapedTimeRawValue(float t, ref AnimationCurve shape)
         {
             //if curve isn't readable or null, create a linear curve
@@ -716,6 +979,15 @@ namespace UPDB.CoreHelper.UsableMethods
             return timeCurveValue;
         }
 
+        /// <summary>
+        /// read a given vector2 value in an animation curve, considering the orientation of start and end as the "x" and the animation curve value as the "y"
+        /// </summary>
+        /// <param name="start">start pos of local system</param>
+        /// <param name="end">end pos of local system</param>
+        /// <param name="value">value to read(as to be on the start/end line to work)</param>
+        /// <param name="time">time between 0 and 1 where value is</param>
+        /// <param name="shape">curve to read from</param>
+        /// <returns>the value read on curve</returns>
         public static Vector2 GetShapedValue(Vector2 start, Vector2 end, Vector2 value, float time, ref AnimationCurve shape)
         {
             if (time < 0 || time > 1)
@@ -743,7 +1015,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="dir"></param>
         /// <param name="up"></param>
-        /// <returns></returns>
+        /// <returns>the rotation that make object look towards direction while staying upwards toward up</returns>
         public static Quaternion MyLookRotation(Vector3 dir, Vector3 up)
         {
             if (dir == Vector3.zero)
@@ -792,7 +1064,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in world axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
-        /// <returns></returns>
+        /// <returns>local vector</returns>
         public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis);
@@ -805,7 +1077,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in world axis</param>
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>local vector</returns>
         public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisToFind);
@@ -818,7 +1090,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local vector</returns>
         public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, ignoreScale);
@@ -831,7 +1103,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local vector</returns>
         public static Vector2 Vec2WorldToLocal(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axis, axisToFind, ignoreScale);
@@ -848,7 +1120,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in local axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
-        /// <returns></returns>
+        /// <returns>world vector</returns>
         public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis);
@@ -861,7 +1133,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in local axis</param>
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>world vector</returns>
         public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisToFind);
@@ -874,7 +1146,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returnsworld vector></returns>
         public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, ignoreScale);
@@ -887,7 +1159,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world vector</returns>
         public static Vector2 Vec2LocalToWorld(Vector2 vecToConvert, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axis, axisToFind, ignoreScale);
@@ -907,7 +1179,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 xAxisOfB, Vector2 yAxisOfB)
         {
             Vector2 xAxisNormalized = xAxisOfB.normalized;
@@ -933,7 +1205,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="axisOfB">axis representing x or y axis of system B, given in system A</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 axisOfB, Axis axisToFind)
         {
             Vector2 xAxisOfB = Vector2.zero;
@@ -964,7 +1236,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 xAxisOfB, Vector2 yAxisOfB, bool ignoreScale)
         {
             Vector2 xAxisNormalized = xAxisOfB.normalized;
@@ -990,7 +1262,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOfB">axis representing x or y axis of system B, given in system A</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector2 ConvertVectorFromSystemAToSystemB(Vector2 vecToConvert, Vector2 axisOfB, Axis axisToFind, bool ignoreScale)
         {
             Vector2 xAxisOfB = Vector2.zero;
@@ -1025,7 +1297,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 xAxisOfA, Vector2 yAxisOfA)
         {
             Vector2 xAxisNormalized = xAxisOfA.normalized;
@@ -1052,7 +1324,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in system A</param>
         /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 axisOfA, Axis axisToFind)
         {
             Vector2 xAxisOfA = Vector2.zero;
@@ -1084,7 +1356,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 xAxisOfA, Vector2 yAxisOfA, bool ignoreScale)
         {
             Vector2 xAxisNormalized = xAxisOfA.normalized;
@@ -1111,7 +1383,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector2 ConvertVectorToSystemBFromSystemA(Vector2 vecToConvert, Vector2 axisOfA, Axis axisToFind, bool ignoreScale)
         {
             Vector2 xAxisOfA = Vector2.zero;
@@ -1149,7 +1421,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="origin">origin of local axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, xAxis, yAxis);
@@ -1163,7 +1435,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="origin">origin of local axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisToFind);
@@ -1177,7 +1449,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, xAxis, yAxis, ignoreScale);
@@ -1191,7 +1463,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector2 Point2WorldToLocal(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(posToConvert, origin, axis, axisToFind, ignoreScale);
@@ -1209,7 +1481,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, xAxis, yAxis);
@@ -1223,7 +1495,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axis">axis representing local x or y axis</param>
         /// <param name="origin">origin of local axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisToFind);
@@ -1237,7 +1509,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 xAxis, Vector2 yAxis, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, xAxis, yAxis, ignoreScale);
@@ -1251,7 +1523,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of local axis</param>
         /// <param name="axisToFind">is the vector above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector2 Point2LocalToWorld(Vector2 posToConvert, Vector2 origin, Vector2 axis, Axis axisToFind, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(posToConvert, origin, axis, axisToFind, ignoreScale);
@@ -1272,7 +1544,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of system B, given in system A</param>
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system B</returns>
         public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 xAxisOfB, Vector2 yAxisOfB)
         {
             Vector2 offsetedPod = posToConvert - origin;
@@ -1301,7 +1573,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of system B, given in system A</param>
         /// <param name="xAxisOfB">axis representing x or y axis of system B, given in system A</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system B</returns>
         public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 axisOfB, Axis axisToFind)
         {
             Vector2 xAxisOfB = Vector2.zero;
@@ -1335,7 +1607,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system B</returns>
         public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 xAxisOfB, Vector2 yAxisOfB, bool ignoreScale)
         {
             Vector2 offsetedPod = posToConvert - origin;
@@ -1364,7 +1636,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfB">axis representing x or y axis of system B, given in system A</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system B</returns>
         public static Vector2 ConvertPointFromSystemAToSystemB(Vector2 posToConvert, Vector2 origin, Vector2 axisOfB, Axis axisToFind, bool ignoreScale)
         {
             Vector2 xAxisOfB = Vector2.zero;
@@ -1402,7 +1674,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of system A, given in system B</param>
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system A</returns>
         public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 xAxisOfA, Vector2 yAxisOfA)
         {
             Vector2 xAxisNormalized = xAxisOfA.normalized;
@@ -1430,7 +1702,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of system A, given in system B</param>
         /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system A</returns>
         public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 axisOfA, Axis axisToFind)
         {
             Vector2 xAxisOfA = Vector2.zero;
@@ -1463,7 +1735,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system A</returns>
         public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 xAxisOfA, Vector2 yAxisOfA, bool ignoreScale)
         {
             Vector2 xAxisNormalized = xAxisOfA.normalized;
@@ -1491,7 +1763,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOfA">axis representing x or y axis of system A, given in system B</param>
         /// <param name="axisToFind">is axis given above representing x or y ?</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted in system B with given system A</returns>
         public static Vector2 ConvertPointToSystemBFromSystemA(Vector2 posToConvert, Vector2 origin, Vector2 axisOfA, Axis axisToFind, bool ignoreScale)
         {
             Vector2 xAxisOfA = Vector2.zero;
@@ -1532,7 +1804,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="vecToConvert">vector to convert, given in world axis</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
-        /// <returns></returns>
+        /// <returns>local Vector</returns>
         public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, zAxis);
@@ -1547,7 +1819,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwo">axis representing another local axis</param>
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
-        /// <returns></returns>
+        /// <returns>local Vector</returns>
         public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType);
@@ -1560,7 +1832,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local Vector</returns>
         public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, xAxis, yAxis, zAxis, ignoreScale);
@@ -1575,7 +1847,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local Vector</returns>
         public static Vector3 Vec3WorldToLocal(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertVectorFromSystemAToSystemB(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
@@ -1593,7 +1865,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="zAxis">axis representing local z axis</param>
-        /// <returns></returns>
+        /// <returns>world Vector</returns>
         public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, zAxis);
@@ -1608,7 +1880,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwo">axis representing another local axis</param>
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
-        /// <returns></returns>
+        /// <returns>world Vector</returns>
         public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType);
@@ -1622,7 +1894,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="zAxis">axis representing local z axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world Vector</returns>
         public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, xAxis, yAxis, zAxis, ignoreScale);
@@ -1637,7 +1909,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world Vector</returns>
         public static Vector3 Vec3LocalToWorld(Vector3 vecToConvert, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertVectorToSystemBFromSystemA(vecToConvert, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
@@ -1658,7 +1930,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
         /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB)
         {
             Vector3 xAxisNormalized = xAxisOfB.normalized;
@@ -1673,7 +1945,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -1690,7 +1962,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis)
         {
             Vector3 xAxisOfB = Vector3.zero;
@@ -1711,7 +1983,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -1729,7 +2001,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 axisOfB, Axis givenAxis)
         {
             Vector3 xAxisOfB = Vector3.zero;
@@ -1772,7 +2044,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -1788,7 +2060,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
         /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB, bool ignoreScale)
         {
             Vector3 xAxisNormalized = xAxisOfB.normalized;
@@ -1803,7 +2075,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -1820,7 +2092,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system B</returns>
         public static Vector3 ConvertVectorFromSystemAToSystemB(Vector3 vecToConvert, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis, bool ignoreScale)
         {
             Vector3 xAxisOfB = Vector3.zero;
@@ -1841,7 +2113,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -1861,7 +2133,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
         /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA)
         {
             Vector3 xAxisNormalized = xAxisOfA.normalized;
@@ -1869,7 +2141,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = UPDBMath.VecTime(vecToConvert, axisMag);
+            Vector3 VecNormalized = UPDBMath.Multiply(vecToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -1892,7 +2164,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwoOfA">axis representing an axis of system A, given in system B</param>
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis)
         {
             Vector3 xAxisOfA = Vector3.zero;
@@ -1906,7 +2178,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = UPDBMath.VecTime(vecToConvert, axisMag);
+            Vector3 VecNormalized = UPDBMath.Multiply(vecToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -1928,7 +2200,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
         /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA, bool ignoreScale)
         {
             Vector3 xAxisNormalized = xAxisOfA.normalized;
@@ -1936,7 +2208,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = ignoreScale ? vecToConvert : UPDBMath.VecTime(vecToConvert, axisMag);
+            Vector3 VecNormalized = ignoreScale ? vecToConvert : UPDBMath.Multiply(vecToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -1959,7 +2231,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>vector converted in system B with given system A</returns>
         public static Vector3 ConvertVectorToSystemBFromSystemA(Vector3 vecToConvert, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis, bool ignoreScale)
         {
             Vector3 xAxisOfA = Vector3.zero;
@@ -1973,7 +2245,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = ignoreScale ? vecToConvert : UPDBMath.VecTime(vecToConvert, axisMag);
+            Vector3 VecNormalized = ignoreScale ? vecToConvert : UPDBMath.Multiply(vecToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -2000,7 +2272,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of system B, given in system A</param>
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, xAxis, yAxis, zAxis);
@@ -2016,7 +2288,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwo">axis representing another local axis</param>
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType);
@@ -2030,7 +2302,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, xAxis, yAxis, zAxis, ignoreScale);
@@ -2046,7 +2318,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>local position</returns>
         public static Vector3 Point3WorldToLocal(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertPointFromSystemAToSystemB(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
@@ -2065,7 +2337,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxis">axis representing local x axis</param>
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="zAxis">axis representing local z axis</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, xAxis, yAxis, zAxis);
@@ -2081,7 +2353,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwo">axis representing another local axis</param>
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType);
@@ -2096,7 +2368,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxis">axis representing local y axis</param>
         /// <param name="zAxis">axis representing local z axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, xAxis, yAxis, zAxis, ignoreScale);
@@ -2112,7 +2384,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisOneType">what first axis represent in local axis</param>
         /// <param name="axisTwoType">what second axis represent in local axis</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>world position</returns>
         public static Vector3 Point3LocalToWorld(Vector3 pointToConvert, Vector3 origin, Vector3 axisOne, Vector3 axisTwo, Axis axisOneType, Axis axisTwoType, bool ignoreScale)
         {
             return ConvertPointToSystemBFromSystemA(pointToConvert, origin, axisOne, axisTwo, axisOneType, axisTwoType, ignoreScale);
@@ -2134,7 +2406,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfB">axis representing x axis of system B, given in system A</param>
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
         /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system B</returns>
         public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB)
         {
             Vector3 offsetedPoint = pointToConvert - origin;
@@ -2151,7 +2423,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -2169,7 +2441,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfB">axis representing an axis of system B, given in system A</param>
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system B</returns>
         public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis)
         {
             Vector3 offsetedPoint = pointToConvert - origin;
@@ -2192,7 +2464,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -2209,7 +2481,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfB">axis representing y axis of system B, given in system A</param>
         /// <param name="zAxisOfB">axis representing z axis of system B, given in system A</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system B</returns>
         public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfB, Vector3 yAxisOfB, Vector3 zAxisOfB, bool ignoreScale)
         {
             Vector3 offsetedPoint = pointToConvert - origin;
@@ -2226,7 +2498,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -2244,7 +2516,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system B</returns>
         public static Vector3 ConvertPointFromSystemAToSystemB(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfB, Vector3 axisTwoOfB, Axis firstAxis, Axis secondAxis, bool ignoreScale)
         {
             Vector3 offsetedPoint = pointToConvert - origin;
@@ -2267,7 +2539,7 @@ namespace UPDB.CoreHelper.UsableMethods
 
             Vector3 convertedNormalizedVec = new Vector3(x, y, z);
 
-            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.VecDivide(convertedNormalizedVec, axisMag);
+            Vector3 convertedVec = ignoreScale ? convertedNormalizedVec : UPDBMath.Divide(convertedNormalizedVec, axisMag);
 
             return convertedVec;
         }
@@ -2288,7 +2560,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="xAxisOfA">axis representing x axis of system A, given in system B</param>
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
         /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system A</returns>
         public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA)
         {
             Vector3 xAxisNormalized = xAxisOfA.normalized;
@@ -2296,7 +2568,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = UPDBMath.VecTime(pointToConvert, axisMag);
+            Vector3 VecNormalized = UPDBMath.Multiply(pointToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -2320,7 +2592,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="axisTwoOfA">axis representing an axis of system A, given in system B</param>
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system A</returns>
         public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis)
         {
             Vector3 xAxisOfA = Vector3.zero;
@@ -2334,7 +2606,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = UPDBMath.VecTime(pointToConvert, axisMag);
+            Vector3 VecNormalized = UPDBMath.Multiply(pointToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -2357,7 +2629,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="yAxisOfA">axis representing y axis of system A, given in system B</param>
         /// <param name="zAxisOfA">axis representing z axis of system A, given in system B</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system A</returns>
         public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 xAxisOfA, Vector3 yAxisOfA, Vector3 zAxisOfA, bool ignoreScale)
         {
             Vector3 xAxisNormalized = xAxisOfA.normalized;
@@ -2365,7 +2637,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = ignoreScale ? pointToConvert : UPDBMath.VecTime(pointToConvert, axisMag);
+            Vector3 VecNormalized = ignoreScale ? pointToConvert : UPDBMath.Multiply(pointToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -2389,7 +2661,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="firstAxis">first axis given</param>
         /// <param name="secondAxis">second axis given</param>
         /// <param name="ignoreScale">if true, axis vectors will be normalized and length will not be taken in count</param>
-        /// <returns></returns>
+        /// <returns>position converted to system B with given system A</returns>
         public static Vector3 ConvertPointToSystemBFromSystemA(Vector3 pointToConvert, Vector3 origin, Vector3 axisOneOfA, Vector3 axisTwoOfA, Axis firstAxis, Axis secondAxis, bool ignoreScale)
         {
             Vector3 xAxisOfA = Vector3.zero;
@@ -2403,7 +2675,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Vector3 zAxisNormalized = zAxisOfA.normalized;
             Vector3 axisMag = new Vector3(xAxisOfA.magnitude, yAxisOfA.magnitude, zAxisOfA.magnitude);
 
-            Vector3 VecNormalized = ignoreScale ? pointToConvert : UPDBMath.VecTime(pointToConvert, axisMag);
+            Vector3 VecNormalized = ignoreScale ? pointToConvert : UPDBMath.Multiply(pointToConvert, axisMag);
 
             float x = (VecNormalized.x * xAxisNormalized.x) + (VecNormalized.y * yAxisNormalized.x) + (VecNormalized.z * zAxisNormalized.x);
             float y = (VecNormalized.x * xAxisNormalized.y) + (VecNormalized.y * yAxisNormalized.y) + (VecNormalized.z * zAxisNormalized.y);
@@ -2429,7 +2701,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="givenAxis">vec to dearch for</param>
         /// <param name="axisToFind">wich axis you give ? basically means that : x</param>
-        /// <returns></returns>
+        /// <returns>vector perpendiculat to the given vector</returns>
         public static Vector2 FindPerpToVec(Vector2 givenAxis, Axis axisToFind)
         {
             if (axisToFind != Axis.X && axisToFind != Axis.Y)
@@ -2453,7 +2725,6 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="givenAxis">vec to dearch for</param>
         /// <param name="axisToFind">wich axis you give ? basically means that : x</param>
-        /// <returns></returns>
         public static void FindPerpToVec(Vector2 givenAxis, Axis axisToFind, ref Vector2 x, ref Vector2 y)
         {
             if (axisToFind != Axis.X && axisToFind != Axis.Y)
@@ -2489,7 +2760,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="givenAxisA">vec A</param>
         /// <param name="givenAxisB">vec B perpendicular to A</param>
         /// <param name="axisToFind">wich axis you give ? basically means that : x</param>
-        /// <returns></returns>
+        /// <returns>vector perpendicular to the two other found</returns>
         public static void FindPerpToVecs(Vector3 givenAxisA, Vector3 givenAxisB, Axis firstGivenAxis, Axis secondGivenAxis, ref Vector3 x, ref Vector3 y, ref Vector3 z)
         {
             if (firstGivenAxis == secondGivenAxis || (firstGivenAxis != Axis.X && firstGivenAxis != Axis.Y && firstGivenAxis != Axis.Z) || (secondGivenAxis != Axis.X && secondGivenAxis != Axis.Y && secondGivenAxis != Axis.Z))
@@ -3665,6 +3936,22 @@ namespace UPDB.CoreHelper.UsableMethods
             DebugDrawCube(position, scale, spaceRefTransform.right, spaceRefTransform.up, spaceRefTransform.forward, Color.white, false, false, false, false, false, false);
         }
 
+        /// <summary>
+        /// draw a cube, but allow user to face it the side he wants
+        /// </summary>
+        /// <param name="position">position of cube center</param>
+        /// <param name="scale">scale of cube, length of each edges</param>
+        /// <param name="right">right face of cube direction</param>
+        /// <param name="up">up face of cube direction</param>
+        /// <param name="forward">forward face of cube direction</param>
+        /// <param name="color">color of drawn cube</param>
+        public static void DebugDrawMinMaxCube(Vector3 posMin, Vector3 posMax, Vector3 right, Vector3 up, Vector3 forward, Color color)
+        {
+            Vector3 scale = posMax - posMin;
+            Vector3 position = Vector3.Lerp(posMin, posMax, 0.5f);
+            DebugDrawCube(position, scale, right, up, forward, color, false, false, false, false, false, false);
+        }
+
         #endregion
 
         #endregion
@@ -3678,7 +3965,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// convert a given binary input into decimal, from string to float, using BitArray for calculations
         /// </summary>
         /// <param name="input">binary input</param>
-        /// <returns></returns>
+        /// <returns>decimal output</returns>
         public static float BinaryToDecimal(string input)
         {
             string allocatedMemoryKey = "32bit";
@@ -3714,7 +4001,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="input">binary input in string</param>
         /// <param name="allocatedMemoryKey">allocated memory bits</param>
-        /// <returns></returns>
+        /// <returns>bit array of binary input</returns>
         public static BitArray BinaryInputToBitArray(string input, string allocatedMemoryKey)
         {
             if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
@@ -3842,7 +4129,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// convert a given decimal input into binary, from float to string, using BitArray for calculations
         /// </summary>
         /// <param name="input">decimal input in float</param>
-        /// <returns></returns>
+        /// <returns>binary output</returns>
         public static string DecimalToBinary(float input)
         {
             string allocatedMemoryKey = "32bit";
@@ -3859,7 +4146,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="input">decimal input in float</param>
         /// <param name="allocatedMemoryKey">allocated memory bits</param>
-        /// <returns></returns>
+        /// <returns>bit array of converted decimal(to binary)</returns>
         public static BitArray DecimalInputToBitArray(float input, string allocatedMemoryKey)
         {
             if (!DictionaryLib.BitAllocatedMemory.TryGetValue(allocatedMemoryKey, out long allocatedMemoryTry))
@@ -3921,7 +4208,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// convert a bitArray binary input into a readable and displayable string output
         /// </summary>
         /// <param name="input">bit array binary input</param>
-        /// <returns></returns>
+        /// <returns>binary output(string)</returns>
         public static string BitArrayToBinaryOutput(BitArray input)
         {
             if (!UPDBMath.IsPowerOf(input.Length, 2))
@@ -3965,7 +4252,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// take a char and return it's int value of baseNumeration dictionnary, this is used if you want, for example, the 1 character, to not be taken as a 1 value
         /// </summary>
         /// <param name="input">character</param>
-        /// <returns></returns>
+        /// <returns>value of char in dictionnary</returns>
         public static int ConvertCharToBaseNumerationValue(char input)
         {
             if (DictionaryLib.BaseNumerationCaractersList.TryGetValue(input, out int output))
@@ -3985,7 +4272,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="direction">direction of ray</param>
         /// <param name="h">height to intersect</param>
         /// <param name="t">the intersection direction multiplier, multiply this to direction to get the vector that intersect the height</param>
-        /// <returns></returns>
+        /// <returns>if the ray intersect height</returns>
         public static bool FindIntersectionWithHeight(Vector3 origin, Vector3 direction, float h, out float t)
         {
             t = 0f;
@@ -4016,7 +4303,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of ray</param>
         /// <param name="direction">direction of ray</param>
         /// <param name="t">t value of direction calculated by FindIntersectionWithHeight</param>
-        /// <returns></returns>
+        /// <returns>get the point of intersection of ray</returns>
         public static Vector3 GetIntersectionPointWithHeight(Vector3 origin, Vector3 direction, float t)
         {
             return origin + t * direction;
@@ -4028,7 +4315,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="origin">origin of ray</param>
         /// <param name="direction">direction of ray</param>
         /// <param name="height">height to intersect</param>
-        /// <returns></returns>
+        /// <returns>point of ray that intersect with height</returns>
         public static Vector3 GetPointOfVectorWithHeight(Vector3 origin, Vector3 direction, float height)
         {
             if (FindIntersectionWithHeight(origin, direction, height, out float t))
