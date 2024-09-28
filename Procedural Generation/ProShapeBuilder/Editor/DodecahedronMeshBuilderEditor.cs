@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace UPDB.ProceduralGeneration.ProShapeBuilder
 {
-    [CustomEditor(typeof(OctahedronMeshBuilder))]
-    public class OctahedronMeshBuilderEditor : Editor
+    [CustomEditor(typeof(DodecahedronMeshBuilder))]
+    public class DodecahedronMeshBuilderEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             Color backgroundColor = Color.white;
-            OctahedronMeshBuilder myTarget = (OctahedronMeshBuilder)target;
+            DodecahedronMeshBuilder myTarget = (DodecahedronMeshBuilder)target;
 
             if (GUILayout.Button("CLEAR ALL"))
                 myTarget.ClearAll();
@@ -63,3 +63,4 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
         }
     }
 }
+

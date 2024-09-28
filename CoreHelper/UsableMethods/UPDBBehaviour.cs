@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
-using UPDB.Data.SplineTool;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -233,6 +232,17 @@ namespace UPDB.CoreHelper.UsableMethods
             return true;
         }
 
+        /// <summary>
+        /// return true if value is between the two bounds
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="min">min bound</param>
+        /// <param name="max">max bound</param>
+        /// <returns>if value is within min and max bounds</returns>
+        public static bool IsInRange(float value, float min, float max)
+        {
+            return value >= min && value <= max;
+        }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
 
@@ -4432,6 +4442,47 @@ namespace UPDB.CoreHelper.UsableMethods
             triangles.Add(linkedPos2);
             triangles.Add(linkedPos4);
             triangles.Add(linkedPos3);
+        }
+
+        /// <summary>
+        /// create a new serie of vertices and three triangles to form a pentagone
+        /// </summary>
+        /// <param name="vertices">vertices list to write</param>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="pos1">pos of first vertex</param>
+        /// <param name="pos2">pos of second vertex</param>
+        /// <param name="pos3">pos of third vertex</param>
+        /// <param name="pos4">pos of fourth vertex</param>
+        /// <param name="pos5">pos of fifth vertex</param>
+        public static void CreatePentagone(ref List<Vector3> vertices, ref List<int> triangles, Vector3 pos1, Vector3 pos2, Vector3 pos3, Vector3 pos4, Vector3 pos5)
+        {
+            CreateMeshTriangle(ref vertices, ref triangles, pos1, pos2, pos3);
+            AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, vertices.Count - 3, vertices.Count - 1, pos4);
+            AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, vertices.Count - 4, vertices.Count - 1, pos5);
+        }
+
+        /// <summary>
+        /// create three new triangles attached to five given vertex in list to form a pentagone
+        /// </summary>
+        /// <param name="triangles">triangles list to write</param>
+        /// <param name="linkedPos1">index of first vertex</param>
+        /// <param name="linkedPos2">index of second vertex</param>
+        /// <param name="linkedPos3">index of third vertex</param>
+        /// <param name="linkedPos4">index of fourth vertex</param>
+        /// <param name="linkedPos5">index of fifth vertex</param>
+        public static void AddPentagoneFiveVerticesLinked(ref List<int> triangles, int linkedPos1, int linkedPos2, int linkedPos3, int linkedPos4, int linkedPos5)
+        {
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos2);
+            triangles.Add(linkedPos3);
+
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos3);
+            triangles.Add(linkedPos4);
+
+            triangles.Add(linkedPos1);
+            triangles.Add(linkedPos4);
+            triangles.Add(linkedPos5);
         }
 
         #endregion

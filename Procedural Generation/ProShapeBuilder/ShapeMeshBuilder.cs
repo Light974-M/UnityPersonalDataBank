@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,17 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
         [SerializeField, Tooltip("set default size of mesh")]
         protected float _scaleFactor = 1;
 
+        [SerializeField, Tooltip("if enabled, will decrease details of mesh with camera distance to save ressources")]
+        protected bool _levelOfDetail = false;
+
         protected MeshFilter _meshFilter;
         protected MeshRenderer _meshRenderer;
         protected Mesh _mesh;
+        protected LODFadeManager _lODManager;
 
         protected Vector3 _relativeCenterPos = Vector3.zero;
 
+        private bool _levelOfDetailDirty = false;
 
         #region Public API
 
@@ -39,6 +45,12 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
             set { _scaleFactor = value; }
         }
 
+        public bool LevelOfDetail
+        {
+            get { return _levelOfDetail; }
+            set { _levelOfDetail = value; }
+        }
+
         #endregion
 
         /*****************************BUILT IN METHODS*****************************/
@@ -46,9 +58,55 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
         private void OnEnable()
         {
             Init();
+
+            CheckLODState();
+
+            if (_levelOfDetail)
+                _lODManager.OnLODRebuild += OnLODRebuildMesh;
+        }
+
+        private void OnDisable()
+        {
+            CheckLODState();
+
+            if (_levelOfDetail)
+                _lODManager.OnLODRebuild -= OnLODRebuildMesh;
         }
 
         /*****************************CUSTOM METHODS*****************************/
+
+        protected override void OnScene()
+        {
+            base.OnScene();
+
+            CheckLODState();
+
+            if (_levelOfDetailDirty != _levelOfDetail)
+            {
+                if (_levelOfDetail)
+                    _lODManager.OnLODRebuild += OnLODRebuildMesh;
+                else
+                    _lODManager.OnLODRebuild -= OnLODRebuildMesh;
+            }
+
+            _levelOfDetailDirty = _levelOfDetail;
+        }
+
+        private void CheckLODState()
+        {
+            if (_levelOfDetail && !_lODManager)
+            {
+                if (!TryGetComponent(out _lODManager))
+                    _lODManager = gameObject.AddComponent<LODFadeManager>();
+                return;
+            }
+
+            if (!_levelOfDetail && _lODManager)
+            {
+                IntelliDestroy(_lODManager);
+                return;
+            }
+        }
 
         public virtual void Init()
         {
@@ -109,10 +167,16 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
 
         }
 
+        protected virtual void OnLODRebuildMesh(int value)
+        {
+
+        }
+
         public int GetIndexWithCoords2D(int x, int y, int width)
         {
             return x + (width * y);
         }
+
     }
 
     public enum BaseScaleUnitOfSolid

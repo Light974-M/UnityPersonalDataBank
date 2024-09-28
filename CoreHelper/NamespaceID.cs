@@ -1,5 +1,3 @@
-using System.Security.Policy;
-
 namespace UPDB.CoreHelper
 {
     public class NamespaceID

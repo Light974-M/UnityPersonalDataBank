@@ -78,6 +78,15 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
 
         /******************************************CUSTOM METHODS******************************************/
 
+        protected override void OnLODRebuildMesh(int value)
+        {
+            base.OnLODRebuildMesh(value);
+
+            _quadNumber = Vector3Int.one * value;
+
+            BuildMesh();
+        }
+
         protected override void OnBuildTrianglesAndVertices(ref List<Vector3> vertices, ref List<int> triangles)
         {
             _relativeCenterPos = Vector3.one * (_scaleFactor / 2f);
