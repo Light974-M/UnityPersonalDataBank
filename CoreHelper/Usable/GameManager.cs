@@ -6,7 +6,7 @@ namespace UPDB.CoreHelper.Usable
     /// <summary>
     /// singleton manager of all projects global properties
     /// </summary>
-    public class GameManager : Singleton<GameManager>
+    public class GameManager : PersistentSingleton<GameManager>
     {
         [SerializeField, Tooltip("tell if the game is in pause or not")]
         private bool _isPaused = false;
@@ -50,19 +50,7 @@ namespace UPDB.CoreHelper.Usable
         {
             base.Awake();
 
-            DontDestroyOnLoad(gameObject);
-
             _isPausedMemo = _isPaused;
-        }
-
-        private void OnEnable()
-        {
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-
-        private void OnDisable()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         protected virtual void Update()
@@ -81,11 +69,6 @@ namespace UPDB.CoreHelper.Usable
                 hideFlags = HideFlags.HideInInspector;
             else
                 hideFlags = HideFlags.None;
-        }
-
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            Initialize();
         }
 
         protected virtual void OnSwitchPauseAction()

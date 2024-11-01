@@ -8,7 +8,7 @@ namespace UPDB.CoreHelper.Usable
     /// <summary>
     /// premade levelManager for tests scene
     /// </summary>
-    public class LevelTestManager : LevelManager
+    public class LevelTestManager : LevelManager<LevelTestManager>
     {
         [SerializeField]
         private LevelTestStartInfo _testStartInfo;

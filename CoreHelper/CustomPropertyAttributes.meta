@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:CoreHelper/CustomPropertyAttributes.meta
 guid: f750053938ae1da42bb90399bbafc0e0
+========
+guid: 007187fefbf7f804fbb2a7906c051c6f
+>>>>>>>> WIP:CamerasAndCharacterControllers/Cameras/SimpleFreeCamera.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

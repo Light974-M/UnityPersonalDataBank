@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:CoreHelper/CustomPropertyAttributes/Editor/ReadOnlyAttributeDrawer.cs.meta
 guid: 4d7f5c7b22320414199c187d9cffb5fd
+========
+guid: 154b684b231268c4da3a8c7757f9127e
+>>>>>>>> WIP:CamerasAndCharacterControllers/Cameras/SimpleFreeCamera/SimpleFreeCamera.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

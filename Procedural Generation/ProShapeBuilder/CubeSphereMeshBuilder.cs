@@ -55,6 +55,5 @@ namespace UPDB.ProceduralGeneration.ProShapeBuilder
                 vertices[i] = newVertexPos;
             }
         }
-
     } 
 }

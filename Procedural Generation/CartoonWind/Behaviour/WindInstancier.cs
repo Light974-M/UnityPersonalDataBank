@@ -1,10 +1,11 @@
 using UnityEngine;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.ProceduralGeneration.CartoonWind
 {
     [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/" + NamespaceID.CartoonWind + "/Wind Instancier")]
-    public class WindInstancier : MonoBehaviour
+    public class WindInstancier : UPDBBehaviour
     {
         /*********************ACTIVE CONFIG**************************/
 

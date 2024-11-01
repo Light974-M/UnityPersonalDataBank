@@ -1,8 +1,9 @@
 using UnityEngine;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.ProceduralGeneration.CartoonWind
 {
-    public class WindManager : MonoBehaviour
+    public class WindManager : UPDBBehaviour
     {
         [SerializeField, Tooltip("active pattern")]
         private PatternState _currentPattern = PatternState.curve;

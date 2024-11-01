@@ -85,6 +85,69 @@ namespace UPDB.CoreHelper.UsableMethods
             return new Vector2(-vec.y, vec.x);
         }
 
+        
+
+        public static float ToDegrees(float radianValue)
+        {
+            return (radianValue / Mathf.PI) * 180;
+        }
+
+        public static float ToRadians(float degreesValue)
+        {
+            return (degreesValue / 180) * Mathf.PI;
+        }
+
+        #region Vector2Operators
+
+        /// <summary>
+        /// return the multiplication of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector2 Multiply(Vector2 vecA, Vector2 vecB)
+        {
+            return new Vector2(vecA.x * vecB.x, vecA.y * vecB.y);
+        }
+
+        /// <summary>
+        /// return the division of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector2 Divide(Vector2 vecA, Vector2 vecB)
+        {
+            return new Vector2(vecA.x / vecB.x, vecA.y / vecB.y);
+        }
+
+
+        #endregion
+
+        #region Vector3Operators
+
+        /// <summary>
+        /// return the multiplication of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector3 Multiply(Vector3 vecA, Vector3 vecB)
+        {
+            return new Vector3(vecA.x * vecB.x, vecA.y * vecB.y, vecA.z * vecB.z);
+        }
+
+        /// <summary>
+        /// return the division of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector3 Divide(Vector3 vecA, Vector3 vecB)
+        {
+            return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
+        }
+
         public static Vector3 FindAnyPerpendicularVectorUpType(Vector3 vec)
         {
             if (vec == Vector3.zero)
@@ -127,28 +190,6 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
-        /// return the multiplication of the two vectors
-        /// </summary>
-        /// <param name="vecA"></param>
-        /// <param name="vecB"></param>
-        /// <returns></returns>
-        public static Vector3 VecTime(Vector3 vecA, Vector3 vecB)
-        {
-            return new Vector3(vecA.x * vecB.x, vecA.y * vecB.y, vecA.z * vecB.z);
-        }
-
-        /// <summary>
-        /// return the division of the two vectors
-        /// </summary>
-        /// <param name="vecA"></param>
-        /// <param name="vecB"></param>
-        /// <returns></returns>
-        public static Vector3 VecDivide(Vector3 vecA, Vector3 vecB)
-        {
-            return new Vector3(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z);
-        }
-
-        /// <summary>
         /// add a vector and a number for the given axis
         /// </summary>
         /// <param name="vecToAdd">the vector3 to add with float</param>
@@ -157,7 +198,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static Vector3 VecAndFloatAdd(Vector3 vecToAdd, float toAdd, Axis axisToAdd)
         {
-            if(axisToAdd == Axis.X)
+            if (axisToAdd == Axis.X)
             {
                 vecToAdd.x += toAdd;
                 return vecToAdd;
@@ -254,16 +295,34 @@ namespace UPDB.CoreHelper.UsableMethods
             return vecToRemove;
         }
 
-        public static float ToDegrees(float radianValue)
+        #endregion
+
+        #region Vector4Operators
+
+        /// <summary>
+        /// return the multiplication of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector4 Multiply(Vector4 vecA, Vector4 vecB)
         {
-            return (radianValue / Mathf.PI) * 180;
+            return new Vector4(vecA.x * vecB.x, vecA.y * vecB.y, vecA.z * vecB.z, vecA.w * vecB.w);
         }
 
-        public static float ToRadians(float degreesValue)
+        /// <summary>
+        /// return the division of the two vectors
+        /// </summary>
+        /// <param name="vecA"></param>
+        /// <param name="vecB"></param>
+        /// <returns></returns>
+        public static Vector4 Divide(Vector4 vecA, Vector4 vecB)
         {
-            return (degreesValue / 180) * Mathf.PI;
+            return new Vector4(vecA.x / vecB.x, vecA.y / vecB.y, vecA.z / vecB.z, vecA.w / vecB.w);
         }
-        
+
+        #endregion
+
         #region Constants
 
         /// <summary>

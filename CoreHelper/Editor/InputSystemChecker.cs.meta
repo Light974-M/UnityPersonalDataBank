@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:CoreHelper/Editor/InputSystemChecker.cs.meta
 guid: 54148502fff56bc4cb9e803b815810de
+========
+guid: 0dd761ba56f3eb84abf5e3c5ef647642
+>>>>>>>> WIP:CoreHelper/CustomPropertyAttributes/ReadOnlyAttribute.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
