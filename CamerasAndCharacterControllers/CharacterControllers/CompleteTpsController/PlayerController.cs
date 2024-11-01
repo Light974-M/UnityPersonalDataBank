@@ -15,7 +15,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
     /// </summary>
     [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/CompleteTpsController/README.md")]
     [AddComponentMenu(NamespaceID.CharacterControllersPath + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Controller")]
-    public class PlayerController : UPDBBehaviour
+    public class PlayerController : Singleton<PlayerController>
     {
         #region Serialized API
 
@@ -24,7 +24,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
 #if INPUT_SYSTEM_PRESENT
         [SerializeField, Tooltip("used player input, used to link input system")]
-        private PlayerInput _playerInput; 
+        private PlayerInput _playerInput;
 #endif
         [SerializeField, Tooltip("character controller component used to move player")]
         private CharacterController _controller;
@@ -34,6 +34,27 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
         [SerializeField, Tooltip("linked camera, if one")]
         private Transform _linkedCamera;
+
+        /*****************************CONTROLS PARAMETERS****************************/
+        [Header("CONTROLS PARAMETERS"), Space]
+
+        [SerializeField, Tooltip("global switch for character controller")]
+        private bool _isCharacterControllable = true;
+
+        [SerializeField, Tooltip("can character move ?")]
+        private bool _canMove = true;
+
+        [SerializeField, Tooltip("can character sprint ?")]
+        private bool _canSprint = true;
+
+        [SerializeField, Tooltip("can character walk ?")]
+        private bool _canWalk = true;
+
+        [SerializeField, Tooltip("can character jump ?")]
+        private bool _canJump = true;
+
+        [SerializeField, Tooltip("can character crouch ?")]
+        private bool _canCrouch = true;
 
         /*********************************ROTATION********************************/
         [Space, Header("ROTATION"), Space]
@@ -73,6 +94,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /****************************JUMP AND PHYSIC*****************************/
         [Space, Header("JUMP AND PHYSIC"), Space]
 
+        [SerializeField, Tooltip("do you want to use native isGrounded of characterController ?")]
+        private bool _useNativeIsgrounded = true;
+
         [SerializeField, Tooltip("wich type of gravity do you want to use for your character ?")]
         private GravityMode _gravityUsed = GravityMode.NonInteractive;
 
@@ -111,6 +135,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /*********************************CROUCH*********************************/
         [Space, Header("CROUCH"), Space]
 
+        [SerializeField, Tooltip("height of player pivot, include camera center pos")]
+        private float _playerBaseHeight = 1f;
+
         [SerializeField, Tooltip("normal height of player")]
         private float _normalHeight = 1.777f;
 
@@ -119,6 +146,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
         [SerializeField, Tooltip("time in second for player to crouch and uncrounch")]
         private float _crouchTime = 0.5f;
+
+        [SerializeField, Tooltip("offset for height of characterController collider")]
+        private float _heightOffset = 0;
 
         /*****************************INPUT OFFSET*******************************/
         [Space, Header("INPUT OFFSET"), Space]
@@ -299,6 +329,42 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
         #region Public API
 
+        public bool IsCharacterControllable
+        {
+            get { return _isCharacterControllable; }
+            set { _isCharacterControllable = value; }
+        }
+
+        public bool CanMove
+        {
+            get { return _canMove; }
+            set { _canMove = value; }
+        }
+
+        public bool CanSprint
+        {
+            get { return _canSprint; }
+            set { _canSprint = value; }
+        }
+
+        public bool CanWalk
+        {
+            get { return _canWalk; }
+            set { _canWalk = value; }
+        }
+
+        public bool CanJump
+        {
+            get { return _canJump; }
+            set { _canJump = value; }
+        }
+
+        public bool CanCrouch
+        { 
+            get { return _canCrouch; }
+            set { _canCrouch = value; }
+        }
+
         ///<inheritdoc cref="_isGrounded"/>
         public bool IsGrounded => _isGrounded;
 
@@ -423,9 +489,17 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <summary>
         /// awake is called when script instance is being loaded
         /// </summary>
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             Init();
+
+            //set height goal to normal height
+            _targetHeight = _normalHeight;
+
+            //set star height to current height
+            _startHeight = _controller.height;
 
             //initialize player move speed and rotation speed at correct values and mouse cursor to right state
             _currentRotationSpeed = _rotationSpeed;
@@ -446,8 +520,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 _onSchemeChange.Invoke();
 
             //register last input scheme
-            _schemeMemo = _playerInput.currentControlScheme; 
-            Debug.Log("EEEEE");
+            _schemeMemo = _playerInput.currentControlScheme;
 #endif
 
             //test jump input
@@ -471,7 +544,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     CrouchUpdate();
                 }
 
-                IsGroundedUpdate();
+                if (!_useNativeIsgrounded)
+                    IsGroundedUpdate();
+
                 GravityApply();
 
                 if (_jumpPhase)
@@ -495,7 +570,11 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                 Init();
 
             //draw isGrounded collider preview
-            Gizmos.DrawWireSphere(transform.position + _isGroundedPosition, _isGroundedScale);
+            if (!_useNativeIsgrounded)
+            {
+                Vector3 spherePos = new Vector3(transform.position.x + _isGroundedPosition.x, transform.position.y + _isGroundedPosition.y + (1 - _playerBaseHeight), transform.position.z + _isGroundedPosition.z);
+                Gizmos.DrawWireSphere(spherePos, _isGroundedScale);
+            }
         }
 
         /*********************************************************CUSTOM FUNCTIONS************************************************************/
@@ -514,7 +593,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             //if player input component reference is null, try to get component in gameObject, or create one
             if (_playerInput == null)
                 if (!TryGetComponent(out _playerInput))
-                    _playerInput = gameObject.AddComponent<PlayerInput>(); 
+                    _playerInput = gameObject.AddComponent<PlayerInput>();
 #endif
 
             //if player rotation pivot reference is null
@@ -555,7 +634,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 #if INPUT_SYSTEM_PRESENT
                 //if player is on keyboard, use a function to prevent rotation from clipping by adding a square function to input dir
                 if (_playerInput.currentControlScheme == "KeyboardAndMouse")
-                    PreventRotationFromClipping(ref _smoothedInputValue); 
+                    PreventRotationFromClipping(ref _smoothedInputValue);
 #endif
 
                 //make the parent object look forward the camera, to make all basic calculation
@@ -568,8 +647,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     //face toward input value(smoothed)
                     Vector3 dir = transform.forward * _smoothedInputValue.y + transform.right * _smoothedInputValue.x;
 
+                    bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
+
                     //if character is in air, make a lerp between fixed last rotation and player's wanted position, depending on air control
-                    if (!_isGrounded)
+                    if (!isGrounded)
                         dir = Vector3.Lerp(_playerTargetPivot.forward, dir, Mathf.Pow(_rotationAirControl, 3));
 
                     //get end point of new direction vector
@@ -596,8 +677,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// </summary>
         private void Move()
         {
+            bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
+
             //if player touch ground with hif feets, make normal player movements, if not, apply air control
-            if (_isGrounded)
+            if (isGrounded)
                 playerVelocity = GroundMove();
             else
                 playerVelocity = AirControlMove();
@@ -693,7 +776,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         private void IsGroundedUpdate()
         {
             //make a check sphere to ave isGrouned value
-            _isGrounded = Physics.CheckSphere(transform.position + _isGroundedPosition, _isGroundedScale, ~_playerLayer);
+            Vector3 spherePos = new Vector3(transform.position.x + _isGroundedPosition.x, transform.position.y + _isGroundedPosition.y + (1 - _playerBaseHeight), transform.position.z + _isGroundedPosition.z);
+            _isGrounded = Physics.CheckSphere(spherePos, _isGroundedScale, ~_playerLayer);
         }
 
         /// <summary>
@@ -736,15 +820,17 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// </summary>
         private void JumpApply()
         {
+            bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
+
             //make different jump codes depending on jump mode
             if (_jumpMode == JumpModeAction.PressToJumpAndReleaseToControl)
             {
                 //if player is in air, set ground out to true
-                if (!_isGrounded)
+                if (!isGrounded)
                     _jumpGroundOut = true;
 
                 //if jump subdivision is processing, and player is else in air, or in ground but waiting to be in air(ground out)
-                if (_jumpSubdivisionTimer < _jumpSubdivision && (!_isGrounded || !_jumpGroundOut))
+                if (_jumpSubdivisionTimer < _jumpSubdivision && (!isGrounded || !_jumpGroundOut))
                 {
                     //if there is no delay to jump, make a direct jump at max force, if there is a delay, make a factor of jump factor divided by delay
                     float factor = _actionLaunchTime.Jump == 0 ? 1f : _jumpFactor / _actionLaunchTime.Jump;
@@ -770,11 +856,11 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             else if (_jumpMode == JumpModeAction.PressToJumpAndHoldToControl)
             {
                 //if player is in air, set ground out to true
-                if (!_isGrounded)
+                if (!isGrounded)
                     _jumpGroundOut = true;
 
                 //if jump subdivision is processing, and player is else in air, or in ground but waiting to be in air(ground out)
-                if (_jumpSubdivisionTimer < _jumpSubdivision && (!_isGrounded || !_jumpGroundOut))
+                if (_jumpSubdivisionTimer < _jumpSubdivision && (!isGrounded || !_jumpGroundOut))
                 {
                     //make a force vector, with jump strength directely at maximum value, splitted by subdivision timer 
                     Vector3 force = new Vector3(0, _jumpStrength, 0) / (_jumpSubdivisionTimer + 1);
@@ -833,8 +919,10 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// </summary>
         private void CrouchUpdate()
         {
+            bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
+
             //if player is in air, uncrouch automatically, then manage last input player is pressing to reapply crouch or not when caracter will go down to ground
-            if (!IsGrounded)
+            if (!isGrounded)
             {
                 //if character is crouched, uncrounch him 
                 if (IsCrouched)
@@ -849,7 +937,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             }
 
             //if character is grounded, and it has trigger enabled, and player is holding crouch input, crouch character
-            if (IsGrounded && _crouchInAirTrigger && _lastCrouchInputInAir)
+            if (isGrounded && _crouchInAirTrigger && _lastCrouchInputInAir)
             {
                 Invoke(nameof(CallCrouchHeight), _actionLaunchTime.CrouchBegin);
                 _isCrouched = true;
@@ -859,8 +947,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             }
 
             //update character height to goal height, then adapt center to make player pivot not change position
-            _controller.height = AutoLerp(_startHeight, _targetHeight, _crouchTime, ref _crouchLerpTimer);
-            _controller.center = new Vector3(_controller.center.x, -0.9985f + (_controller.height / 2), _controller.center.z);
+            _controller.height = AutoLerp(_startHeight, _targetHeight + _heightOffset, _crouchTime, ref _crouchLerpTimer);
+            _controller.center = new Vector3(_controller.center.x, -0.9985f + (_controller.height / 2) + (1 - _playerBaseHeight), _controller.center.z);
         }
 
 #if INPUT_SYSTEM_PRESENT
@@ -872,6 +960,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <param name="callback">current value and state of input</param>
         public void GetMove(InputAction.CallbackContext callback)
         {
+            if (!_canMove || !_isCharacterControllable)
+                return;
+
             //if active device is keyboard and mouse, setup rotation speed, if device is a gamepad controller, set rotation speed to 0
             if (_playerInput.currentControlScheme == "KeyboardAndMouse")
                 _currentRotationSpeed = _rotationSpeed;
@@ -895,6 +986,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <param name="callback">current value and state of input</param>
         public void GetSprint(InputAction.CallbackContext callback)
         {
+            if (!_canSprint || !_isCharacterControllable)
+                return;
+
             //if player is not crouched, perform
             if (!_isCrouched)
             {
@@ -921,6 +1015,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <param name="callback">current value and state of input</param>
         public void GetWalk(InputAction.CallbackContext callback)
         {
+            if (!_canWalk || !_isCharacterControllable)
+                return;
+
             //if player is pressing walk input
             if (callback.phase == InputActionPhase.Started)
             {
@@ -941,6 +1038,11 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <param name="callback"></param>
         public void GetJump(InputAction.CallbackContext callback)
         {
+            if (!_canJump || !_isCharacterControllable)
+                return;
+
+            bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
+
             //if game is not paused and character is controllable
             if (_workingWithoutGameManager || (!GameManager.Instance.IsPaused && GameManager.Instance.IsCharacterControllable))
             {
@@ -951,7 +1053,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     if (callback.phase == InputActionPhase.Started)
                     {
                         //if character is grounded, set jump input to true
-                        if (_isGrounded)
+                        if (isGrounded)
                             _jumpInput = true;
                     }
                     else if (callback.phase == InputActionPhase.Canceled)
@@ -980,7 +1082,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
                     if (callback.phase == InputActionPhase.Started)
                     {
                         //if character is grounded, set jump input to true
-                        if (_isGrounded)
+                        if (isGrounded)
                             _jumpInput = true;
                     }
                     else if (callback.phase == InputActionPhase.Canceled)
@@ -999,11 +1101,16 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <param name="callback">current value and state of input</param>
         public void GetCrouch(InputAction.CallbackContext callback)
         {
+            if (!_canCrouch || !_isCharacterControllable)
+                return;
+
+            bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
+
             //if game is not paused and character is controllable, and player is not sprinting
             if (_workingWithoutGameManager || (!GameManager.Instance.IsPaused && !_isSprinting && GameManager.Instance.IsCharacterControllable))
             {
                 //if character is on ground, perform normal input reading, if character is in air, perform trigger updates
-                if (IsGrounded)
+                if (isGrounded)
                 {
                     //if player is pressing input, manage crouch, if input is releasing, manage uncrouch
                     if (callback.phase == InputActionPhase.Started)

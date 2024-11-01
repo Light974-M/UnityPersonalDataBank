@@ -467,7 +467,9 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
                 _previewY = 0;
             }
 
-            SceneView.currentDrawingSceneView.Repaint();
+#if UNITY_EDITOR
+            SceneView.currentDrawingSceneView.Repaint(); 
+#endif
         }
 
         private void DrawEconomisedRender(int x, int y)
@@ -821,7 +823,10 @@ namespace UPDB.ProceduralGeneration.MazeGenerator
         private void OnMazeGenerationEnd()
         {
             _isGeneratingMaze = false;
-            SceneView.RepaintAll();
+
+#if UNITY_EDITOR
+            SceneView.RepaintAll(); 
+#endif
         }
 
         private void OnMazeGenerationUpdateRequest()
