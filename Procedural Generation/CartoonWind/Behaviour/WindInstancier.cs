@@ -1,12 +1,20 @@
 using UnityEngine;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.ProceduralGeneration.CartoonWind
 {
     [AddComponentMenu(NamespaceID.UPDB + "/" + NamespaceID.ProceduralGeneration + "/" + NamespaceID.CartoonWind + "/Wind Instancier")]
-    public class WindInstancier : MonoBehaviour
+    public class WindInstancier : UPDBBehaviour
     {
         /*********************ACTIVE CONFIG**************************/
+
+        [Header("GENERIC PARAMETERS")]
+        [SerializeField, Tooltip("direction the wind is going")]
+        private Vector3 _windDirection = Vector3.forward;
+
+        [SerializeField, Tooltip("parent object containing all wind objects")]
+        private Transform _windParent;
 
         [Header("ACTIVE CONFIG")]
         [SerializeField, Tooltip("scriptable asset that is used to take every values and parameters of wind")]
@@ -48,6 +56,34 @@ namespace UPDB.ProceduralGeneration.CartoonWind
             }
             set
             { _windConfig = value; }
+        }
+
+        public Vector3 WindDirection
+        {
+            get
+            {
+                _windDirection = _windDirection.normalized;
+                return _windDirection;
+            }
+            set
+            {
+                _windDirection = value.normalized;
+            }
+        }
+
+        public Transform WindParent
+        {
+            get
+            {
+                if(!_windParent)
+                    _windParent = transform;
+
+                return _windParent;
+            }
+            set
+            {
+                _windParent = value;
+            }
         }
 
         #endregion
@@ -94,9 +130,9 @@ namespace UPDB.ProceduralGeneration.CartoonWind
         }
 
         /// <summary>
-        /// called when gizmo is drawing, only if gameobject is selected in inspector
+        /// called when gizmo is drawing in unity editor, only if gameobject is selected in inspector
         /// </summary>
-        private void OnDrawGizmosSelected()
+        protected override void OnSceneSelected()
         {
             Vector3 center = new Vector3(((WindConfig.PosRangeTwo.x + WindConfig.PosRangeOne.x) / 2), ((WindConfig.PosRangeTwo.y + WindConfig.PosRangeOne.y) / 2), ((WindConfig.PosRangeTwo.z + WindConfig.PosRangeOne.z) / 2));
             Vector3 size = new Vector3((WindConfig.PosRangeTwo.x - WindConfig.PosRangeOne.x), (WindConfig.PosRangeTwo.y - WindConfig.PosRangeOne.y), (WindConfig.PosRangeTwo.z - WindConfig.PosRangeOne.z));
@@ -104,6 +140,7 @@ namespace UPDB.ProceduralGeneration.CartoonWind
             Gizmos.matrix = transform.localToWorldMatrix;
 
             Gizmos.DrawWireCube(center, size);
+            Debug.DrawRay(transform.position, _windDirection * 10, Color.red);
         }
 
         /// <summary>
@@ -112,7 +149,7 @@ namespace UPDB.ProceduralGeneration.CartoonWind
         private void InstantiateWind()
         {
             GameObject wind = Instantiate(_windPrefab, _windPrefab.transform.position, Quaternion.identity);
-            wind.transform.SetParent(transform);
+            wind.transform.SetParent(WindParent);
             wind.SetActive(true);
 
             wind.transform.position += (transform.right * Random.Range(WindConfig.PosRangeOne.x, WindConfig.PosRangeTwo.x)) + (transform.up * Random.Range(WindConfig.PosRangeOne.y, WindConfig.PosRangeTwo.y)) + (transform.forward * Random.Range(WindConfig.PosRangeOne.z, WindConfig.PosRangeTwo.z));

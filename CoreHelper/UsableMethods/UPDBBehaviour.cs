@@ -18,8 +18,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void OnDrawGizmos()
         {
-            if (!Application.isPlaying)
-                OnScene();
+#if UNITY_EDITOR
+            OnScene();
+#endif  
         }
 
         /// <summary>
@@ -27,8 +28,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void OnDrawGizmosSelected()
         {
-            if (!Application.isPlaying)
-                OnSceneSelected();
+#if UNITY_EDITOR
+            OnSceneSelected();
+#endif
         }
 
 
