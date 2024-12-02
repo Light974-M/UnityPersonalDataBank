@@ -19,7 +19,7 @@ namespace UPDB.CoreHelper.Usable
 
         public bool HideInInspector
         {
-            get => hideInInspector; 
+            get => hideInInspector;
             set => hideInInspector = value;
         }
 

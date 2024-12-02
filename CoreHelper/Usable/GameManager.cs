@@ -102,4 +102,16 @@ namespace UPDB.CoreHelper.Usable
         }
     }
 
+
+    //base class to implement as child script of GameManager in projects :
+    //public class ThisGameManager : GameManager
+    //{
+    //    public static ThisGameManager ThisInstance
+    //    {
+    //        get
+    //        {
+    //            return (ThisGameManager)Instance;
+    //        }
+    //    }
+    //}
 }

@@ -185,14 +185,39 @@ namespace UPDB.CoreHelper.UsableMethods
             return matchList.ToArray();
         }
 
+        /// <summary>
+        /// get the rotation quaternion locally from another rotation(just like local rotation with parenting GameObjects)
+        /// </summary>
+        /// <param name="worldRotation">world rotation</param>
+        /// <param name="parentRotation">rotation to parent to</param>
+        /// <returns>the local rotation from parent rotation</returns>
         public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
         {
             return Quaternion.Inverse(parentRotation) * worldRotation;
         }
 
+        /// <summary>
+        /// get the world rotation quaternion from a local rotation(just like local rotation with parenting GameObjects)
+        /// </summary>
+        /// <param name="localRotation">locals rotation</param>
+        /// <param name="parentRotation">rotation to unparent from</param>
+        /// <returns>the world rotation from parent rotation</returns>
         public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
         {
             return localRotation * parentRotation;
+        }
+
+        /// <summary>
+        /// give a vector wich as theta angle with a vector and where axis vector is perpendicular to both vectors
+        /// </summary>
+        /// <param name="a">vector to rotate from</param>
+        /// <param name="axis">perpendicular vector of both a and the returned vector</param>
+        /// <param name="theta">angle between a and returned vector</param>
+        /// <returns>vector that has theta angle with a and perpendicular to axis</returns>
+        public static Vector3 RotateVector(Vector3 a, Vector3 axis, float theta)
+        {
+            Quaternion rotation = Quaternion.AngleAxis(theta, axis.normalized);
+            return rotation * a;
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
