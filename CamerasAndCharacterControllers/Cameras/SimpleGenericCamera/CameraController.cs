@@ -294,10 +294,10 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         /// </summary>
         private void Update()
         {
+            CursorModesUpdate();
+
             if (GameManager.Instance.IsPaused)
                 return;
-
-            CursorModesUpdate();
 
             if (GameManager.Instance.IsCharacterControllable)
                 Look();
