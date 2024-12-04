@@ -30,6 +30,18 @@ namespace UPDB.CoreHelper.Usable
         Backward
     }
 
+    public enum DisplayEditor
+    {
+        None,
+        OnScene,
+        OnSceneSelected,
+        OnDrawGizmos,
+        OnDrawGizmosSelected,
+        OnPlay,
+        OnPause,
+        OnResume,
+    }
+
     public enum PlayerAction
     {
         Idle,
