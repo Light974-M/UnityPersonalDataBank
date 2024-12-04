@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UPDB.CoreHelper.Usable;
 using UPDB.Data.SplineTool;
 
@@ -183,41 +184,6 @@ namespace UPDB.CoreHelper.UsableMethods
             }
 
             return matchList.ToArray();
-        }
-
-        /// <summary>
-        /// get the rotation quaternion locally from another rotation(just like local rotation with parenting GameObjects)
-        /// </summary>
-        /// <param name="worldRotation">world rotation</param>
-        /// <param name="parentRotation">rotation to parent to</param>
-        /// <returns>the local rotation from parent rotation</returns>
-        public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
-        {
-            return Quaternion.Inverse(parentRotation) * worldRotation;
-        }
-
-        /// <summary>
-        /// get the world rotation quaternion from a local rotation(just like local rotation with parenting GameObjects)
-        /// </summary>
-        /// <param name="localRotation">locals rotation</param>
-        /// <param name="parentRotation">rotation to unparent from</param>
-        /// <returns>the world rotation from parent rotation</returns>
-        public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
-        {
-            return localRotation * parentRotation;
-        }
-
-        /// <summary>
-        /// give a vector wich as theta angle with a vector and where axis vector is perpendicular to both vectors
-        /// </summary>
-        /// <param name="a">vector to rotate from</param>
-        /// <param name="axis">perpendicular vector of both a and the returned vector</param>
-        /// <param name="theta">angle between a and returned vector</param>
-        /// <returns>vector that has theta angle with a and perpendicular to axis</returns>
-        public static Vector3 RotateVector(Vector3 a, Vector3 axis, float theta)
-        {
-            Quaternion rotation = Quaternion.AngleAxis(theta, axis.normalized);
-            return rotation * a;
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
@@ -802,6 +768,41 @@ namespace UPDB.CoreHelper.UsableMethods
             transform.rotation = Quaternion.LookRotation(Vector3.right, dir);
             transform.Rotate(0, -90, 0);
             transform.rotation = Quaternion.LookRotation(transform.forward, dir);
+        }
+
+        /// <summary>
+        /// get the rotation quaternion locally from another rotation(just like local rotation with parenting GameObjects)
+        /// </summary>
+        /// <param name="worldRotation">world rotation</param>
+        /// <param name="parentRotation">rotation to parent to</param>
+        /// <returns>the local rotation from parent rotation</returns>
+        public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
+        {
+            return Quaternion.Inverse(parentRotation) * worldRotation;
+        }
+
+        /// <summary>
+        /// get the world rotation quaternion from a local rotation(just like local rotation with parenting GameObjects)
+        /// </summary>
+        /// <param name="localRotation">locals rotation</param>
+        /// <param name="parentRotation">rotation to unparent from</param>
+        /// <returns>the world rotation from parent rotation</returns>
+        public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
+        {
+            return localRotation * parentRotation;
+        }
+
+        /// <summary>
+        /// give a vector wich as the vector a rotated along axis with theta angle
+        /// </summary>
+        /// <param name="a">vector to rotate from</param>
+        /// <param name="axis">vector that a vector rotate from, imagine this vector "turning" on itself and taking a vector with it</param>
+        /// <param name="theta">angle between a and returned vector</param>
+        /// <returns>vector that has theta angle with a and same angle with axis than a/returns>
+        public static Vector3 RotateVector(Vector3 a, Vector3 axis, float theta)
+        {
+            Quaternion rotation = Quaternion.AngleAxis(theta, axis.normalized);
+            return rotation * a;
         }
 
         #endregion
@@ -3690,6 +3691,290 @@ namespace UPDB.CoreHelper.UsableMethods
         public static void DebugDrawCube(Vector3 position, Vector3 scale, Transform spaceRefTransform)
         {
             DebugDrawCube(position, scale, spaceRefTransform.right, spaceRefTransform.up, spaceRefTransform.forward, Color.white, false, false, false, false, false, false);
+        }
+
+        #endregion
+
+        #region DrawCone
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        /// <param name="drawRings">draw ring edges(do not include base)</param>
+        /// <param name="drawLoops">draw loops edges(do not include the first loop for base circle)</param>
+        /// <param name="drawBase">draw base(if not, it will draw up to 3 edges)</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber, bool drawRings, bool drawLoops, bool drawBase)
+        {
+            if (loopVerticeNumber <= 0 || ringVerticeNumber <= 0)
+                return;
+
+            angle = Mathf.Clamp(angle, 0, 180);
+
+            List<List<Vector3>> ringBaseVertices = new List<List<Vector3>>();
+
+            float angleToSet = angle;
+
+            //register all vertices to use
+            for (int j = 0; j < loopVerticeNumber; j++)
+            {
+                Vector3 flattenA = forward;
+                ringBaseVertices.Add(new List<Vector3>());
+
+                for (int i = 0; i < ringVerticeNumber; i++)
+                {
+                    Vector3 vertex = GetConeBaseVertex(flattenA, angleToSet);
+                    Vector3 localVertex = Point3WorldToLocal(vertex, position, right, up, forward);
+                    Vector3 scaledLocalVertex = new Vector3(localVertex.x * scale.x, localVertex.y * scale.y, localVertex.z * scale.z);
+                    Vector3 scaledVertex = Point3LocalToWorld(scaledLocalVertex, position, right, up, forward);
+
+                    ringBaseVertices[j].Add(scaledVertex);
+
+                    flattenA = RotateVector(flattenA, up, 360f / (float)ringVerticeNumber);
+                }
+
+                angleToSet -= angle / (float)loopVerticeNumber;
+            }
+
+            //link base ring edges
+            if (drawBase || ringBaseVertices[0].Count < 3)
+            {
+                for (int i = 0; i < ringBaseVertices[0].Count; i++)
+                    Debug.DrawLine(position, ringBaseVertices[0][i], color); 
+            }
+            else
+            {
+                int oneThird = ringBaseVertices[0].Count / 3;
+
+                for (int i = 0; i < 3; i++)
+                    Debug.DrawLine(position, ringBaseVertices[0][(oneThird * (i + 1)) - 1], color);
+            }
+
+            if (drawRings)
+            {
+                //link core ring edges
+                for (int j = 0; j < ringBaseVertices.Count - 1; j++)
+                    for (int i = 0; i < ringBaseVertices[j].Count; i++)
+                        Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j + 1][i], color);
+
+                //link last ring to center of sphere
+                Vector3 upPosRanged = position + (up * length * scale.y);
+                int lastIndex = ringBaseVertices.Count - 1;
+
+                for (int i = 0; i < ringBaseVertices[lastIndex].Count; i++)
+                    Debug.DrawLine(ringBaseVertices[lastIndex][i], upPosRanged, color);
+            }
+
+            //link loop edges
+                for (int j = 0; j < (drawLoops ? ringBaseVertices.Count : Mathf.Clamp(ringBaseVertices.Count, 0, 1)); j++)
+                    for (int i = 0; i < ringBaseVertices[j].Count; i++)
+                        Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j][LoopClamp(i + 1, 0, ringBaseVertices[j].Count - 1)], color);
+
+
+            Vector3 GetConeBaseVertex(Vector3 forward, float angle)
+            {
+                return position + (RotateVector(up, forward, angle).normalized * length);
+            }
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, scale, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, Vector3.one, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="transform">transform that give rotation and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Vector3 position, Transform transform, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, scale, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, Vector3.one, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="transform">transform that give rotation and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Vector3 position, Transform transform, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(position, forward, up, right, scale, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(position, forward, up, right, Vector3.one, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="transform">transform that give rotation and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Vector3 position, Transform transform, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, Color.white, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
         }
 
         #endregion
