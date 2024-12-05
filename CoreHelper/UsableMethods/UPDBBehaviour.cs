@@ -186,6 +186,41 @@ namespace UPDB.CoreHelper.UsableMethods
             return matchList.ToArray();
         }
 
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        public static void MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
+        {
+            //if reference is not null
+            if (component)
+                return;
+
+            //if reference is null, but a component exist in the object or scene(depending on args)
+            if (targetObj && targetObj.TryGetComponent(out component))
+                return;
+
+            if (isGlobal && UPDBBehaviour.TryFindObjectOfType(out component))
+                return;
+
+            //no component exist, method has to generate one
+            component = targetObj ? targetObj.AddComponent<T>() : new GameObject(component.name).AddComponent<T>();
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        public static void MakeNonNullable<T>(ref T component, GameObject targetObj) where T : Component
+        {
+            MakeNonNullable(ref component, targetObj, false);
+        }
+
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
 
 
@@ -661,6 +696,8 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region Lerp Sub methods
+
         /// <summary>
         /// read t value in animation curve, first key and last key of curve gives the considered "0" and "1" both in x and y
         /// </summary>
@@ -709,6 +746,15 @@ namespace UPDB.CoreHelper.UsableMethods
             return timeCurveValue;
         }
 
+        /// <summary>
+        /// return value shaped with shape animation curve
+        /// </summary>
+        /// <param name="start">lower bound of value</param>
+        /// <param name="end">upper bound of value</param>
+        /// <param name="value">value to shape</param>
+        /// <param name="time">time to shape</param>
+        /// <param name="shape">curve to shape with</param>
+        /// <returns>shaped value</returns>
         public static Vector2 GetShapedValue(Vector2 start, Vector2 end, Vector2 value, float time, ref AnimationCurve shape)
         {
             if (time < 0 || time > 1)
@@ -724,7 +770,9 @@ namespace UPDB.CoreHelper.UsableMethods
             verticalVec *= valueToAdd;
 
             return value + verticalVec;
-        }
+        } 
+
+        #endregion
 
 
         //VECTOR AND ROTATION CALCULATIONS TOOLS

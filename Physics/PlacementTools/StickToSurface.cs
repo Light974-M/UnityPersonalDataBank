@@ -5,7 +5,6 @@ using UnityEngine;
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
-using static UnityEditor.PlayerSettings;
 
 namespace UPDB.Physic.PlacementTools
 {

@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
-	public static class UPDBExtensionMethods
-	{
+    public static class UPDBExtensionMethods
+    {
+        /******************************************************UTILITY METHODS**********************************************************/
+
         /// <summary>
         /// return a vector3 direction normalized pointing on target
         /// </summary>
@@ -89,6 +91,8 @@ namespace UPDB.CoreHelper.UsableMethods
             //    var = obj.AddComponent<T>();
             var = null;
         }
+
+        /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/
 
         #region Direction From Rotation
 
@@ -264,5 +268,5 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
-    } 
+    }
 }
