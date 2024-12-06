@@ -36,6 +36,7 @@ namespace UPDB.CoreHelper
         public const string UITools = nameof(UITools);
 
         public const string AutoRotate = nameof(AutoRotate);
+        public const string CustomPhysicMaterial = nameof(CustomPhysicMaterial);
         public const string CustomTimeScale = nameof(CustomTimeScale);
         public const string Grabber = nameof(Grabber);
         public const string GravityManager = nameof(GravityManager);

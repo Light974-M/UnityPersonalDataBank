@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UPDB.CoreHelper.Usable;
-using UPDB.Data.SplineTool;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -190,10 +188,11 @@ namespace UPDB.CoreHelper.UsableMethods
         /// make sure value of reference is never null, by searching, and if needed, creating new components
         /// </summary>
         /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
         /// <param name="component">reference to test</param>
         /// <param name="targetObj">object to search in and create component</param>
         /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
-        public static void MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
+        public static void MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal) where T : Component where W : T
         {
             //if reference is not null
             if (component)
@@ -207,7 +206,31 @@ namespace UPDB.CoreHelper.UsableMethods
                 return;
 
             //no component exist, method has to generate one
-            component = targetObj ? targetObj.AddComponent<T>() : new GameObject(component.name).AddComponent<T>();
+            component = targetObj ? targetObj.AddComponent<W>() : new GameObject(component.name).AddComponent<W>();
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        public static void MakeNonNullable<T, W>(ref T component, GameObject targetObj) where T : Component where W : T
+        {
+            MakeNonNullable<T, W>(ref component, targetObj, false);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        public static void MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
+        {
+            MakeNonNullable<T, T>(ref component, targetObj, isGlobal);
         }
 
         /// <summary>
@@ -218,11 +241,15 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="targetObj">object to search in and create component</param>
         public static void MakeNonNullable<T>(ref T component, GameObject targetObj) where T : Component
         {
-            MakeNonNullable(ref component, targetObj, false);
+            MakeNonNullable<T, T>(ref component, targetObj, false);
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
 
+        //ENUM TESTS TOOLS
+        #region ENUM TESTS TOOLS
+
+        #endregion
 
         //LERP TOOLS
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.Enumeration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -93,6 +94,76 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/
+
+        #region ENUM TESTS TOOLS
+
+        /// <summary>
+        /// test if a layer is in a LayerMask
+        /// </summary>
+        /// <param name="layer">layer to test</param>
+        /// <param name="layerMask">LayerMask to test layer in</param>
+        /// <returns>if layer is in LayerMask</returns>
+        public static bool IsInLayerMask(this int layer, int layerMask)
+        {
+            return (layerMask | (1 << layer)) == layerMask;
+        }
+
+        /// <summary>
+        /// test if the specified layer is in LayerMask AND every other layers are not
+        /// </summary>
+        /// <param name="layer">layer to test</param>
+        /// <param name="layerMask">LayerMask to test layer in</param>
+        /// <returns>true if layer and only layer is in LayerMask</returns>
+        public static bool IsInLayerMaskExclusive(this int layer, int layerMask)
+        {
+            return (layerMask & (1 << layer)) == layerMask;
+        }
+
+        /// <summary>
+        /// test if an enum value is in an enumFlag
+        /// </summary>
+        /// <typeparam name="T">type of enum tested</typeparam>
+        /// <param name="element">enum value to test</param>
+        /// <param name="enumflagValue">enumFlag value to test element in</param>
+        /// <returns>if enum value is in enumFlag</returns>
+        public static bool IsInEnumFlag<T>(this T element, T enumflagValue) where T : System.Enum
+        {
+            return ((int)(object)enumflagValue & (int)(object)element) == (int)(object)element;
+        }
+
+        /// <summary>
+        /// test if an enum value is in an enumFlag and every other enum values are not
+        /// </summary>
+        /// <typeparam name="T">type of enum tested</typeparam>
+        /// <param name="element">enum value to test</param>
+        /// <param name="enumflagValue">enumFlag value to test element in</param>
+        /// <returns>true if enum value and enum value only is in enumFlag</returns>
+        public static bool IsInEnumFlagExclusive<T>(this T element, T enumflagValue) where T : System.Enum
+        {
+            return (int)(object)enumflagValue == (int)(object)element;
+        }
+
+        /// <summary>
+        /// test if enum values are all in an enumFlag and every other enum values are not
+        /// </summary>
+        /// <typeparam name="T">type of enum tested</typeparam>
+        /// <param name="elements">enum values to test</param>
+        /// <param name="enumflagValue">enumFlag value to test element in</param>
+        /// <returns>true if all enum values and all enum values only are in enumFlag</returns>
+        public static bool IsInEnumFlagsANDExclusive<T>(this T[] elements, T enumflagValue) where T : System.Enum
+        {
+            if(elements.Length == 0)
+                return false;
+
+            int value = (int)(object)elements[0];
+
+            for (int i = 1; i < elements.Length; i++)
+                value = value | (int)(object)elements[i];
+
+            return (int)(object)enumflagValue == value;
+        }
+
+        #endregion
 
         #region Direction From Rotation
 
