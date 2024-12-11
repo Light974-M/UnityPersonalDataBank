@@ -132,4 +132,26 @@ namespace UPDB.CoreHelper.Usable
         IntCentered,
         Edged,
     }
+
+    public enum ColliderType
+    {
+        BoxCollider,
+        CapsuleCollider,
+        SphereCollider,
+        MeshCollider,
+        BoxCollider2D,
+        CircleCollider2D,
+        CapsuleCollider2D,
+    }
+
+    public enum Comparison
+    {
+        None,
+        Equal,
+        NotEqual,
+        Greater,
+        Less,
+        GreaterOrEqual,
+        LessOrEqual,
+    }
 }

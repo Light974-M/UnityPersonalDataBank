@@ -185,71 +185,24 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
-        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// take the names of LayerMask, and return the name of each layers 
         /// </summary>
-        /// <typeparam name="T">type of reference tested</typeparam>
-        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
-        /// <param name="component">reference to test</param>
-        /// <param name="targetObj">object to search in and create component</param>
-        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
-        public static void MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal) where T : Component where W : T
+        /// <returns>array of all layers names</returns>
+        public static string[] GetLayerNames()
         {
-            //if reference is not null
-            if (component)
-                return;
-
-            //if reference is null, but a component exist in the object or scene(depending on args)
-            if (targetObj && targetObj.TryGetComponent(out component))
-                return;
-
-            if (isGlobal && UPDBBehaviour.TryFindObjectOfType(out component))
-                return;
-
-            //no component exist, method has to generate one
-            component = targetObj ? targetObj.AddComponent<W>() : new GameObject(component.name).AddComponent<W>();
-        }
-
-        /// <summary>
-        /// make sure value of reference is never null, by searching, and if needed, creating new components
-        /// </summary>
-        /// <typeparam name="T">type of reference tested</typeparam>
-        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
-        /// <param name="component">reference to test</param>
-        /// <param name="targetObj">object to search in and create component</param>
-        public static void MakeNonNullable<T, W>(ref T component, GameObject targetObj) where T : Component where W : T
-        {
-            MakeNonNullable<T, W>(ref component, targetObj, false);
-        }
-
-        /// <summary>
-        /// make sure value of reference is never null, by searching, and if needed, creating new components
-        /// </summary>
-        /// <typeparam name="T">type of reference tested</typeparam>
-        /// <param name="component">reference to test</param>
-        /// <param name="targetObj">object to search in and create component</param>
-        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
-        public static void MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
-        {
-            MakeNonNullable<T, T>(ref component, targetObj, isGlobal);
-        }
-
-        /// <summary>
-        /// make sure value of reference is never null, by searching, and if needed, creating new components
-        /// </summary>
-        /// <typeparam name="T">type of reference tested</typeparam>
-        /// <param name="component">reference to test</param>
-        /// <param name="targetObj">object to search in and create component</param>
-        public static void MakeNonNullable<T>(ref T component, GameObject targetObj) where T : Component
-        {
-            MakeNonNullable<T, T>(ref component, targetObj, false);
+            string[] layers = new string[32];
+            for (int i = 0; i < 32; i++)
+            {
+                layers[i] = LayerMask.LayerToName(i);
+                if (string.IsNullOrEmpty(layers[i]))
+                {
+                    layers[i] = $"Layer {i}";
+                }
+            }
+            return layers;
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
-
-        //ENUM TESTS TOOLS
-        #region ENUM TESTS TOOLS
-
-        #endregion
 
         //LERP TOOLS
 
@@ -797,7 +750,7 @@ namespace UPDB.CoreHelper.UsableMethods
             verticalVec *= valueToAdd;
 
             return value + verticalVec;
-        } 
+        }
 
         #endregion
 
@@ -3824,7 +3777,7 @@ namespace UPDB.CoreHelper.UsableMethods
             if (drawBase || ringBaseVertices[0].Count < 3)
             {
                 for (int i = 0; i < ringBaseVertices[0].Count; i++)
-                    Debug.DrawLine(position, ringBaseVertices[0][i], color); 
+                    Debug.DrawLine(position, ringBaseVertices[0][i], color);
             }
             else
             {
@@ -3850,9 +3803,9 @@ namespace UPDB.CoreHelper.UsableMethods
             }
 
             //link loop edges
-                for (int j = 0; j < (drawLoops ? ringBaseVertices.Count : Mathf.Clamp(ringBaseVertices.Count, 0, 1)); j++)
-                    for (int i = 0; i < ringBaseVertices[j].Count; i++)
-                        Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j][LoopClamp(i + 1, 0, ringBaseVertices[j].Count - 1)], color);
+            for (int j = 0; j < (drawLoops ? ringBaseVertices.Count : Mathf.Clamp(ringBaseVertices.Count, 0, 1)); j++)
+                for (int i = 0; i < ringBaseVertices[j].Count; i++)
+                    Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j][LoopClamp(i + 1, 0, ringBaseVertices[j].Count - 1)], color);
 
 
             Vector3 GetConeBaseVertex(Vector3 forward, float angle)
@@ -4628,6 +4581,122 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             CreateMeshTriangle(ref vertices, ref triangles, ref verticesLibrary, pos1, pos2, pos3);
             AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, ref verticesLibrary, vertices.Count - 1, vertices.Count - 2, pos4);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Make Non Nullable
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal) where T : Component where W : T
+        {
+            //if reference is not null
+            if (component)
+                return component;
+
+            //if reference is null, but a component exist in the object or scene(depending on args)
+            if (targetObj && targetObj.TryGetComponent(out component))
+                return component;
+
+            if (isGlobal && TryFindObjectOfType(out component))
+                return component;
+
+            //no component exist, method has to generate one
+            return component = targetObj ? targetObj.AddComponent<W>() : new GameObject(component.name).AddComponent<W>();
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj) where T : Component where W : T
+        {
+            return MakeNonNullable<T, W>(ref component, targetObj, false);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
+        {
+            return MakeNonNullable<T, T>(ref component, targetObj, isGlobal);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T>(ref T component, GameObject targetObj) where T : Component
+        {
+            return MakeNonNullable<T, T>(ref component, targetObj, false);
+        }
+
+        #endregion
+
+        #region Free Shape Contain and Drawing Tools
+
+        #region 2D
+
+        /// <summary>
+        /// return if a point is inside a custom 2D polygon
+        /// </summary>
+        /// <param name="position">position to test</param>
+        /// <param name="shapeVertice">array of vertices of polygon</param>
+        /// <returns></returns>
+        public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice)
+        {
+            int windingNumber = 0;
+
+            for (int i = 0; i < shapeVertice.Length; i++)
+            {
+                Vector2 v1 = shapeVertice[i];
+                Vector2 v2 = shapeVertice[(i + 1) % shapeVertice.Length]; // Boucle vers le premier point
+
+                // Si le segment traverse la ligne horizontale passant par le point
+                if (v1.y <= position.y)
+                {
+                    if (v2.y > position.y) // Le segment monte
+                        if (IsLeft(v1, v2, position) > 0) // Point à gauche du segment
+                            windingNumber++;
+                }
+                else
+                {
+                    if (v2.y <= position.y) // Le segment descend
+                        if (IsLeft(v1, v2, position) < 0) // Point à gauche du segment
+                            windingNumber--;
+                }
+            }
+
+            // Si le winding number est différent de 0, le point est dans le polygone
+            return windingNumber != 0;
+        }
+
+        // Fonction pour vérifier si le point est à gauche, sur, ou à droite d'une ligne
+        private static float IsLeft(Vector2 a, Vector2 b, Vector2 p)
+        {
+            return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
         }
 
         #endregion

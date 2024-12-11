@@ -201,7 +201,7 @@ namespace UPDB.CoreHelper.Usable
         /// <summary>
         /// called when level is loading on awake, init level values
         /// </summary>
-        protected virtual void LoadLevel()
+        public virtual void LoadLevel()
         {
             LoadStartBehaviours();
         }
@@ -209,17 +209,33 @@ namespace UPDB.CoreHelper.Usable
         /// <summary>
         /// called at first frame, initialize level values
         /// </summary>
-        protected virtual void StartLevel()
+        public virtual void StartLevel()
         {
 
         }
 
         /// <summary>
-        /// hen called, re initialize level values
+        /// when called, reinitialize level values
         /// </summary>
-        protected virtual void RestartLevel()
+        public virtual void RestartLevel()
         {
             LoadStartBehaviours();
+        }
+
+        /// <summary>
+        /// when called, load the given scene by name
+        /// </summary>
+        public void LoadSceneByName(string name)
+        {
+            SceneManager.LoadScene(name);
+        }
+
+        /// <summary>
+        /// when called, load the given scene by index
+        /// </summary>
+        public void LoadSceneByIndex(int index)
+        {
+            SceneManager.LoadScene(index);
         }
 
         #region Start Level Behaviours

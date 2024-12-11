@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.IO.Enumeration;
+using System.Globalization;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UI;
+using UPDB.CoreHelper.Usable;
 
 namespace UPDB.CoreHelper.UsableMethods
 {
@@ -80,20 +80,272 @@ namespace UPDB.CoreHelper.UsableMethods
             return key;
         }
 
+        /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/
+
+        #region CHECK DIRTY TOOLS
+
         /// <summary>
-        /// WIP : cancel fully Nullref, avoid null values for variables, replace it by AddComponent.
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
         /// </summary>
-        /// <typeparam name="T"> type parameter of variable to edit </typeparam>
-        /// <param name="owner"> method extension for Component class </param>
-        /// <param name="var"> variable to edit </param>
-        public static void ReplaceDefaultComponentValue<T>(this Component owner, out T var) where T : Component
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this float value, ref float compareValue)
         {
-            //if (!var.gameObject.TryGetComponent(out var))
-            //    var = obj.AddComponent<T>();
-            var = null;
+            float toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
         }
 
-        /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this int value, ref int compareValue)
+        {
+            int toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this bool value, ref bool compareValue)
+        {
+            bool toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this string value, ref string compareValue)
+        {
+            string toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this char value, ref char compareValue)
+        {
+            char toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this Vector2 value, ref Vector2 compareValue)
+        {
+            Vector2 toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this Vector3 value, ref Vector3 compareValue)
+        {
+            Vector3 toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this Vector2Int value, ref Vector2Int compareValue)
+        {
+            Vector2Int toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty(this Vector3Int value, ref Vector3Int compareValue)
+        {
+            Vector3Int toCompare = compareValue;
+            compareValue = value;
+
+            return toCompare != value;
+        }
+
+        /// <summary>
+        /// check if a value has been modified since last time it was tested, need a second variable to compare value
+        /// </summary>
+        /// <param name="value">value to test</param>
+        /// <param name="compareValue">value to compare with</param>
+        /// <returns>if value and compareValue are different</returns>
+        public static bool IsDirty<T>(this T value, ref T compareValue) where T : System.Enum
+        {
+            T toCompare = compareValue;
+            compareValue = value;
+
+            return System.Convert.ToInt32(toCompare) != System.Convert.ToInt32(value);
+        }
+
+        #endregion
+
+        #region VALUE TESTS AND RESET FOR TIMERS AND OTHERS
+
+        /// <summary>
+        /// read the value of a number, while reseting it to a given number
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="reinitValue">number to reinit to</param>
+        /// <param name="condition">value will reset only if true</param>
+        /// <param name="comparisonType">select a comparison to make a test with a value and reinit only if condition succeed</param>
+        /// <param name="comparedNumber">value to compare with</param>
+        /// <returns>if conditions where true and value has been reseted</returns>
+        public static bool TestAndReset(ref this float value, bool condition, Comparison comparisonType, float comparedNumber, float reinitValue)
+        {
+            if (!condition)
+                return false;
+
+            if (comparisonType == Comparison.Equal && value != comparedNumber)
+                return false;
+            if (comparisonType == Comparison.NotEqual && value == comparedNumber)
+                return false;
+            if (comparisonType == Comparison.Greater && value <= comparedNumber)
+                return false;
+            if (comparisonType == Comparison.Less && value >= comparedNumber)
+                return false;
+            if (comparisonType == Comparison.GreaterOrEqual && value < comparedNumber)
+                return false;
+            if (comparisonType == Comparison.LessOrEqual && value > comparedNumber)
+                return false;
+
+            value = reinitValue;
+            return true;
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="reinitValue">number to reinit to</param>
+        /// <param name="comparisonType">select a comparison to make a test with a value and reinit only if condition succeed</param>
+        /// <param name="comparedNumber">value to compare with</param>
+        /// <returns>if conditions where true and value has been reseted</returns>
+        public static bool TestAndReset(ref this float value, Comparison comparisonType, float comparedNumber, float reinitValue)
+        {
+            return value.TestAndReset(true, comparisonType, comparedNumber, reinitValue);
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="condition">value will reset only if true</param>
+        /// <param name="comparisonType">select a comparison to make a test with a value and reinit only if condition succeed</param>
+        /// <param name="comparedNumber">value to compare with</param>
+        /// <returns>if conditions where true and value has been reseted</returns>
+        public static bool TestAndReset(ref this float value, bool condition, Comparison comparisonType, float comparedNumber)
+        {
+            return value.TestAndReset(condition, comparisonType, comparedNumber, 0);
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="comparisonType">select a comparison to make a test with a value and reinit only if condition succeed</param>
+        /// <param name="comparedNumber">value to compare with</param>
+        /// <returns>if conditions where true and value has been reseted</returns>
+        public static bool TestAndReset(ref this float value, Comparison comparisonType, float comparedNumber)
+        {
+            return value.TestAndReset(true, comparisonType, comparedNumber, 0);
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="condition">value will reset only if true</param>
+        /// <param name="reinitValue">number to reinit to</param>
+        /// <returns>if conditions where true and value has been reseted</returns>
+        public static bool TestAndReset(ref this float value, bool condition, float reinitValue)
+        {
+            return value.TestAndReset(condition, Comparison.None, 0, reinitValue);
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="condition">value will reset only if true</param>
+        /// <returns>if conditions where true and value has been reseted</returns>
+        public static bool TestAndReset(ref this float value, bool condition)
+        {
+            return value.TestAndReset(condition, Comparison.None, 0, 0);
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <param name="reinitValue">number to reinit to</param>
+        /// <returns>the value of number before getting reseted</returns>
+        public static float TestAndReset(ref this float value, float reinitValue)
+        {
+            float toReturn = value;
+            value = reinitValue;
+            return toReturn;
+        }
+
+        /// <summary>
+        /// read the value of a number, while reseting it to 0
+        /// </summary>
+        /// <param name="value">number to reinit</param>
+        /// <returns>the value of number before getting reseted</returns>
+        public static float TestAndReset(ref this float value)
+        {
+            float toReturn = value;
+            value = 0;
+            return toReturn;
+        }
+
+        #endregion
 
         #region ENUM TESTS TOOLS
 
@@ -152,7 +404,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>true if all enum values and all enum values only are in enumFlag</returns>
         public static bool IsInEnumFlagsANDExclusive<T>(this T[] elements, T enumflagValue) where T : System.Enum
         {
-            if(elements.Length == 0)
+            if (elements.Length == 0)
                 return false;
 
             int value = (int)(object)elements[0];

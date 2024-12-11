@@ -32,6 +32,7 @@ namespace UPDB.CoreHelper
         public const string NativeTools = nameof(NativeTools);
         public const string SaveStateManager = nameof(SaveStateManager);
         public const string SimpleCraft = nameof(SimpleCraft);
+        public const string SpawnerTool = nameof(SpawnerTool);
         public const string SplineTool = nameof(SplineTool);
         public const string UITools = nameof(UITools);
 
