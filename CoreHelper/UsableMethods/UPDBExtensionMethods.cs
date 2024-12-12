@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Unity.Mathematics;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
 
@@ -78,6 +79,130 @@ namespace UPDB.CoreHelper.UsableMethods
             }
 
             return key;
+        }
+
+        /// <summary>
+        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="allowInside"></param>
+        /// <param name="allowOutside"></param>
+        /// <returns></returns>
+        public static Vector2 ToBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c, bool allowInside, bool allowOutside)
+        {
+            if (!allowInside && !allowOutside)
+                return Vector2.zero;
+
+            if (allowInside && allowOutside)
+                return GetBarycentricCoords(pos, a, b, c);
+
+            if (allowInside)
+            {
+                pos = UPDBMath.Clamp01(pos);
+
+                if (pos.x + pos.y > 1)
+                {
+                    float toDivide = pos.x + pos.y;
+
+                    pos.x /= toDivide;
+                    pos.y /= toDivide;
+                }
+
+                return GetBarycentricCoords(pos, a, b, c);
+            }
+
+            if (allowOutside)
+            {
+                if (pos.x + pos.y < 1 && pos.x + pos.y > 0)
+                {
+                    float factor = pos.x / pos.y;
+
+                    if (pos.x + pos.y >= 5)
+                    {
+                        float toMultiply = 1 / (pos.x + pos.y);
+                        pos.x *= toMultiply;
+                        pos.y *= toMultiply;
+                    }
+                    else
+                    {
+                        if (pos.x > pos.y)
+                        {
+                            float toMultiply = pos.y / pos.x;
+                            float toSubX = (pos.x + pos.y) * toMultiply;
+                            float toSubY = (pos.x + pos.y) - toSubX;
+
+                            pos.x -= toSubX;
+                            pos.y -= toSubY;
+                        }
+                        if (pos.x < pos.y)
+                        {
+                            float toMultiply = pos.x / pos.y;
+                            float toSubY = (pos.x + pos.y) * toMultiply;
+                            float toSubX = (pos.x + pos.y) - toSubY;
+
+                            pos.x -= toSubX;
+                            pos.y -= toSubY;
+                        }
+                        if (pos.x == pos.y)
+                        {
+                            float toSubstract = (pos.x + pos.y) / 2;
+                            pos.x -= toSubstract;
+                            pos.y -= toSubstract;
+                        }
+                    }
+                }
+
+                return GetBarycentricCoords(pos, a, b, c);
+            }
+
+            return GetBarycentricCoords(pos, a, b, c);
+        }
+
+        /// <summary>
+        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector2 ToBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return pos.ToBarycentricCoords(a, b, c, true, true);
+        }
+
+        /// <summary>
+        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector2 ToInsideBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return pos.ToBarycentricCoords(a, b, c, true, false);
+        }
+
+        /// <summary>
+        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector2 ToOutsideBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return pos.ToBarycentricCoords(a, b, c, false, true);
+        }
+
+        private static Vector2 GetBarycentricCoords(Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return (1 - pos.x - pos.y) * a + pos.x * b + pos.y * c;
         }
 
         /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/

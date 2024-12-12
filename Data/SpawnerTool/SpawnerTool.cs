@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UPDB.CoreHelper;
-using UPDB.CoreHelper.Usable;
+using UPDB.Data.CustomTransform;
 using UPDB.CoreHelper.UsableMethods;
-using static UnityEngine.GraphicsBuffer;
 
 namespace UPDB.Data.UPDBSpawner
 {
@@ -44,7 +43,7 @@ namespace UPDB.Data.UPDBSpawner
         private Shape _spawnerShape;
 
         [SerializeField, Tooltip("all datas about position rotation, and scale offsets of spawner")]
-        private CustomTransform _spawnerOffsetTransform;
+        private CustomTransformManager _spawnerOffsetTransform;
 
         #endregion
 
@@ -99,7 +98,7 @@ namespace UPDB.Data.UPDBSpawner
             get => _spawnerShape;
             set => _spawnerShape = value;
         }
-        public CustomTransform SpawnerOffsetTransform
+        public CustomTransformManager SpawnerOffsetTransform
         {
             get
             {

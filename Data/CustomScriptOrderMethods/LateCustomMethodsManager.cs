@@ -1,7 +1,7 @@
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
 
-namespace UPDB.CoreHelper.CustomScriptOrderMethods
+namespace UPDB.Data.CustomScriptExecutionOrder
 {
     /// <summary>
     /// To put in script execution order, position 1

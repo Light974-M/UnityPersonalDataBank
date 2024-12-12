@@ -4,10 +4,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
+using UPDB.CoreHelper;
+using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
-namespace UPDB.CoreHelper.Usable
+namespace UPDB.Physic.EventTrigger
 {
+    [AddComponentMenu(NamespaceID.PhysicPath + " / " + NamespaceID.EventTrigger + "/Event Trigger")]
     public class EventTrigger : UPDBBehaviour
     {
         #region Serialized API

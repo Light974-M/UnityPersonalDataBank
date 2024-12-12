@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
 
@@ -263,7 +264,117 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             return (degreesValue / 180) * Mathf.PI;
         }
-        
+
+        /// <summary>
+        /// make a clamp with vector2
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="min">min</param>
+        /// <param name="max">max</param>
+        /// <returns>clamped vector2</returns>
+        public static Vector2 Clamp(Vector2 value, Vector2 min, Vector2 max)
+        {
+            return new Vector2(Mathf.Clamp(value.x, min.x, max.x), Mathf.Clamp(value.y, min.y, max.y));
+        }
+
+        /// <summary>
+        /// make a clamp with vector3
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="min">min</param>
+        /// <param name="max">max</param>
+        /// <returns>clamped vector3</returns>
+        public static Vector3 Clamp(Vector3 value, Vector3 min, Vector3 max)
+        {
+            return new Vector3(Mathf.Clamp(value.x, min.x, max.x), Mathf.Clamp(value.y, min.y, max.y), Mathf.Clamp(value.z, min.z, max.z));
+        }
+
+        /// <summary>
+        /// make a lerp between 0 and 1
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns>the clamped value between 0 and 1</returns>
+        public static Vector2 Clamp01(Vector2 value)
+        {
+            return Clamp(value, Vector2.zero, Vector2.one);
+        }
+
+        /// <summary>
+        /// make a lerp between 0 and 1
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns>the clamped value between 0 and 1</returns>
+        public static Vector3 Clamp01(Vector3 value)
+        {
+            return Clamp(value, Vector3.zero, Vector3.one);
+        }
+
+        /// <summary>
+        /// return a value that isn't between min and max
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="min">min</param>
+        /// <param name="max">max</param>
+        /// <returns></returns>
+        public static float InvertClamp(float value, float min, float max)
+        {
+            return Mathf.Clamp(Mathf.Clamp(value, -Mathf.Infinity, min), max, Mathf.Infinity);
+        }
+
+        /// <summary>
+        /// make an inverted clamp with vector2
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="min">min</param>
+        /// <param name="max">max</param>
+        /// <returns>inverted clamped vector2</returns>
+        public static Vector2 InvertClamp(Vector2 value, Vector2 min, Vector2 max)
+        {
+            return new Vector2(InvertClamp(value.x, min.x, max.x), InvertClamp(value.y, min.y, max.y));
+        }
+
+        /// <summary>
+        /// make an inverted clamp with vector3
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="min">min</param>
+        /// <param name="max">max</param>
+        /// <returns>inverted clamped vector3</returns>
+        public static Vector3 InvertClamp(Vector3 value, Vector3 min, Vector3 max)
+        {
+            return new Vector3(InvertClamp(value.x, min.x, max.x), InvertClamp(value.y, min.y, max.y), InvertClamp(value.z, min.z, max.z));
+        }
+
+        /// <summary>
+        /// make an inverted lerp between 0 and 1
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns>the clamped value not between 0 and 1</returns>
+        public static float InvertClamp01(float value)
+        {
+            return InvertClamp(value, 0, 1);
+        }
+
+        /// <summary>
+        /// make an inverted lerp between 0 and 1
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns>the clamped value not between 0 and 1</returns>
+        public static Vector2 InvertClamp01(Vector2 value)
+        {
+            return InvertClamp(value, Vector2.zero, Vector2.one);
+        }
+
+        /// <summary>
+        /// make an inverted lerp between 0 and 1
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns>the clamped value not between 0 and 1</returns>
+        public static Vector3 InvertClamp01(Vector3 value)
+        {
+            return InvertClamp(value, Vector3.zero, Vector3.one);
+        }
+
         #region Constants
 
         /// <summary>

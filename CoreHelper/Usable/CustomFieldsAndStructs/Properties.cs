@@ -1,17 +1,27 @@
 using UnityEngine;
 
-namespace UPDB.CoreHelper.UsableMethods.Structures
+namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
 {
     ///<summary>
-    /// representation of a five-dimensional vector
+    /// give properties to an object, like name, or state
     ///</summary>
+    [System.Serializable]
     public struct Properties
     {
-        private string name;
-        private float value;
-        private int index;
-        private string state;
-        private bool condition;
+        [SerializeField, Tooltip("")]
+        private string _name;
+
+        [SerializeField, Tooltip("")]
+        private float _value;
+
+        [SerializeField, Tooltip("")]
+        private int _index;
+
+        [SerializeField, Tooltip("")]
+        private string _state;
+
+        [SerializeField, Tooltip("")]
+        private bool _condition;
 
         /// <summary>
         /// constructor for 5 parameters
@@ -23,11 +33,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> condition parameter</param>
         public Properties(string name, float value, int index, string state, bool condition)
         {
-            this.name = name;
-            this.value = value;
-            this.index = index;
-            this.state = state;
-            this.condition = condition;
+            this._name = name;
+            this._value = value;
+            this._index = index;
+            this._state = state;
+            this._condition = condition;
         }
 
 
@@ -42,11 +52,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="state"> state parameter</param>
         public Properties(string name, float value, int index, string state)
         {
-            this.name = name;
-            this.value = value;
-            this.index = index;
-            this.state = state;
-            this.condition = true;
+            this._name = name;
+            this._value = value;
+            this._index = index;
+            this._state = state;
+            this._condition = true;
         }
 
         /// <summary>
@@ -58,11 +68,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> state parameter</param>
         public Properties(string name, float value, int index, bool condition)
         {
-            this.name = name;
-            this.value = value;
-            this.index = index;
-            this.state = "";
-            this.condition = condition;
+            this._name = name;
+            this._value = value;
+            this._index = index;
+            this._state = "";
+            this._condition = condition;
         }
 
         /// <summary>
@@ -74,11 +84,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> state parameter</param>
         public Properties(string name, float value, string state, bool condition)
         {
-            this.name = name;
-            this.value = value;
-            this.index = 0;
-            this.state = "";
-            this.condition = condition;
+            this._name = name;
+            this._value = value;
+            this._index = 0;
+            this._state = "";
+            this._condition = condition;
         }
 
         /// <summary>
@@ -90,11 +100,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> condition parameter</param>
         public Properties(string name, int index, string state, bool condition)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = index;
-            this.state = state;
-            this.condition = condition;
+            this._name = name;
+            this._value = 0;
+            this._index = index;
+            this._state = state;
+            this._condition = condition;
         }
 
         #endregion
@@ -110,11 +120,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="index"> index parameter</param>
         public Properties(string name, float value, int index)
         {
-            this.name = name;
-            this.value = value;
-            this.index = index;
-            this.state = "";
-            this.condition = true;
+            this._name = name;
+            this._value = value;
+            this._index = index;
+            this._state = "";
+            this._condition = true;
         }
 
         /// <summary>
@@ -125,11 +135,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="state"> state parameter</param>
         public Properties(string name, float value, string state)
         {
-            this.name = name;
-            this.value = value;
-            this.index = 0;
-            this.state = state;
-            this.condition = true;
+            this._name = name;
+            this._value = value;
+            this._index = 0;
+            this._state = state;
+            this._condition = true;
         }
 
         /// <summary>
@@ -140,11 +150,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="state"> state parameter</param>
         public Properties(string name, int index, string state)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = index;
-            this.state = state;
-            this.condition = true;
+            this._name = name;
+            this._value = 0;
+            this._index = index;
+            this._state = state;
+            this._condition = true;
         }
 
         /// <summary>
@@ -155,11 +165,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> state parameter</param>
         public Properties(string name, float value, bool condition)
         {
-            this.name = name;
-            this.value = value;
-            this.index = 0;
-            this.state = "";
-            this.condition = condition;
+            this._name = name;
+            this._value = value;
+            this._index = 0;
+            this._state = "";
+            this._condition = condition;
         }
 
         /// <summary>
@@ -170,11 +180,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> state parameter</param>
         public Properties(string name, int index, bool condition)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = index;
-            this.state = "";
-            this.condition = condition;
+            this._name = name;
+            this._value = 0;
+            this._index = index;
+            this._state = "";
+            this._condition = condition;
         }
 
         /// <summary>
@@ -185,11 +195,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> state parameter</param>
         public Properties(string name, string state, bool condition)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = 0;
-            this.state = state;
-            this.condition = condition;
+            this._name = name;
+            this._value = 0;
+            this._index = 0;
+            this._state = state;
+            this._condition = condition;
         }
 
         #endregion
@@ -203,11 +213,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="value"> value parameter</param>
         public Properties(string name, float value)
         {
-            this.name = name;
-            this.value = value;
-            this.index = 0;
-            this.state = "";
-            this.condition = true;
+            this._name = name;
+            this._value = value;
+            this._index = 0;
+            this._state = "";
+            this._condition = true;
         }
 
         /// <summary>
@@ -217,11 +227,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="index"> index parameter</param>
         public Properties(string name, int index)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = index;
-            this.state = "";
-            this.condition = true;
+            this._name = name;
+            this._value = 0;
+            this._index = index;
+            this._state = "";
+            this._condition = true;
         }
 
         /// <summary>
@@ -231,11 +241,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="state"> state parameter</param>
         public Properties(string name, string state)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = 0;
-            this.state = state;
-            this.condition = true;
+            this._name = name;
+            this._value = 0;
+            this._index = 0;
+            this._state = state;
+            this._condition = true;
         }
 
         /// <summary>
@@ -245,11 +255,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="condition"> condition parameter</param>
         public Properties(string name, bool condition)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = 0;
-            this.state = "";
-            this.condition = condition;
+            this._name = name;
+            this._value = 0;
+            this._index = 0;
+            this._state = "";
+            this._condition = condition;
         }
 
         #endregion
@@ -260,11 +270,11 @@ namespace UPDB.CoreHelper.UsableMethods.Structures
         /// <param name="name"> name parameter</param>
         public Properties(string name)
         {
-            this.name = name;
-            this.value = 0;
-            this.index = 0;
-            this.state = "";
-            this.condition = true;
+            this._name = name;
+            this._value = 0;
+            this._index = 0;
+            this._state = "";
+            this._condition = true;
         }
 
     } 

@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
-namespace UPDB.CoreHelper.Usable
+namespace UPDB.Data.CustomTransform
 {
-    [AddComponentMenu(NamespaceID.CoreHelperPath + "/" + NamespaceID.Usable + "/UPDB Transform")]
-    public class CustomTransform : UPDBBehaviour
+    [AddComponentMenu(NamespaceID.DataPath + "/" + NamespaceID.CustomTransform + "/UPDB Transform")]
+    public class CustomTransformManager : UPDBBehaviour
     {
         [SerializeField, Tooltip("parent of simulated transform")]
         private Transform _parent;

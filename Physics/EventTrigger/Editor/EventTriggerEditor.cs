@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
-namespace UPDB.CoreHelper.Usable
+namespace UPDB.Physic.EventTrigger
 {
     [CustomEditor(typeof(EventTrigger))]
     public class EventTriggerEditor : Editor

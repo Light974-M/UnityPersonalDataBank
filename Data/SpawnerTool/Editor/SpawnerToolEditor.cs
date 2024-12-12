@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
-using UPDB.CoreHelper.Usable;
+using UPDB.Data.CustomTransform;
 
 namespace UPDB.Data.UPDBSpawner
 {
@@ -57,7 +54,7 @@ namespace UPDB.Data.UPDBSpawner
                 myTarget.SpawnerShape = (Shape)EditorGUILayout.EnumPopup(spawnerShapeContent, myTarget.SpawnerShape);
 
                 GUIContent spawnerOffsetTransformContent = new GUIContent(nameof(myTarget.SpawnerOffsetTransform), "parent of simulated transform");
-                myTarget.SpawnerOffsetTransform = (CustomTransform)EditorGUILayout.ObjectField(spawnerOffsetTransformContent, myTarget.SpawnerOffsetTransform, typeof(CustomTransform), true);
+                myTarget.SpawnerOffsetTransform = (CustomTransformManager)EditorGUILayout.ObjectField(spawnerOffsetTransformContent, myTarget.SpawnerOffsetTransform, typeof(CustomTransformManager), true);
             }
             EditorGUILayout.EndVertical();
 

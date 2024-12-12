@@ -4667,6 +4667,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice)
         {
+            if(shapeVertice.Length == 0) 
+                return false;
+
             int windingNumber = 0;
 
             for (int i = 0; i < shapeVertice.Length; i++)
@@ -4693,11 +4696,141 @@ namespace UPDB.CoreHelper.UsableMethods
             return windingNumber != 0;
         }
 
-        // Fonction pour vérifier si le point est à gauche, sur, ou à droite d'une ligne
+        /// <summary>
+        /// return a random point inside a custom volume 2D polygon
+        /// </summary>
+        /// <param name="polygon">polygon shape</param>
+        /// <returns>the generated point inside the polygon</returns>
+        public static Vector2 GenerateRandomPosInVolume2D(Vector2[] polygon)
+        {
+            // Trianguler le polygone (cette méthode suppose que le polygone est convexe pour simplifier)
+            Vector2[][] triangles = TriangulatePolygon(polygon);
+
+            // Calculer les aires des triangles
+            float[] areas = new float[triangles.Length];
+            float totalArea = 0;
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                areas[i] = TriangleArea(triangles[i][0], triangles[i][1], triangles[i][2]);
+                totalArea += areas[i];
+            }
+
+            // Sélectionner un triangle proportionnellement à son aire
+            float randomValue = Random.value * totalArea;
+            int selectedTriangle = 0;
+            float cumulativeArea = 0;
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                cumulativeArea += areas[i];
+                if (randomValue <= cumulativeArea)
+                {
+                    selectedTriangle = i;
+                    break;
+                }
+            }
+
+            // Générer un point barycentrique dans le triangle sélectionné
+            return GeneratePointInTriangle(triangles[selectedTriangle][0], triangles[selectedTriangle][1], triangles[selectedTriangle][2]);
+        }
+
+        #region Sub Methods
+
+        /// <summary>
+        /// generate a barycentric coord that is always inside triangle without clamping but looping(to avoid weight issues in randomness)
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        private static Vector2 GeneratePointInTriangle(Vector2 a, Vector2 b, Vector2 c)
+        {
+            float u = Random.value;
+            float v = Random.value;
+
+            // Assurer que les coordonnées barycentriques sont valides
+            if (u + v > 1)
+            {
+                u = 1 - u;
+                v = 1 - v;
+            }
+
+            // Calculer le point à l'intérieur du triangle
+            return (1 - u - v) * a + u * b + v * c;
+        }
+
+        /// <summary>
+        /// transform polygon shape into a serie of triangles
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <returns></returns>
+        private static Vector2[][] TriangulatePolygon(Vector2[] polygon)
+        {
+            Vector2[][] triangles = new Vector2[polygon.Length - 2][];
+
+            for (int i = 1; i < polygon.Length - 1; i++)
+            {
+                triangles[i - 1] = new Vector2[] { polygon[0], polygon[i], polygon[i + 1] };
+            }
+
+            return triangles;
+        }
+
+        /// <summary>
+        /// calculate the area of a triangle
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        private static float TriangleArea(Vector2 a, Vector2 b, Vector2 c)
+        {
+            return Mathf.Abs((a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2f);
+        }
+
+        /// <summary>
+        /// get square that circle the shape (with the pattern vector4 : minX, minY, maxX, maxY)
+        /// </summary>
+        /// <param name="shapeVertice">shape to get square from</param>
+        /// <returns>square that circle shape</returns>
+        public static Vector4 GetCerclingSquare(Vector2[] shapeVertice)
+        {
+            if (shapeVertice.Length == 0)
+                return Vector4.zero;
+
+            float minX = shapeVertice[0].x;
+            float minY = shapeVertice[0].y;
+            float maxX = shapeVertice[0].x;
+            float maxY = shapeVertice[0].y;
+
+            for (int i = 1; i < shapeVertice.Length; i++)
+            {
+                if (shapeVertice[i].x < minX)
+                    minX = shapeVertice[i].x;
+                if (shapeVertice[i].x > maxX)
+                    maxX = shapeVertice[i].x;
+
+                if (shapeVertice[i].y < minY)
+                    minY = shapeVertice[i].y;
+                if (shapeVertice[i].y > maxY)
+                    maxY = shapeVertice[i].y;
+            }
+
+            return new Vector4(minX, minY, maxX, maxY);
+        }
+
+        /// <summary>
+        /// check if p is to the left or the right of the line created by a and b
+        /// </summary>
+        /// <param name="a">a position of line</param>
+        /// <param name="b">b position of line</param>
+        /// <param name="p">point to test</param>
+        /// <returns>the cross product, if superior to 0, point is to the left</returns>
         private static float IsLeft(Vector2 a, Vector2 b, Vector2 p)
         {
             return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
         }
+
+        #endregion
 
         #endregion
 

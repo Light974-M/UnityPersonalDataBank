@@ -22,10 +22,9 @@ namespace UPDB.CoreHelper
         public const string Cameras = nameof(Cameras);
         public const string CharacterControllers = nameof(CharacterControllers);
 
-        public const string CustomPropertyAttributes = nameof(CustomPropertyAttributes);
-        public const string CustomScriptOrderMethods = nameof(CustomScriptOrderMethods);
         public const string UsableMethods = nameof(UsableMethods);
         public const string Usable = nameof(Usable);
+        public const string Templates = nameof(Templates);
 
         public const string RotationDetector = nameof(RotationDetector);
 
@@ -35,6 +34,9 @@ namespace UPDB.CoreHelper
         public const string SpawnerTool = nameof(SpawnerTool);
         public const string SplineTool = nameof(SplineTool);
         public const string UITools = nameof(UITools);
+        public const string CustomTransform = nameof(CustomTransform);
+        public const string CustomScriptExecutionOrder = nameof(CustomScriptExecutionOrder);
+        public const string PerformanceDebugger = nameof(PerformanceDebugger);
 
         public const string AutoRotate = nameof(AutoRotate);
         public const string CustomPhysicMaterial = nameof(CustomPhysicMaterial);
@@ -44,6 +46,7 @@ namespace UPDB.CoreHelper
         public const string PlacementTools = nameof(PlacementTools);
         public const string RAPhysic = nameof(RAPhysic);
         public const string SMPhysic = nameof(SMPhysic);
+        public const string EventTrigger = nameof(EventTrigger);
 
         public const string CartoonWind = nameof(CartoonWind);
         public const string MazeGenerator = nameof(MazeGenerator);
@@ -66,7 +69,9 @@ namespace UPDB.CoreHelper
         public const string RbFpsController = nameof(RbFpsController);
         public const string SpriteTpsController = nameof(SpriteTpsController);
 
-        public const string Structures = nameof(Structures);
+        public const string CustomPropertyAttributes = nameof(CustomPropertyAttributes);
+        public const string CustomFieldsAndStructs = nameof(CustomFieldsAndStructs);
+
         public const string SimpleGridLevel = nameof(SimpleGridLevel);
         public const string MenuUIController = nameof(MenuUIController);
 
@@ -82,9 +87,9 @@ namespace UPDB.CoreHelper
         //CoreHelper
         public const string CoreHelperPath = UPDB + "/" + CoreHelper;
         public const string CustomPropertyAttributesPath = CoreHelperPath + "/" + CustomPropertyAttributes;
-        public const string CustomScriptOrderMethodsPath = CoreHelperPath + "/" + CustomScriptOrderMethods;
         public const string UsableMethodsPath = CoreHelperPath + "/" + UsableMethods;
         public const string UsablePath = CoreHelperPath + "/" + Usable;
+        public const string TemplatesPath = CoreHelperPath + "/" + Templates;
 
         //CustomInput
         public const string CustomInputPath = UPDB + "/" + CustomInput;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UPDB.CoreHelper.UsableMethods.Structures
+namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
 {
     ///<summary>
     /// representation of a five-dimensional vector

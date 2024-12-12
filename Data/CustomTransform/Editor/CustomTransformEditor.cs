@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
-namespace UPDB.CoreHelper.Usable
+namespace UPDB.Data.CustomTransform
 {
-    [CustomEditor(typeof(CustomTransform))]
+    [CustomEditor(typeof(CustomTransformManager))]
     public class CustomTransformEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            CustomTransform myTarget = (CustomTransform)target;
+            CustomTransformManager myTarget = (CustomTransformManager)target;
 
             EditorGUI.BeginChangeCheck();
 
