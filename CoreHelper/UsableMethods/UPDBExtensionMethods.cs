@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
-using Unity.Mathematics;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
 
@@ -81,8 +78,15 @@ namespace UPDB.CoreHelper.UsableMethods
             return key;
         }
 
+
+        /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/
+
+        #region BARYCENTRIC COORDS TOOLS
+
+        #region Triangle Barycentric coords to 2D Coords
+
         /// <summary>
-        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// convert barycentric coordinate system into 2D coords, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="a"></param>
@@ -91,13 +95,13 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="allowInside"></param>
         /// <param name="allowOutside"></param>
         /// <returns></returns>
-        public static Vector2 ToBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c, bool allowInside, bool allowOutside)
+        public static Vector2 FromBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c, bool allowInside, bool allowOutside)
         {
             if (!allowInside && !allowOutside)
                 return Vector2.zero;
 
             if (allowInside && allowOutside)
-                return GetBarycentricCoords(pos, a, b, c);
+                return Get2DCoordsFromBarycentricCoords(pos, a, b, c);
 
             if (allowInside)
             {
@@ -111,7 +115,7 @@ namespace UPDB.CoreHelper.UsableMethods
                     pos.y /= toDivide;
                 }
 
-                return GetBarycentricCoords(pos, a, b, c);
+                return Get2DCoordsFromBarycentricCoords(pos, a, b, c);
             }
 
             if (allowOutside)
@@ -155,14 +159,139 @@ namespace UPDB.CoreHelper.UsableMethods
                     }
                 }
 
-                return GetBarycentricCoords(pos, a, b, c);
+                return Get2DCoordsFromBarycentricCoords(pos, a, b, c);
             }
 
-            return GetBarycentricCoords(pos, a, b, c);
+            return Get2DCoordsFromBarycentricCoords(pos, a, b, c);
         }
 
         /// <summary>
-        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// convert barycentric coordinate system into 2D coords, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector2 FromBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return pos.FromBarycentricCoords(a, b, c, true, true);
+        }
+
+        /// <summary>
+        /// convert barycentric coordinate system into 2D coords, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector2 FromInsideBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return pos.FromBarycentricCoords(a, b, c, true, false);
+        }
+
+        /// <summary>
+        /// convert barycentric coordinate system into 2D coords, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector2 FromOutsideBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            return pos.FromBarycentricCoords(a, b, c, false, true);
+        }
+
+        #endregion
+
+        #region 2D Coords to Triangle Barycentric coords
+
+        /// <summary>
+        /// convert 2D coords into barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="allowInside"></param>
+        /// <param name="allowOutside"></param>
+        /// <returns></returns>
+        public static Vector2 ToBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c, bool allowInside, bool allowOutside)
+        {
+            if (allowInside && allowOutside)
+                return GetBarycentricCoords(pos, a, b, c);
+
+            if (!allowInside && !allowOutside)
+                return Vector2.zero;
+
+            if (allowInside)
+            {
+                Vector2 toReturn = UPDBMath.Clamp01(GetBarycentricCoords(pos, a, b, b));
+
+                if (toReturn.x + toReturn.y > 1)
+                {
+                    float toDivide = toReturn.x + toReturn.y;
+
+                    toReturn.x /= toDivide;
+                    toReturn.y /= toDivide;
+                }
+
+                return toReturn;
+            }
+
+            if (allowOutside)
+            {
+                Vector2 toReturn = UPDBMath.Clamp01(GetBarycentricCoords(pos, a, b, b));
+
+                if (toReturn.x + toReturn.y < 1 && toReturn.x + toReturn.y > 0)
+                {
+                    float factor = toReturn.x / toReturn.y;
+
+                    if (toReturn.x + toReturn.y >= 5)
+                    {
+                        float toMultiply = 1 / (toReturn.x + toReturn.y);
+                        toReturn.x *= toMultiply;
+                        toReturn.y *= toMultiply;
+                    }
+                    else
+                    {
+                        if (toReturn.x > toReturn.y)
+                        {
+                            float toMultiply = toReturn.y / toReturn.x;
+                            float toSubX = (toReturn.x + toReturn.y) * toMultiply;
+                            float toSubY = (toReturn.x + toReturn.y) - toSubX;
+
+                            toReturn.x -= toSubX;
+                            toReturn.y -= toSubY;
+                        }
+                        if (toReturn.x < toReturn.y)
+                        {
+                            float toMultiply = toReturn.x / toReturn.y;
+                            float toSubY = (toReturn.x + toReturn.y) * toMultiply;
+                            float toSubX = (toReturn.x + toReturn.y) - toSubY;
+
+                            toReturn.x -= toSubX;
+                            toReturn.y -= toSubY;
+                        }
+                        if (toReturn.x == toReturn.y)
+                        {
+                            float toSubstract = (toReturn.x + toReturn.y) / 2;
+                            toReturn.x -= toSubstract;
+                            toReturn.y -= toSubstract;
+                        }
+                    }
+                }
+
+                return toReturn;
+            }
+
+            return Vector2.zero;
+        }
+
+        /// <summary>
+        /// convert 2D coords into barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="a"></param>
@@ -171,11 +300,11 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static Vector2 ToBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
         {
-            return pos.ToBarycentricCoords(a, b, c, true, true);
+            return ToBarycentricCoords(pos, a, b, c, true, true);
         }
 
         /// <summary>
-        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// convert 2D coords into barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="a"></param>
@@ -184,11 +313,11 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static Vector2 ToInsideBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
         {
-            return pos.ToBarycentricCoords(a, b, c, true, false);
+            return ToBarycentricCoords(pos, a, b, c, true, false);
         }
 
         /// <summary>
-        /// convert 2D coords into a barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// convert 2D coords into barycentric coordinate system, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="a"></param>
@@ -197,15 +326,354 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static Vector2 ToOutsideBarycentricCoords(this Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
         {
-            return pos.ToBarycentricCoords(a, b, c, false, true);
+            return ToBarycentricCoords(pos, a, b, c, false, true);
         }
 
-        private static Vector2 GetBarycentricCoords(Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        #endregion
+
+        #region Triangle barycentric coords to 3D coords
+
+        /// <summary>
+        /// convert barycentric coordinate system into 3D coords, wich means x y and z are represented inside a triangle, and if both x y and z are between 0 and 1, point is inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="allowInside"></param>
+        /// <param name="allowOutside"></param>
+        /// <returns></returns>
+        public static Vector3 FromBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c, bool allowInside, bool allowOutside)
+        {
+            if (!allowInside && !allowOutside)
+                return Vector3.zero;
+
+            if (allowInside && allowOutside)
+                return Get3DCoordsFromBarycentricCoords(pos, a, b, c);
+
+            if (allowInside)
+            {
+                pos = UPDBMath.Clamp01(pos);
+
+                float imprecision = 0.0000001f;
+                if ((pos.x + pos.y + pos.z) - 1 >= imprecision || (pos.x + pos.y + pos.z) - 1 <= -imprecision)
+                {
+                    float toDivide = pos.x + pos.y + pos.z;
+
+                    pos.x /= toDivide;
+                    pos.y /= toDivide;
+                    pos.z /= toDivide;
+                }
+
+                return Get3DCoordsFromBarycentricCoords(pos, a, b, c);
+            }
+
+            if (allowOutside)
+            {
+                if (pos.x <= 1 && pos.x >= 0 && pos.y <= 1 && pos.y >= 0 && pos.z <= 1 && pos.z >= 0)
+                {
+                    float distX = pos.x > 5 ? 1 - pos.x : pos.x;
+                    float distY = pos.y > 5 ? 1 - pos.y : pos.y;
+                    float distZ = pos.z > 5 ? 1 - pos.z : pos.z;
+
+                    if (distX <= distY && distX <= distZ)
+                    {
+                        pos.x = UPDBMath.InvertClamp01(pos.x);
+
+                        if (pos.x == 1)
+                        {
+                            pos.y = 0;
+                            pos.z = 0;
+                        }
+                        else
+                        {
+                            float toDivide = pos.y + pos.z;
+                            pos.y /= toDivide;
+                            pos.z /= toDivide;
+                        }
+                    }
+
+                    if (distY <= distX && distY <= distZ)
+                    {
+                        pos.y = UPDBMath.InvertClamp01(pos.x);
+
+                        if (pos.y == 1)
+                        {
+                            pos.x = 0;
+                            pos.z = 0;
+                        }
+                        else
+                        {
+                            float toDivide = pos.x + pos.z;
+                            pos.x /= toDivide;
+                            pos.z /= toDivide;
+                        }
+                    }
+
+                    if (distZ <= distY && distZ <= distX)
+                    {
+                        pos.z = UPDBMath.InvertClamp01(pos.x);
+
+                        if (pos.z == 1)
+                        {
+                            pos.y = 0;
+                            pos.x = 0;
+                        }
+                        else
+                        {
+                            float toDivide = pos.y + pos.x;
+                            pos.y /= toDivide;
+                            pos.x /= toDivide;
+                        }
+                    }
+                }
+
+                return Get3DCoordsFromBarycentricCoords(pos, a, b, c);
+            }
+
+            return Get2DCoordsFromBarycentricCoords(pos, a, b, c);
+        }
+
+        /// <summary>
+        /// convert barycentric coordinate system into 3D coords, wich means x y and z are represented inside a triangle,  and if both x y and z are between 0 and 1, point is inside the triangle 
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector3 FromBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c)
+        {
+            return FromBarycentricCoords(pos, a, b, c, true, true);
+        }
+
+        /// <summary>
+        /// convert barycentric coordinate system into 3D coords, wich means x y and z are represented inside a triangle, and if both x y and z are between 0 and 1, point is inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector3 FromInsideBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c)
+        {
+            return FromBarycentricCoords(pos, a, b, c, true, false);
+        }
+
+        /// <summary>
+        /// convert barycentric coordinate system into 3D coords, wich means x y and z are represented inside a triangle, and if both x y and z are between 0 and 1, point is inside the triangle 
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector3 FromOutsideBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c)
+        {
+            return FromBarycentricCoords(pos, a, b, c, false, true);
+        }
+
+        #endregion
+
+        #region 3D Coords to Triangle Barycentric coords
+
+        /// <summary>
+        /// convert 3D coords into barycentric coordinate system, wich means x and y are represented inside a triangle, and if both x y and z are between 0 and 1, point is inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="allowInside"></param>
+        /// <param name="allowOutside"></param>
+        /// <returns></returns>
+        public static Vector3 ToBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c, bool allowInside, bool allowOutside)
+        {
+            if (allowInside && allowOutside)
+                return GetBarycentricCoords(pos, a, b, c);
+
+            if (!allowInside && !allowOutside)
+                return Vector3.zero;
+
+            if (allowInside)
+            {
+                Vector3 coords = GetBarycentricCoords(pos, a, b, c);
+
+
+
+                return coords;
+            }
+
+            if (allowOutside)
+            {
+                Vector3 toReturn = GetBarycentricCoords(pos, a, b, c);
+
+                return toReturn;
+            }
+
+            return Vector2.zero;
+        }
+
+        /// <summary>
+        /// convert 3D coords into barycentric coordinate system, wich means x and y are represented inside a triangle, and if both x y and z are between 0 and 1, point is inside the triangle
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static Vector3 ToBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c)
+        {
+            return ToBarycentricCoords(pos, a, b, c, true, true);
+        }
+
+        #endregion
+
+        #region Tetrahedron Barycentric coords to 3D Coords
+
+        public static Vector3 FromBarycentricCoords(this Vector4 pos, Vector3 a, Vector3 b, Vector3 c, Vector3 d, bool allowInside, bool allowOutside)
+        {
+            return Get3DCoordsFromBarycentricCoords(pos, a, b, c, d);
+        }
+
+        public static Vector3 FromBarycentricCoords(this Vector4 pos, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        {
+            return pos.FromBarycentricCoords(a, b, c, d, true, true);
+        }
+
+        #endregion
+
+        #region 3D Coords to Tetrahedron Barycentric coords
+
+        public static Vector4 ToBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c, Vector3 d, bool allowInside, bool allowOutside)
+        {
+            return GetBarycentricCoords(pos, a, b, c, d);
+        }
+
+        public static Vector4 ToBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        {
+            return pos.ToBarycentricCoords(a, b, c, d, true, true);
+        }
+
+        #endregion
+
+        #region Base Calculations Methods
+
+        private static Vector2 Get2DCoordsFromBarycentricCoords(Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
         {
             return (1 - pos.x - pos.y) * a + pos.x * b + pos.y * c;
         }
 
-        /******************************************************UTILITY METHOD COLLECTIONS**********************************************************/
+        private static Vector2 GetBarycentricCoords(Vector2 pos, Vector2 a, Vector2 b, Vector2 c)
+        {
+            float denom = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+            float posX = ((pos.x - a.x) * (c.y - a.y) - (pos.y - a.y) * (c.x - a.x)) / denom;
+            float posY = ((b.x - a.x) * (pos.y - a.y) - (b.y - a.y) * (pos.x - a.x)) / denom;
+
+            return new Vector2(posX, posY);
+        }
+
+        private static Vector3 Get3DCoordsFromBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c)
+        {
+            float imprecision = 0.0000001f;
+            // Vérifier que la somme des coordonnées barycentriques est égale à 1
+            if ((pos.x + pos.y + pos.z) - 1 >= imprecision || (pos.x + pos.y + pos.z) - 1 <= -imprecision)
+            {
+                Debug.LogWarning("Warning : Les coordonnées barycentriques doivent satisfaire pos.x + pos.y + pos.z = 1.");
+                return Vector3.zero;
+            }
+
+            // Calculer le point en fonction des coordonnées barycentriques
+            return pos.x * a + pos.y * b + pos.z * c;
+        }
+
+        private static Vector3 GetBarycentricCoords(this Vector3 pos, Vector3 a, Vector3 b, Vector3 c)
+        {
+            // Vecteurs du triangle
+            Vector3 v0 = b - a;
+            Vector3 v1 = c - a;
+            Vector3 v2 = pos - a;
+
+            // Produits scalaires nécessaires
+            float d00 = Vector3.Dot(v0, v0);
+            float d01 = Vector3.Dot(v0, v1);
+            float d11 = Vector3.Dot(v1, v1);
+            float d20 = Vector3.Dot(v2, v0);
+            float d21 = Vector3.Dot(v2, v1);
+
+            // Déterminant
+            float denom = d00 * d11 - d01 * d01;
+            if (Mathf.Abs(denom) < Mathf.Epsilon)
+            {
+                throw new System.Exception("Les sommets du triangle sont colinéaires ou très proches.");
+            }
+
+            // Coordonnées barycentriques
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+
+            return new Vector3(u, v, w);
+        }
+
+        private static Vector3 Get3DCoordsFromBarycentricCoords(Vector4 pos, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        {
+            // Extrait les coordonnées barycentriques
+            float u = pos.x;
+            float v = pos.y;
+            float w = pos.z;
+            float t = pos.w;
+
+            // Calcule la position dans l'espace
+            Vector3 position = u * a + v * b + w * c + t * d;
+
+            return position;
+        }
+
+        /// <summary>
+        /// take coordinates and a 4 points tetrahedron, and returns the barycentric coordinates of the tetrahedron, and if every value are within 0 and 1, and the sum of the four values are equal to 1, then point is inside the tetrahedron
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        private static Vector4 GetBarycentricCoords(Vector3 point, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        {
+            // Calcul des volumes barycentriques
+            float volumeABCD = SignedTetrahedronVolume(a, b, c, d);
+            float volumePBCD = SignedTetrahedronVolume(point, b, c, d);
+            float volumeAPCD = SignedTetrahedronVolume(a, point, c, d);
+            float volumeABPD = SignedTetrahedronVolume(a, b, point, d);
+            float volumeABCP = SignedTetrahedronVolume(a, b, c, point);
+
+            // Calcul des coordonnées barycentriques
+            float u = volumePBCD / volumeABCD;
+            float v = volumeAPCD / volumeABCD;
+            float w = volumeABPD / volumeABCD;
+            float t = volumeABCP / volumeABCD;
+
+            // Vérification des contraintes des coordonnées barycentriques
+            return new Vector4(u, v, w, t);
+        }
+
+        /// <summary>
+        /// Calcule le volume signé d'un tétraèdre défini par quatre points.
+        /// </summary>
+        /// <param name="a">Premier point du tétraèdre.</param>
+        /// <param name="b">Deuxième point du tétraèdre.</param>
+        /// <param name="c">Troisième point du tétraèdre.</param>
+        /// <param name="d">Quatrième point du tétraèdre.</param>
+        /// <returns>Le volume signé du tétraèdre.</returns>
+        private static float SignedTetrahedronVolume(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        {
+            return Vector3.Dot(Vector3.Cross(b - a, c - a), d - a) / 6.0f;
+        }
+
+        #endregion
+
+        #endregion
 
         #region CHECK DIRTY TOOLS
 

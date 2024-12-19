@@ -37,6 +37,7 @@ namespace UPDB.CoreHelper
         public const string CustomTransform = nameof(CustomTransform);
         public const string CustomScriptExecutionOrder = nameof(CustomScriptExecutionOrder);
         public const string PerformanceDebugger = nameof(PerformanceDebugger);
+        public const string MeshSnapshot = nameof(MeshSnapshot);
 
         public const string AutoRotate = nameof(AutoRotate);
         public const string CustomPhysicMaterial = nameof(CustomPhysicMaterial);
@@ -54,6 +55,7 @@ namespace UPDB.CoreHelper
         public const string ProShapeBuilder = nameof(ProShapeBuilder);
         public const string ProTerrainBuilder = nameof(ProTerrainBuilder);
         public const string TextureNanite = nameof(TextureNanite);
+        public const string LODTextureGenerator = nameof(LODTextureGenerator);
 
         public const string AmbianceMixer = nameof(AmbianceMixer);
         public const string EngineGear = nameof(EngineGear);

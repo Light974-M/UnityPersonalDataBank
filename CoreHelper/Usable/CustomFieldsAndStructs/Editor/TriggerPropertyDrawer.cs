@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.TerrainTools;
 
 namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
 {
     [CustomPropertyDrawer(typeof(Trigger))]
     public class TriggerPropertyDrawer : PropertyDrawer
     {
+        private byte _frameCount = 0;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             SerializedProperty valueProperty = property.FindPropertyRelative("_value");
@@ -23,7 +26,10 @@ namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
             bool isMouseOver = buttonRect.Contains(Event.current.mousePosition);
             Color buttonColor = valueProperty.boolValue ? isMouseOver ? Color.green * 0.75f : Color.green : isMouseOver ? new Color(0.14f, 0.14f, 0.14f) : new Color(0.17f, 0.17f, 0.17f);
 
-            HandleUtility.Repaint();
+            if (_frameCount < 4)
+                _frameCount++;
+            else
+                HandleUtility.Repaint();
 
             //Dessinez un cercle avec Handles
             Handles.BeginGUI();

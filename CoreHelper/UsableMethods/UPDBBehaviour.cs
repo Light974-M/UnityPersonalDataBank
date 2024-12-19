@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UPDB.CoreHelper.Usable;
 
@@ -200,6 +201,43 @@ namespace UPDB.CoreHelper.UsableMethods
                 }
             }
             return layers;
+        }
+
+        /// <summary>
+        /// get a list of transform direction that represent a sphere ith a given number of horizontal and vertical vertice
+        /// </summary>
+        /// <param name="xNumber"></param>
+        /// <param name="yNumber"></param>
+        /// <returns></returns>
+        public static Vector3[][] GetSphereVerticeDirections(int xNumber, int yNumber)
+        {
+            if (xNumber == 0 || yNumber == 0)
+                return new Vector3[0][];
+
+            Vector3[] yPosList = new Vector3[yNumber];
+            Vector3 verticalPos = Vector3.up;
+
+            for (int i = 0; i < yPosList.Length; i++)
+            {
+                yPosList[i] = verticalPos;
+                verticalPos = RotateVector(verticalPos, Vector3.right, 180 / ((float)yNumber - 1));
+            }
+
+            Vector3[][] posList = new Vector3[yNumber][];
+
+            for (int i = 0; i < yNumber; i++)
+            {
+                Vector3 horizontalPos = yPosList[i];
+                posList[i] = new Vector3[xNumber];
+
+                for (int j = 0; j < xNumber; j++)
+                {
+                    posList[i][j] = horizontalPos;
+                    horizontalPos = RotateVector(horizontalPos, Vector3.up, 360 / (float)xNumber);
+                }
+            }
+
+            return posList;
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
@@ -4007,6 +4045,94 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region DrawCustomShape
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="position"></param>
+        /// <param name="scale"></param>
+        /// <param name="right"></param>
+        /// <param name="up"></param>
+        /// <param name="forward"></param>
+        /// <param name="color"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward, Color color)
+        {
+            if (vertice.Length == 0 || edges.Length == 0)
+                return;
+
+            for (int i = 0; i < edges.Length; i++)
+            {
+                if (edges[i].x < 0 || edges[i].x >= vertice.Length || edges[i].y < 0 || edges[i].y >= vertice.Length)
+                    continue;
+
+                Debug.DrawLine(Point3LocalToWorld(vertice[edges[i].x], position, right * scale.x, up * scale.y, forward * scale.z), Point3LocalToWorld(vertice[edges[i].y], position, right * scale.x, up * scale.y, forward * scale.z), color);
+            }
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="position"></param>
+        /// <param name="scale"></param>
+        /// <param name="right"></param>
+        /// <param name="up"></param>
+        /// <param name="forward"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward)
+        {
+            DebugDrawWireShape(vertice, edges, position, scale, right, up, forward, Color.yellow);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="spaceRelative"></param>
+        /// <param name="color"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Transform spaceRelative, Color color)
+        {
+            DebugDrawWireShape(vertice, edges, spaceRelative.position, spaceRelative.localScale, spaceRelative.right, spaceRelative.up, spaceRelative.forward, color);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="spaceRelative"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Transform spaceRelative)
+        {
+            DebugDrawWireShape(vertice, edges, spaceRelative.position, spaceRelative.localScale, spaceRelative.right, spaceRelative.up, spaceRelative.forward, Color.yellow);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="color"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Color color)
+        {
+            DebugDrawWireShape(vertice, edges, Vector3.zero, Vector3.one, Vector3.right, Vector3.up, Vector3.forward, color);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges)
+        {
+            DebugDrawWireShape(vertice, edges, Vector3.zero, Vector3.one, Vector3.right, Vector3.up, Vector3.forward, Color.yellow);
+        }
+
+        #endregion
+
         #endregion
 
 
@@ -4664,49 +4790,86 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="position">position to test</param>
         /// <param name="shapeVertice">array of vertices of polygon</param>
-        /// <returns></returns>
-        public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice)
+        /// <param name="algoUsed">what algorithm is used to determine if point is inside shape</param>
+        /// <returns>if position is inside custom shape</returns>
+        public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice, VolumeTestAlgo algoUsed)
         {
-            if(shapeVertice.Length == 0) 
+            if (shapeVertice.Length == 0)
                 return false;
 
-            int windingNumber = 0;
-
-            for (int i = 0; i < shapeVertice.Length; i++)
+            if (algoUsed == VolumeTestAlgo.WindingNumber)
             {
-                Vector2 v1 = shapeVertice[i];
-                Vector2 v2 = shapeVertice[(i + 1) % shapeVertice.Length]; // Boucle vers le premier point
+                int windingNumber = 0;
 
-                // Si le segment traverse la ligne horizontale passant par le point
-                if (v1.y <= position.y)
+                for (int i = 0; i < shapeVertice.Length; i++)
                 {
-                    if (v2.y > position.y) // Le segment monte
-                        if (IsLeft(v1, v2, position) > 0) // Point à gauche du segment
-                            windingNumber++;
+                    Vector2 v1 = shapeVertice[i];
+                    Vector2 v2 = shapeVertice[(i + 1) % shapeVertice.Length]; // Boucle vers le premier point
+
+                    // Si le segment traverse la ligne horizontale passant par le point
+                    if (v1.y <= position.y)
+                    {
+                        if (v2.y > position.y) // Le segment monte
+                            if (IsLeft(v1, v2, position) > 0) // Point à gauche du segment
+                                windingNumber++;
+                    }
+                    else
+                    {
+                        if (v2.y <= position.y) // Le segment descend
+                            if (IsLeft(v1, v2, position) < 0) // Point à gauche du segment
+                                windingNumber--;
+                    }
                 }
-                else
-                {
-                    if (v2.y <= position.y) // Le segment descend
-                        if (IsLeft(v1, v2, position) < 0) // Point à gauche du segment
-                            windingNumber--;
-                }
+
+                // Si le winding number est différent de 0, le point est dans le polygone
+                return windingNumber != 0;
             }
 
-            // Si le winding number est différent de 0, le point est dans le polygone
-            return windingNumber != 0;
+            if (algoUsed == VolumeTestAlgo.BarycentricTest)
+            {
+                // triangulate polygon(work only with convex shapes)
+                Vector2[][] triangles = TriangulatePolygon(shapeVertice);
+
+                for (int i = 0; i < triangles.Length; i++)
+                {
+                    Vector2 barCoords = position.ToBarycentricCoords(triangles[i][0], triangles[i][1], triangles[i][2]);
+                    float sum = barCoords.x + barCoords.y;
+                    bool xInside = barCoords.x <= 1 && barCoords.x >= 0;
+                    bool yInside = barCoords.y <= 1 && barCoords.y >= 0;
+
+                    if (xInside && yInside && sum >= 0 && sum <= 1)
+                        return true;
+                }
+
+                return false;
+            }
+
+            Debug.LogWarning("warning, please select a valid algorithm to use");
+            return false;
+        }
+
+        /// <summary>
+        /// return if a point is inside a custom 2D polygon
+        /// </summary>
+        /// <param name="position">position to test</param>
+        /// <param name="shapeVertice">array of vertices of polygon</param>
+        /// <returns>if position is inside custom shape</returns>
+        public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice)
+        {
+            return Volume2DContain(position, shapeVertice, VolumeTestAlgo.WindingNumber);
         }
 
         /// <summary>
         /// return a random point inside a custom volume 2D polygon
         /// </summary>
-        /// <param name="polygon">polygon shape</param>
+        /// <param name="shapeVertice">polygon shape</param>
         /// <returns>the generated point inside the polygon</returns>
-        public static Vector2 GenerateRandomPosInVolume2D(Vector2[] polygon)
+        public static Vector2 GenerateRandomPosInVolume2D(Vector2[] shapeVertice)
         {
-            // Trianguler le polygone (cette méthode suppose que le polygone est convexe pour simplifier)
-            Vector2[][] triangles = TriangulatePolygon(polygon);
+            // triangulate polygon(work only with convex shapes)
+            Vector2[][] triangles = TriangulatePolygon(shapeVertice);
 
-            // Calculer les aires des triangles
+            // calculate triangles area
             float[] areas = new float[triangles.Length];
             float totalArea = 0;
             for (int i = 0; i < triangles.Length; i++)
@@ -4715,10 +4878,11 @@ namespace UPDB.CoreHelper.UsableMethods
                 totalArea += areas[i];
             }
 
-            // Sélectionner un triangle proportionnellement à son aire
+            // select random triangle ponderated to the area of triangle
             float randomValue = Random.value * totalArea;
             int selectedTriangle = 0;
             float cumulativeArea = 0;
+
             for (int i = 0; i < triangles.Length; i++)
             {
                 cumulativeArea += areas[i];
@@ -4729,7 +4893,7 @@ namespace UPDB.CoreHelper.UsableMethods
                 }
             }
 
-            // Générer un point barycentrique dans le triangle sélectionné
+            // generate a point in barycentric coords within the triangle
             return GeneratePointInTriangle(triangles[selectedTriangle][0], triangles[selectedTriangle][1], triangles[selectedTriangle][2]);
         }
 
@@ -4828,6 +4992,236 @@ namespace UPDB.CoreHelper.UsableMethods
         private static float IsLeft(Vector2 a, Vector2 b, Vector2 p)
         {
             return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 3D
+
+        public static bool VolumeContain(Vector3 position, Vector3[] vertice, Vector2Int[] edges)
+        {
+            Vector3[][] tetrahedronConvertedShape = GenerateTetrahedrons(vertice, edges);
+
+
+            foreach (Vector3[] tetrahedron in tetrahedronConvertedShape)
+            {
+                if (TetrahedronContain(position, tetrahedron))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static Vector3 GenerateRandomPosInVolume(Vector3[] vertice, Vector2Int[] edges)
+        {
+            Vector3[][] tetrahedronConvertedShape = GenerateTetrahedrons(vertice, edges);
+
+            //calculate tetrahedrons volume
+            float[] tetrahedronVolumes = new float[tetrahedronConvertedShape.Length];
+            float totalVolume = 0;
+
+            for (int i = 0; i < tetrahedronConvertedShape.Length; i++)
+            {
+                tetrahedronVolumes[i] = CalculateTetrahedronVolume(tetrahedronConvertedShape[i][0], tetrahedronConvertedShape[i][1], tetrahedronConvertedShape[i][2], tetrahedronConvertedShape[i][3]);
+                totalVolume += tetrahedronVolumes[i];
+            }
+
+            // select random triangle ponderated to the area of triangle
+            float randomValue = Random.value * totalVolume;
+            int selectedTetrahedron = 0;
+            float cumulativeVolume = 0;
+
+            for (int i = 0; i < tetrahedronConvertedShape.Length; i++)
+            {
+                cumulativeVolume += tetrahedronVolumes[i];
+                if (randomValue <= cumulativeVolume)
+                {
+                    selectedTetrahedron = i;
+                    break;
+                }
+            }
+
+            return GenerateRandomPosInTetrahedron(tetrahedronConvertedShape[selectedTetrahedron][0], tetrahedronConvertedShape[selectedTetrahedron][1], tetrahedronConvertedShape[selectedTetrahedron][2], tetrahedronConvertedShape[selectedTetrahedron][3]);
+        }
+
+        #region Sub Methods
+
+        private static bool TetrahedronContain(Vector3 position, Vector3[] tetrahedronVertice)
+        {
+            Vector4 coords = position.ToBarycentricCoords(tetrahedronVertice[0], tetrahedronVertice[1], tetrahedronVertice[2], tetrahedronVertice[3]);
+
+            return coords.x >= 0 && coords.y >= 0 && coords.z >= 0 && coords.w >= 0 && coords.x <= 1 && coords.y <= 1 && coords.z <= 1 && coords.w <= 1;
+        }
+
+        /// <summary>
+        /// check if p is to the left or the right of the line created by a and b
+        /// </summary>
+        /// <param name="a">a position of line</param>
+        /// <param name="b">b position of line</param>
+        /// <param name="p">point to test</param>
+        /// <returns>the cross product, if superior to 0, point is to the left</returns>
+        private static Vector3 IsLeft(Vector3 a, Vector3 b, Vector3 p)
+        {
+            // Vector from a to b
+            Vector3 ab = b - a;
+
+            // Vector from a to p
+            Vector3 ap = p - a;
+
+            // Cross product of ab and ap
+            return Vector3.Cross(ab, ap);
+        }
+
+        /// <summary>
+        /// unadviced, generate as many tetrahedrons as possible, high performance consomation
+        /// </summary>
+        /// <param name="vertices">Liste des sommets de la forme.</param>
+        /// <param name="edges">Liste des arêtes de la forme, représentées par des indices de sommets.</param>
+        /// <returns>Liste des tétraèdres, chaque tétraèdre étant une liste de 4 sommets.</returns>
+        private static Vector3[][] ConvertToTetrahedraAlways(Vector3[] vertices, Vector2Int[] edges)
+        {
+            // Liste pour stocker les tétraèdres résultants
+            List<Vector3[]> tetrahedra = new List<Vector3[]>();
+
+            // Vérifie qu'il y a au moins 4 sommets pour former un tétraèdre
+            if (vertices.Length < 4)
+            {
+                Debug.LogError("La liste de sommets contient moins de 4 points. Impossible de créer des tétraèdres.");
+                return tetrahedra.ToArray();
+            }
+
+            // Prend le premier point comme sommet de référence (Vr)
+            Vector3 referenceVertex = vertices[0];
+
+            // Parcourt les edges pour trouver des triangles
+            for (int i = 0; i < edges.Length; i++)
+            {
+                for (int j = i + 1; j < edges.Length; j++)
+                {
+                    // Si les deux edges partagent un sommet, ils forment un triangle
+                    int sharedVertex = -1;
+                    int unique1 = -1, unique2 = -1;
+
+                    if (edges[i].x == edges[j].x || edges[i].x == edges[j].y)
+                        sharedVertex = edges[i].x;
+                    else if (edges[i].y == edges[j].x || edges[i].y == edges[j].y)
+                        sharedVertex = edges[i].y;
+
+                    // Si un sommet partagé est trouvé
+                    if (sharedVertex != -1)
+                    {
+                        // Identifier les sommets uniques pour le triangle
+                        unique1 = edges[i].x == sharedVertex ? edges[i].y : edges[i].x;
+                        unique2 = edges[j].x == sharedVertex ? edges[j].y : edges[j].x;
+
+                        // Ajouter un tétraèdre formé par (Vr, sharedVertex, unique1, unique2)
+                        tetrahedra.Add(new Vector3[] { referenceVertex, vertices[sharedVertex], vertices[unique1], vertices[unique2] });
+                    }
+                }
+            }
+
+            return tetrahedra.ToArray();
+        }
+
+        /// <summary>
+        /// Génère des tétraèdres non-chevauchants à partir d'une liste de sommets et d'arêtes.
+        /// </summary>
+        /// <param name="vertices">Liste des sommets de la forme.</param>
+        /// <param name="edges">Liste des arêtes de la forme.</param>
+        /// <returns>Liste des tétraèdres non-chevauchants.</returns>
+        public static Vector3[][] GenerateTetrahedrons(Vector3[] vertices, Vector2Int[] edges)
+        {
+            List<Vector3[]> tetrahedra = new List<Vector3[]>();
+
+            // Étape 1 : Calculer un point central de référence
+            Vector3 center = Vector3.zero;
+            foreach (var vertex in vertices)
+            {
+                center += vertex;
+            }
+
+            center /= vertices.Length; // Point moyen des sommets
+
+            // Étape 2 : Trouver les faces de la forme à partir des edges
+            Vector3Int[] faces = FindFaces(vertices, edges);
+
+            // Étape 3 : Générer des tétraèdres en connectant le centre à chaque face
+            foreach (var face in faces)
+            {
+                tetrahedra.Add(new Vector3[] { center, vertices[face.x], vertices[face.y], vertices[face.z] });
+            }
+
+            return tetrahedra.ToArray();
+        }
+
+        /// <summary>
+        /// Trouve toutes les faces triangulées de la forme à partir des edges.
+        /// </summary>
+        private static Vector3Int[] FindFaces(Vector3[] vertices, Vector2Int[] edges)
+        {
+            List<Vector3Int> faces = new List<Vector3Int>();
+
+            // Parcourir chaque combinaison d'edges pour trouver les triangles
+            for (int i = 0; i < edges.Length; i++)
+            {
+                for (int j = i + 1; j < edges.Length; j++)
+                {
+                    for (int k = j + 1; k < edges.Length; k++)
+                    {
+                        // Trouver si ces trois arêtes partagent les sommets nécessaires pour former une face
+                        HashSet<int> uniqueVertices = new HashSet<int>
+                    {
+                        edges[i].x, edges[i].y,
+                        edges[j].x, edges[j].y,
+                        edges[k].x, edges[k].y
+                    };
+
+                        if (uniqueVertices.Count == 3)
+                        {
+                            // Ces trois arêtes forment un triangle
+                            var verticesArray = new List<int>(uniqueVertices);
+                            faces.Add(new Vector3Int(verticesArray[0], verticesArray[1], verticesArray[2]));
+                        }
+                    }
+                }
+            }
+
+            return faces.ToArray();
+        }
+
+        private static float CalculateTetrahedronVolume(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
+        {
+            // Vecteurs du tétraèdre
+            Vector3 AB = B - A;
+            Vector3 AC = C - A;
+            Vector3 AD = D - A;
+
+            // Produit vectoriel AC x AD
+            Vector3 crossProduct = Vector3.Cross(AC, AD);
+
+            // Produit scalaire AB . (AC x AD)
+            float scalarTripleProduct = Vector3.Dot(AB, crossProduct);
+
+            // Volume du tétraèdre
+            float volume = Mathf.Abs(scalarTripleProduct) / 6.0f;
+
+            return volume;
+        }
+
+        private static Vector3 GenerateRandomPosInTetrahedron(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
+        {
+            Vector4 randomBarycentricPos = new Vector4(Random.value, Random.value, Random.value, Random.value);
+
+            float toDivide = randomBarycentricPos.x + randomBarycentricPos.y + randomBarycentricPos.z + randomBarycentricPos.w;
+
+            randomBarycentricPos.x /= toDivide;
+            randomBarycentricPos.y /= toDivide;
+            randomBarycentricPos.z /= toDivide;
+            randomBarycentricPos.w /= toDivide;
+
+            return randomBarycentricPos.FromBarycentricCoords(A, B, C, D);
         }
 
         #endregion

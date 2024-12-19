@@ -318,7 +318,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static float InvertClamp(float value, float min, float max)
         {
-            return Mathf.Clamp(Mathf.Clamp(value, -Mathf.Infinity, min), max, Mathf.Infinity);
+            float clampedValue = 0;
+
+            if(value >= (min + ((max - min) / 2)))
+                clampedValue = Mathf.Clamp(Mathf.Clamp(value, -Mathf.Infinity, min), max, Mathf.Infinity);
+            else
+                clampedValue = Mathf.Clamp(Mathf.Clamp(value, max, Mathf.Infinity), -Mathf.Infinity, min);
+
+            return clampedValue;
         }
 
         /// <summary>

@@ -55,6 +55,19 @@ namespace UPDB.Data.UPDBSpawner
 
                 GUIContent spawnerOffsetTransformContent = new GUIContent(nameof(myTarget.SpawnerOffsetTransform), "parent of simulated transform");
                 myTarget.SpawnerOffsetTransform = (CustomTransformManager)EditorGUILayout.ObjectField(spawnerOffsetTransformContent, myTarget.SpawnerOffsetTransform, typeof(CustomTransformManager), true);
+
+                if(myTarget.SpawnerShape == Shape.FreeShape)
+                {
+                    SerializedProperty objectShapeVerticeProperty = serializedObject.FindProperty("_customShapeVertice");
+                    SerializedProperty objectShapeEdgesProperty = serializedObject.FindProperty("_customShapeEdges");
+
+                    serializedObject.Update();
+
+                    EditorGUILayout.PropertyField(objectShapeVerticeProperty);
+                    EditorGUILayout.PropertyField(objectShapeEdgesProperty);
+
+                    serializedObject.ApplyModifiedProperties();
+                }
             }
             EditorGUILayout.EndVertical();
 

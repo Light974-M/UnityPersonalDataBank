@@ -45,6 +45,12 @@ namespace UPDB.Data.UPDBSpawner
         [SerializeField, Tooltip("all datas about position rotation, and scale offsets of spawner")]
         private CustomTransformManager _spawnerOffsetTransform;
 
+        [SerializeField, Tooltip("list of vertice for custom shape")]
+        private Vector3[] _customShapeVertice;
+
+        [SerializeField, Tooltip("list of edges for custom shape")]
+        private Vector2Int[] _customShapeEdges;
+
         #endregion
 
         #region Private API
@@ -185,9 +191,50 @@ namespace UPDB.Data.UPDBSpawner
         {
 #if UNITY_EDITOR
             if (_spawnerShape == Shape.Box)
+            {
                 DebugDrawCube(SpawnerOffsetTransform.Position, SpawnerOffsetTransform.Scale, SpawnerOffsetTransform.Right, SpawnerOffsetTransform.Up, SpawnerOffsetTransform.Forward, Color.blue);
+                return;
+            }
             if (_spawnerShape == Shape.Sphere)
+            {
+                Color GizmoColor = Gizmos.color;
+                Gizmos.color = Color.blue;
                 Gizmos.DrawWireSphere(SpawnerOffsetTransform.Position, SpawnerOffsetTransform.LocalScale.x / 2);
+                Gizmos.color = GizmoColor;
+
+                return;
+            }
+            if(_spawnerShape == Shape.FreeShape)
+            {
+                DebugDrawWireShape(_customShapeVertice, _customShapeEdges, _spawnerOffsetTransform.Position, _spawnerOffsetTransform.Scale, _spawnerOffsetTransform.Right, _spawnerOffsetTransform.Up, _spawnerOffsetTransform.Forward, Color.blue);
+
+                //Vector3[][] tetrahedrons = GenerateTetrahedrons(_customShapeVertice, _customShapeEdges);
+                //List<Vector3> vertice = new List<Vector3>();
+                //List<Vector2Int> edges = new List<Vector2Int>();
+
+                //for (int i = 0; i < tetrahedrons.Length; i++)
+                //{
+                //    vertice.Add(tetrahedrons[i][0]);
+                //    int aIndex = vertice.Count - 1;
+                //    vertice.Add(tetrahedrons[i][1]);
+                //    int bIndex = vertice.Count - 1;
+                //    vertice.Add(tetrahedrons[i][2]);
+                //    int cIndex = vertice.Count - 1;
+                //    vertice.Add(tetrahedrons[i][3]);
+                //    int dIndex = vertice.Count - 1;
+
+                //    edges.Add(new Vector2Int(aIndex, bIndex));
+                //    edges.Add(new Vector2Int(aIndex, cIndex));
+                //    edges.Add(new Vector2Int(aIndex, dIndex));
+                //    edges.Add(new Vector2Int(bIndex, cIndex));
+                //    edges.Add(new Vector2Int(bIndex, dIndex));
+                //    edges.Add(new Vector2Int(cIndex, dIndex));
+                //}
+
+                //DebugDrawWireShape(vertice.ToArray(), edges.ToArray(), _spawnerOffsetTransform.Position, _spawnerOffsetTransform.Scale, _spawnerOffsetTransform.Right, _spawnerOffsetTransform.Up, _spawnerOffsetTransform.Forward, Color.blue);
+
+                return;
+            }
 #endif
         }
 
@@ -249,6 +296,11 @@ namespace UPDB.Data.UPDBSpawner
 
                 randomPos = SpawnerOffsetTransform.Position + centerToPosDistanceToApply;
             }
+            if (_spawnerShape == Shape.FreeShape)
+            {
+                localRandomPos = GenerateRandomPosInVolume(_customShapeVertice, _customShapeEdges);
+                randomPos = Point3LocalToWorld(localRandomPos, SpawnerOffsetTransform.Position, SpawnerOffsetTransform.Right * SpawnerOffsetTransform.Scale.x, SpawnerOffsetTransform.Up * SpawnerOffsetTransform.Scale.y, SpawnerOffsetTransform.Forward * SpawnerOffsetTransform.Scale.z);
+            }
 
             return randomPos;
         }
@@ -266,6 +318,7 @@ namespace UPDB.Data.UPDBSpawner
         Sphere,
         Capsule,
         Cylinder,
+        FreeShape,
         Circle,
         Tetrahedron,
         Triangle,

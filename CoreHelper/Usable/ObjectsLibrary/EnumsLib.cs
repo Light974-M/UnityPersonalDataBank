@@ -154,4 +154,10 @@ namespace UPDB.CoreHelper.Usable
         GreaterOrEqual,
         LessOrEqual,
     }
+
+    public enum VolumeTestAlgo
+    {
+        WindingNumber,
+        BarycentricTest,
+    }
 }
