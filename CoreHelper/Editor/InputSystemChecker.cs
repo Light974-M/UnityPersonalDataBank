@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEngine;
 
 /// <summary>
 /// check conditional compilation for input system package, if experimenting issues for package detection by visual, go to edit/preferences/external tools/regenerate project files, with registry packages enabled

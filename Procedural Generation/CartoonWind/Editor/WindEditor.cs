@@ -17,6 +17,14 @@ namespace UPDB.ProceduralGeneration.CartoonWind
 
             EditorGUILayout.BeginVertical("helpBox");
             {
+                EditorGUILayout.LabelField("GENERAL PARAMETERS", EditorStyles.boldLabel);
+                myTarget.WindDirection = EditorGUILayout.Vector3Field("Wind Direction", myTarget.WindDirection);
+                myTarget.WindParent = (Transform)EditorGUILayout.ObjectField("Wind Parent", myTarget.WindParent, typeof(Transform), true);
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.BeginVertical("helpBox");
+            {
                 EditorGUILayout.LabelField("PRESETS", EditorStyles.boldLabel);
 
                 EditorGUILayout.BeginHorizontal();

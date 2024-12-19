@@ -167,7 +167,8 @@ namespace UPDB.ProceduralGeneration.CartoonWind
         /// </summary>
         private void CurveEffect()
         {
-            transform.localEulerAngles = new Vector3((Mathf.PerlinNoise(transform.localPosition.z * _perlinNoiseX, 0) * _perlinNoiseY) - (_perlinNoiseY / 2), transform.localEulerAngles.y, transform.localEulerAngles.z);
+            transform.forward = _windInstancier.WindDirection;
+            transform.localEulerAngles += new Vector3((Mathf.PerlinNoise(transform.localPosition.z * _perlinNoiseX, 0) * _perlinNoiseY) - (_perlinNoiseY / 2), 0, 0);
 
             if (_loopTimer >= 1)
             {

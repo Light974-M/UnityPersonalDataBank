@@ -17,8 +17,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void OnDrawGizmos()
         {
-            if (!Application.isPlaying)
-                OnScene();
+#if UNITY_EDITOR
+            OnScene();
+#endif  
         }
 
         /// <summary>
@@ -26,8 +27,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         protected virtual void OnDrawGizmosSelected()
         {
-            if (!Application.isPlaying)
-                OnSceneSelected();
+#if UNITY_EDITOR
+            OnSceneSelected();
+#endif
         }
 
 
@@ -183,6 +185,24 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
+        /// take the names of LayerMask, and return the name of each layers 
+        /// </summary>
+        /// <returns>array of all layers names</returns>
+        public static string[] GetLayerNames()
+        {
+            string[] layers = new string[32];
+            for (int i = 0; i < 32; i++)
+            {
+                layers[i] = LayerMask.LayerToName(i);
+                if (string.IsNullOrEmpty(layers[i]))
+                {
+                    layers[i] = $"Layer {i}";
+                }
+            }
+            return layers;
+        }
+        
+        /// <summary>
         /// get the rotation locally from another rotation
         /// </summary>
         /// <param name="worldRotation">rotation to calculate</param>
@@ -192,7 +212,7 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             return Quaternion.Inverse(parentRotation) * worldRotation;
         }
-
+        
         /// <summary>
         /// get the rotation in world rotation, given a local rotation
         /// </summary>
@@ -202,6 +222,43 @@ namespace UPDB.CoreHelper.UsableMethods
         public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
         {
             return localRotation * parentRotation;
+        }
+
+        /// <summary>
+        /// get a list of transform direction that represent a sphere ith a given number of horizontal and vertical vertice
+        /// </summary>
+        /// <param name="xNumber"></param>
+        /// <param name="yNumber"></param>
+        /// <returns></returns>
+        public static Vector3[][] GetSphereVerticeDirections(int xNumber, int yNumber)
+        {
+            if (xNumber == 0 || yNumber == 0)
+                return new Vector3[0][];
+
+            Vector3[] yPosList = new Vector3[yNumber];
+            Vector3 verticalPos = Vector3.up;
+
+            for (int i = 0; i < yPosList.Length; i++)
+            {
+                yPosList[i] = verticalPos;
+                verticalPos = RotateVector(verticalPos, Vector3.right, 180 / ((float)yNumber - 1));
+            }
+
+            Vector3[][] posList = new Vector3[yNumber][];
+
+            for (int i = 0; i < yNumber; i++)
+            {
+                Vector3 horizontalPos = yPosList[i];
+                posList[i] = new Vector3[xNumber];
+
+                for (int j = 0; j < xNumber; j++)
+                {
+                    posList[i][j] = horizontalPos;
+                    horizontalPos = RotateVector(horizontalPos, Vector3.up, 360 / (float)xNumber);
+                }
+            }
+
+            return posList;
         }
 
         /// <summary>
@@ -245,7 +302,6 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
-
 
         //LERP TOOLS
 
@@ -941,6 +997,8 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region Lerp Sub methods
+
         /// <summary>
         /// read t value in animation curve, first key and last key of curve gives the considered "0" and "1" both in x and y
         /// </summary>
@@ -990,14 +1048,14 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
-        /// read a given vector2 value in an animation curve, considering the orientation of start and end as the "x" and the animation curve value as the "y"
+        /// return value shaped with shape animation curve
         /// </summary>
-        /// <param name="start">start pos of local system</param>
-        /// <param name="end">end pos of local system</param>
-        /// <param name="value">value to read(as to be on the start/end line to work)</param>
-        /// <param name="time">time between 0 and 1 where value is</param>
-        /// <param name="shape">curve to read from</param>
-        /// <returns>the value read on curve</returns>
+        /// <param name="start">lower bound of value</param>
+        /// <param name="end">upper bound of value</param>
+        /// <param name="value">value to shape</param>
+        /// <param name="time">time to shape</param>
+        /// <param name="shape">curve to shape with</param>
+        /// <returns>shaped value</returns>
         public static Vector2 GetShapedValue(Vector2 start, Vector2 end, Vector2 value, float time, ref AnimationCurve shape)
         {
             if (time < 0 || time > 1)
@@ -1014,6 +1072,8 @@ namespace UPDB.CoreHelper.UsableMethods
 
             return value + verticalVec;
         }
+
+        #endregion
 
 
         //VECTOR AND ROTATION CALCULATIONS TOOLS
@@ -1057,6 +1117,41 @@ namespace UPDB.CoreHelper.UsableMethods
             transform.rotation = Quaternion.LookRotation(Vector3.right, dir);
             transform.Rotate(0, -90, 0);
             transform.rotation = Quaternion.LookRotation(transform.forward, dir);
+        }
+
+        /// <summary>
+        /// get the rotation quaternion locally from another rotation(just like local rotation with parenting GameObjects)
+        /// </summary>
+        /// <param name="worldRotation">world rotation</param>
+        /// <param name="parentRotation">rotation to parent to</param>
+        /// <returns>the local rotation from parent rotation</returns>
+        public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
+        {
+            return Quaternion.Inverse(parentRotation) * worldRotation;
+        }
+
+        /// <summary>
+        /// get the world rotation quaternion from a local rotation(just like local rotation with parenting GameObjects)
+        /// </summary>
+        /// <param name="localRotation">locals rotation</param>
+        /// <param name="parentRotation">rotation to unparent from</param>
+        /// <returns>the world rotation from parent rotation</returns>
+        public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
+        {
+            return localRotation * parentRotation;
+        }
+
+        /// <summary>
+        /// give a vector wich as the vector a rotated along axis with theta angle
+        /// </summary>
+        /// <param name="a">vector to rotate from</param>
+        /// <param name="axis">vector that a vector rotate from, imagine this vector "turning" on itself and taking a vector with it</param>
+        /// <param name="theta">angle between a and returned vector</param>
+        /// <returns>vector that has theta angle with a and same angle with axis than a/returns>
+        public static Vector3 RotateVector(Vector3 a, Vector3 axis, float theta)
+        {
+            Quaternion rotation = Quaternion.AngleAxis(theta, axis.normalized);
+            return rotation * a;
         }
 
         #endregion
@@ -3964,6 +4059,378 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region DrawCone
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        /// <param name="drawRings">draw ring edges(do not include base)</param>
+        /// <param name="drawLoops">draw loops edges(do not include the first loop for base circle)</param>
+        /// <param name="drawBase">draw base(if not, it will draw up to 3 edges)</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber, bool drawRings, bool drawLoops, bool drawBase)
+        {
+            if (loopVerticeNumber <= 0 || ringVerticeNumber <= 0)
+                return;
+
+            angle = Mathf.Clamp(angle, 0, 180);
+
+            List<List<Vector3>> ringBaseVertices = new List<List<Vector3>>();
+
+            float angleToSet = angle;
+
+            //register all vertices to use
+            for (int j = 0; j < loopVerticeNumber; j++)
+            {
+                Vector3 flattenA = forward;
+                ringBaseVertices.Add(new List<Vector3>());
+
+                for (int i = 0; i < ringVerticeNumber; i++)
+                {
+                    Vector3 vertex = GetConeBaseVertex(flattenA, angleToSet);
+                    Vector3 localVertex = Point3WorldToLocal(vertex, position, right, up, forward);
+                    Vector3 scaledLocalVertex = new Vector3(localVertex.x * scale.x, localVertex.y * scale.y, localVertex.z * scale.z);
+                    Vector3 scaledVertex = Point3LocalToWorld(scaledLocalVertex, position, right, up, forward);
+
+                    ringBaseVertices[j].Add(scaledVertex);
+
+                    flattenA = RotateVector(flattenA, up, 360f / (float)ringVerticeNumber);
+                }
+
+                angleToSet -= angle / (float)loopVerticeNumber;
+            }
+
+            //link base ring edges
+            if (drawBase || ringBaseVertices[0].Count < 3)
+            {
+                for (int i = 0; i < ringBaseVertices[0].Count; i++)
+                    Debug.DrawLine(position, ringBaseVertices[0][i], color);
+            }
+            else
+            {
+                int oneThird = ringBaseVertices[0].Count / 3;
+
+                for (int i = 0; i < 3; i++)
+                    Debug.DrawLine(position, ringBaseVertices[0][(oneThird * (i + 1)) - 1], color);
+            }
+
+            if (drawRings)
+            {
+                //link core ring edges
+                for (int j = 0; j < ringBaseVertices.Count - 1; j++)
+                    for (int i = 0; i < ringBaseVertices[j].Count; i++)
+                        Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j + 1][i], color);
+
+                //link last ring to center of sphere
+                Vector3 upPosRanged = position + (up * length * scale.y);
+                int lastIndex = ringBaseVertices.Count - 1;
+
+                for (int i = 0; i < ringBaseVertices[lastIndex].Count; i++)
+                    Debug.DrawLine(ringBaseVertices[lastIndex][i], upPosRanged, color);
+            }
+
+            //link loop edges
+            for (int j = 0; j < (drawLoops ? ringBaseVertices.Count : Mathf.Clamp(ringBaseVertices.Count, 0, 1)); j++)
+                for (int i = 0; i < ringBaseVertices[j].Count; i++)
+                    Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j][LoopClamp(i + 1, 0, ringBaseVertices[j].Count - 1)], color);
+
+
+            Vector3 GetConeBaseVertex(Vector3 forward, float angle)
+            {
+                return position + (RotateVector(up, forward, angle).normalized * length);
+            }
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, scale, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, Vector3.one, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="transform">transform that give rotation and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Vector3 position, Transform transform, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="ringVerticeNumber">number of vertice to make the base, and all the lines linked up to the center</param>
+        /// <param name="loopVerticeNumber">number of vertice that forms the "circles" arround the sphere part</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle, Color color, int ringVerticeNumber, int loopVerticeNumber)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, ringVerticeNumber, loopVerticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, scale, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(position, forward, up, right, Vector3.one, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="transform">transform that give rotation and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Vector3 position, Transform transform, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        /// <param name="verticeNumber">number of vertice to make the cone and sphere</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle, Color color, int verticeNumber)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, verticeNumber, verticeNumber, true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="scale">scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, Vector3 scale, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(position, forward, up, right, scale, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="forward">forward of virtual transform of cone</param>
+        /// <param name="up">up of virtual transform of cone</param>
+        /// <param name="right">right of virtual transform of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Vector3 position, Vector3 forward, Vector3 up, Vector3 right, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(position, forward, up, right, Vector3.one, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="position">position of the circle center</param>
+        /// <param name="transform">transform that give rotation and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Vector3 position, Transform transform, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        /// <param name="color">color of cone</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle, Color color)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, color, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        /// <summary>
+        /// draw a sphere cone, so a cone with it's base made with a part of sphere that has the sommet of the cone for center
+        /// </summary>
+        /// <param name="transform">transform that give position, rotation, and scale of cone</param>
+        /// <param name="length">basically the radius of circle, or the height of the cone</param>
+        /// <param name="angle">the angle between the center and the border of cone</param>
+        public static void DebugDrawConeSphere(Transform transform, float length, float angle)
+        {
+            DebugDrawConeSphere(transform.position, transform.forward, transform.up, transform.right, transform.localScale, length, angle, Color.white, 20, Mathf.RoundToInt(Mathf.Clamp(angle, 0, 180) / 10), true, true, true);
+        }
+
+        #endregion
+
+        #region DrawCustomShape
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="position"></param>
+        /// <param name="scale"></param>
+        /// <param name="right"></param>
+        /// <param name="up"></param>
+        /// <param name="forward"></param>
+        /// <param name="color"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward, Color color)
+        {
+            if (vertice.Length == 0 || edges.Length == 0)
+                return;
+
+            for (int i = 0; i < edges.Length; i++)
+            {
+                if (edges[i].x < 0 || edges[i].x >= vertice.Length || edges[i].y < 0 || edges[i].y >= vertice.Length)
+                    continue;
+
+                Debug.DrawLine(Point3LocalToWorld(vertice[edges[i].x], position, right * scale.x, up * scale.y, forward * scale.z), Point3LocalToWorld(vertice[edges[i].y], position, right * scale.x, up * scale.y, forward * scale.z), color);
+            }
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="position"></param>
+        /// <param name="scale"></param>
+        /// <param name="right"></param>
+        /// <param name="up"></param>
+        /// <param name="forward"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Vector3 position, Vector3 scale, Vector3 right, Vector3 up, Vector3 forward)
+        {
+            DebugDrawWireShape(vertice, edges, position, scale, right, up, forward, Color.yellow);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="spaceRelative"></param>
+        /// <param name="color"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Transform spaceRelative, Color color)
+        {
+            DebugDrawWireShape(vertice, edges, spaceRelative.position, spaceRelative.localScale, spaceRelative.right, spaceRelative.up, spaceRelative.forward, color);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="spaceRelative"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Transform spaceRelative)
+        {
+            DebugDrawWireShape(vertice, edges, spaceRelative.position, spaceRelative.localScale, spaceRelative.right, spaceRelative.up, spaceRelative.forward, Color.yellow);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        /// <param name="color"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges, Color color)
+        {
+            DebugDrawWireShape(vertice, edges, Vector3.zero, Vector3.one, Vector3.right, Vector3.up, Vector3.forward, color);
+        }
+
+        /// <summary>
+        /// draw a custom wire shape with given vertice and edges
+        /// </summary>
+        /// <param name="vertice"></param>
+        /// <param name="edges"></param>
+        public static void DebugDrawWireShape(Vector3[] vertice, Vector2Int[] edges)
+        {
+            DebugDrawWireShape(vertice, edges, Vector3.zero, Vector3.one, Vector3.right, Vector3.up, Vector3.forward, Color.yellow);
+        }
+
+        #endregion
+
         #endregion
 
 
@@ -4288,11 +4755,11 @@ namespace UPDB.CoreHelper.UsableMethods
             t = 0f;
             if (direction.y == 0)
             {
-                // Si la direction en y est nulle, la ligne est parallèle au plan y = h
+                // Si la direction en y est nulle, la ligne est parallï¿½le au plan y = h
                 if (origin.y == h)
                 {
-                    // La ligne est dans le plan y = h, il y a une infinité de solutions
-                    t = 0f; // t peut être n'importe quel nombre
+                    // La ligne est dans le plan y = h, il y a une infinitï¿½ de solutions
+                    t = 0f; // t peut ï¿½tre n'importe quel nombre
                     return true;
                 }
                 else
@@ -4580,6 +5047,523 @@ namespace UPDB.CoreHelper.UsableMethods
             CreateMeshTriangle(ref vertices, ref triangles, ref verticesLibrary, pos1, pos2, pos3);
             AddMeshTriangleTwoVertexLinked(ref vertices, ref triangles, ref verticesLibrary, vertices.Count - 1, vertices.Count - 2, pos4);
         }
+
+        #endregion
+
+        #endregion
+
+        #region Make Non Nullable
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal) where T : Component where W : T
+        {
+            //if reference is not null
+            if (component)
+                return component;
+
+            //if reference is null, but a component exist in the object or scene(depending on args)
+            if (targetObj && targetObj.TryGetComponent(out component))
+                return component;
+
+            if (isGlobal && TryFindObjectOfType(out component))
+                return component;
+
+            //no component exist, method has to generate one
+            return component = targetObj ? targetObj.AddComponent<W>() : new GameObject(component.name).AddComponent<W>();
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj) where T : Component where W : T
+        {
+            return MakeNonNullable<T, W>(ref component, targetObj, false);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
+        {
+            return MakeNonNullable<T, T>(ref component, targetObj, isGlobal);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T>(ref T component, GameObject targetObj) where T : Component
+        {
+            return MakeNonNullable<T, T>(ref component, targetObj, false);
+        }
+
+        #endregion
+
+        #region Free Shape Contain and Drawing Tools
+
+        #region 2D
+
+        /// <summary>
+        /// return if a point is inside a custom 2D polygon
+        /// </summary>
+        /// <param name="position">position to test</param>
+        /// <param name="shapeVertice">array of vertices of polygon</param>
+        /// <param name="algoUsed">what algorithm is used to determine if point is inside shape</param>
+        /// <returns>if position is inside custom shape</returns>
+        public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice, VolumeTestAlgo algoUsed)
+        {
+            if (shapeVertice.Length == 0)
+                return false;
+
+            if (algoUsed == VolumeTestAlgo.WindingNumber)
+            {
+                int windingNumber = 0;
+
+                for (int i = 0; i < shapeVertice.Length; i++)
+                {
+                    Vector2 v1 = shapeVertice[i];
+                    Vector2 v2 = shapeVertice[(i + 1) % shapeVertice.Length]; // Boucle vers le premier point
+
+                    // Si le segment traverse la ligne horizontale passant par le point
+                    if (v1.y <= position.y)
+                    {
+                        if (v2.y > position.y) // Le segment monte
+                            if (IsLeft(v1, v2, position) > 0) // Point ï¿½ gauche du segment
+                                windingNumber++;
+                    }
+                    else
+                    {
+                        if (v2.y <= position.y) // Le segment descend
+                            if (IsLeft(v1, v2, position) < 0) // Point ï¿½ gauche du segment
+                                windingNumber--;
+                    }
+                }
+
+                // Si le winding number est diffï¿½rent de 0, le point est dans le polygone
+                return windingNumber != 0;
+            }
+
+            if (algoUsed == VolumeTestAlgo.BarycentricTest)
+            {
+                // triangulate polygon(work only with convex shapes)
+                Vector2[][] triangles = TriangulatePolygon(shapeVertice);
+
+                for (int i = 0; i < triangles.Length; i++)
+                {
+                    Vector2 barCoords = position.ToBarycentricCoords(triangles[i][0], triangles[i][1], triangles[i][2]);
+                    float sum = barCoords.x + barCoords.y;
+                    bool xInside = barCoords.x <= 1 && barCoords.x >= 0;
+                    bool yInside = barCoords.y <= 1 && barCoords.y >= 0;
+
+                    if (xInside && yInside && sum >= 0 && sum <= 1)
+                        return true;
+                }
+
+                return false;
+            }
+
+            Debug.LogWarning("warning, please select a valid algorithm to use");
+            return false;
+        }
+
+        /// <summary>
+        /// return if a point is inside a custom 2D polygon
+        /// </summary>
+        /// <param name="position">position to test</param>
+        /// <param name="shapeVertice">array of vertices of polygon</param>
+        /// <returns>if position is inside custom shape</returns>
+        public static bool Volume2DContain(Vector2 position, Vector2[] shapeVertice)
+        {
+            return Volume2DContain(position, shapeVertice, VolumeTestAlgo.WindingNumber);
+        }
+
+        /// <summary>
+        /// return a random point inside a custom volume 2D polygon
+        /// </summary>
+        /// <param name="shapeVertice">polygon shape</param>
+        /// <returns>the generated point inside the polygon</returns>
+        public static Vector2 GenerateRandomPosInVolume2D(Vector2[] shapeVertice)
+        {
+            // triangulate polygon(work only with convex shapes)
+            Vector2[][] triangles = TriangulatePolygon(shapeVertice);
+
+            // calculate triangles area
+            float[] areas = new float[triangles.Length];
+            float totalArea = 0;
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                areas[i] = TriangleArea(triangles[i][0], triangles[i][1], triangles[i][2]);
+                totalArea += areas[i];
+            }
+
+            // select random triangle ponderated to the area of triangle
+            float randomValue = Random.value * totalArea;
+            int selectedTriangle = 0;
+            float cumulativeArea = 0;
+
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                cumulativeArea += areas[i];
+                if (randomValue <= cumulativeArea)
+                {
+                    selectedTriangle = i;
+                    break;
+                }
+            }
+
+            // generate a point in barycentric coords within the triangle
+            return GeneratePointInTriangle(triangles[selectedTriangle][0], triangles[selectedTriangle][1], triangles[selectedTriangle][2]);
+        }
+
+        #region Sub Methods
+
+        /// <summary>
+        /// generate a barycentric coord that is always inside triangle without clamping but looping(to avoid weight issues in randomness)
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        private static Vector2 GeneratePointInTriangle(Vector2 a, Vector2 b, Vector2 c)
+        {
+            float u = Random.value;
+            float v = Random.value;
+
+            // Assurer que les coordonnï¿½es barycentriques sont valides
+            if (u + v > 1)
+            {
+                u = 1 - u;
+                v = 1 - v;
+            }
+
+            // Calculer le point ï¿½ l'intï¿½rieur du triangle
+            return (1 - u - v) * a + u * b + v * c;
+        }
+
+        /// <summary>
+        /// transform polygon shape into a serie of triangles
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <returns></returns>
+        private static Vector2[][] TriangulatePolygon(Vector2[] polygon)
+        {
+            Vector2[][] triangles = new Vector2[polygon.Length - 2][];
+
+            for (int i = 1; i < polygon.Length - 1; i++)
+            {
+                triangles[i - 1] = new Vector2[] { polygon[0], polygon[i], polygon[i + 1] };
+            }
+
+            return triangles;
+        }
+
+        /// <summary>
+        /// calculate the area of a triangle
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        private static float TriangleArea(Vector2 a, Vector2 b, Vector2 c)
+        {
+            return Mathf.Abs((a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2f);
+        }
+
+        /// <summary>
+        /// get square that circle the shape (with the pattern vector4 : minX, minY, maxX, maxY)
+        /// </summary>
+        /// <param name="shapeVertice">shape to get square from</param>
+        /// <returns>square that circle shape</returns>
+        public static Vector4 GetCerclingSquare(Vector2[] shapeVertice)
+        {
+            if (shapeVertice.Length == 0)
+                return Vector4.zero;
+
+            float minX = shapeVertice[0].x;
+            float minY = shapeVertice[0].y;
+            float maxX = shapeVertice[0].x;
+            float maxY = shapeVertice[0].y;
+
+            for (int i = 1; i < shapeVertice.Length; i++)
+            {
+                if (shapeVertice[i].x < minX)
+                    minX = shapeVertice[i].x;
+                if (shapeVertice[i].x > maxX)
+                    maxX = shapeVertice[i].x;
+
+                if (shapeVertice[i].y < minY)
+                    minY = shapeVertice[i].y;
+                if (shapeVertice[i].y > maxY)
+                    maxY = shapeVertice[i].y;
+            }
+
+            return new Vector4(minX, minY, maxX, maxY);
+        }
+
+        /// <summary>
+        /// check if p is to the left or the right of the line created by a and b
+        /// </summary>
+        /// <param name="a">a position of line</param>
+        /// <param name="b">b position of line</param>
+        /// <param name="p">point to test</param>
+        /// <returns>the cross product, if superior to 0, point is to the left</returns>
+        private static float IsLeft(Vector2 a, Vector2 b, Vector2 p)
+        {
+            return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 3D
+
+        public static bool VolumeContain(Vector3 position, Vector3[] vertice, Vector2Int[] edges)
+        {
+            Vector3[][] tetrahedronConvertedShape = GenerateTetrahedrons(vertice, edges);
+
+
+            foreach (Vector3[] tetrahedron in tetrahedronConvertedShape)
+            {
+                if (TetrahedronContain(position, tetrahedron))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static Vector3 GenerateRandomPosInVolume(Vector3[] vertice, Vector2Int[] edges)
+        {
+            Vector3[][] tetrahedronConvertedShape = GenerateTetrahedrons(vertice, edges);
+
+            //calculate tetrahedrons volume
+            float[] tetrahedronVolumes = new float[tetrahedronConvertedShape.Length];
+            float totalVolume = 0;
+
+            for (int i = 0; i < tetrahedronConvertedShape.Length; i++)
+            {
+                tetrahedronVolumes[i] = CalculateTetrahedronVolume(tetrahedronConvertedShape[i][0], tetrahedronConvertedShape[i][1], tetrahedronConvertedShape[i][2], tetrahedronConvertedShape[i][3]);
+                totalVolume += tetrahedronVolumes[i];
+            }
+
+            // select random triangle ponderated to the area of triangle
+            float randomValue = Random.value * totalVolume;
+            int selectedTetrahedron = 0;
+            float cumulativeVolume = 0;
+
+            for (int i = 0; i < tetrahedronConvertedShape.Length; i++)
+            {
+                cumulativeVolume += tetrahedronVolumes[i];
+                if (randomValue <= cumulativeVolume)
+                {
+                    selectedTetrahedron = i;
+                    break;
+                }
+            }
+
+            return GenerateRandomPosInTetrahedron(tetrahedronConvertedShape[selectedTetrahedron][0], tetrahedronConvertedShape[selectedTetrahedron][1], tetrahedronConvertedShape[selectedTetrahedron][2], tetrahedronConvertedShape[selectedTetrahedron][3]);
+        }
+
+        #region Sub Methods
+
+        private static bool TetrahedronContain(Vector3 position, Vector3[] tetrahedronVertice)
+        {
+            Vector4 coords = position.ToBarycentricCoords(tetrahedronVertice[0], tetrahedronVertice[1], tetrahedronVertice[2], tetrahedronVertice[3]);
+
+            return coords.x >= 0 && coords.y >= 0 && coords.z >= 0 && coords.w >= 0 && coords.x <= 1 && coords.y <= 1 && coords.z <= 1 && coords.w <= 1;
+        }
+
+        /// <summary>
+        /// check if p is to the left or the right of the line created by a and b
+        /// </summary>
+        /// <param name="a">a position of line</param>
+        /// <param name="b">b position of line</param>
+        /// <param name="p">point to test</param>
+        /// <returns>the cross product, if superior to 0, point is to the left</returns>
+        private static Vector3 IsLeft(Vector3 a, Vector3 b, Vector3 p)
+        {
+            // Vector from a to b
+            Vector3 ab = b - a;
+
+            // Vector from a to p
+            Vector3 ap = p - a;
+
+            // Cross product of ab and ap
+            return Vector3.Cross(ab, ap);
+        }
+
+        /// <summary>
+        /// unadviced, generate as many tetrahedrons as possible, high performance consomation
+        /// </summary>
+        /// <param name="vertices">Liste des sommets de la forme.</param>
+        /// <param name="edges">Liste des arï¿½tes de la forme, reprï¿½sentï¿½es par des indices de sommets.</param>
+        /// <returns>Liste des tï¿½traï¿½dres, chaque tï¿½traï¿½dre ï¿½tant une liste de 4 sommets.</returns>
+        private static Vector3[][] ConvertToTetrahedraAlways(Vector3[] vertices, Vector2Int[] edges)
+        {
+            // Liste pour stocker les tï¿½traï¿½dres rï¿½sultants
+            List<Vector3[]> tetrahedra = new List<Vector3[]>();
+
+            // Vï¿½rifie qu'il y a au moins 4 sommets pour former un tï¿½traï¿½dre
+            if (vertices.Length < 4)
+            {
+                Debug.LogError("La liste de sommets contient moins de 4 points. Impossible de crï¿½er des tï¿½traï¿½dres.");
+                return tetrahedra.ToArray();
+            }
+
+            // Prend le premier point comme sommet de rï¿½fï¿½rence (Vr)
+            Vector3 referenceVertex = vertices[0];
+
+            // Parcourt les edges pour trouver des triangles
+            for (int i = 0; i < edges.Length; i++)
+            {
+                for (int j = i + 1; j < edges.Length; j++)
+                {
+                    // Si les deux edges partagent un sommet, ils forment un triangle
+                    int sharedVertex = -1;
+                    int unique1 = -1, unique2 = -1;
+
+                    if (edges[i].x == edges[j].x || edges[i].x == edges[j].y)
+                        sharedVertex = edges[i].x;
+                    else if (edges[i].y == edges[j].x || edges[i].y == edges[j].y)
+                        sharedVertex = edges[i].y;
+
+                    // Si un sommet partagï¿½ est trouvï¿½
+                    if (sharedVertex != -1)
+                    {
+                        // Identifier les sommets uniques pour le triangle
+                        unique1 = edges[i].x == sharedVertex ? edges[i].y : edges[i].x;
+                        unique2 = edges[j].x == sharedVertex ? edges[j].y : edges[j].x;
+
+                        // Ajouter un tï¿½traï¿½dre formï¿½ par (Vr, sharedVertex, unique1, unique2)
+                        tetrahedra.Add(new Vector3[] { referenceVertex, vertices[sharedVertex], vertices[unique1], vertices[unique2] });
+                    }
+                }
+            }
+
+            return tetrahedra.ToArray();
+        }
+
+        /// <summary>
+        /// Gï¿½nï¿½re des tï¿½traï¿½dres non-chevauchants ï¿½ partir d'une liste de sommets et d'arï¿½tes.
+        /// </summary>
+        /// <param name="vertices">Liste des sommets de la forme.</param>
+        /// <param name="edges">Liste des arï¿½tes de la forme.</param>
+        /// <returns>Liste des tï¿½traï¿½dres non-chevauchants.</returns>
+        public static Vector3[][] GenerateTetrahedrons(Vector3[] vertices, Vector2Int[] edges)
+        {
+            List<Vector3[]> tetrahedra = new List<Vector3[]>();
+
+            // ï¿½tape 1 : Calculer un point central de rï¿½fï¿½rence
+            Vector3 center = Vector3.zero;
+            foreach (var vertex in vertices)
+            {
+                center += vertex;
+            }
+
+            center /= vertices.Length; // Point moyen des sommets
+
+            // ï¿½tape 2 : Trouver les faces de la forme ï¿½ partir des edges
+            Vector3Int[] faces = FindFaces(vertices, edges);
+
+            // ï¿½tape 3 : Gï¿½nï¿½rer des tï¿½traï¿½dres en connectant le centre ï¿½ chaque face
+            foreach (var face in faces)
+            {
+                tetrahedra.Add(new Vector3[] { center, vertices[face.x], vertices[face.y], vertices[face.z] });
+            }
+
+            return tetrahedra.ToArray();
+        }
+
+        /// <summary>
+        /// Trouve toutes les faces triangulï¿½es de la forme ï¿½ partir des edges.
+        /// </summary>
+        private static Vector3Int[] FindFaces(Vector3[] vertices, Vector2Int[] edges)
+        {
+            List<Vector3Int> faces = new List<Vector3Int>();
+
+            // Parcourir chaque combinaison d'edges pour trouver les triangles
+            for (int i = 0; i < edges.Length; i++)
+            {
+                for (int j = i + 1; j < edges.Length; j++)
+                {
+                    for (int k = j + 1; k < edges.Length; k++)
+                    {
+                        // Trouver si ces trois arï¿½tes partagent les sommets nï¿½cessaires pour former une face
+                        HashSet<int> uniqueVertices = new HashSet<int>
+                    {
+                        edges[i].x, edges[i].y,
+                        edges[j].x, edges[j].y,
+                        edges[k].x, edges[k].y
+                    };
+
+                        if (uniqueVertices.Count == 3)
+                        {
+                            // Ces trois arï¿½tes forment un triangle
+                            var verticesArray = new List<int>(uniqueVertices);
+                            faces.Add(new Vector3Int(verticesArray[0], verticesArray[1], verticesArray[2]));
+                        }
+                    }
+                }
+            }
+
+            return faces.ToArray();
+        }
+
+        private static float CalculateTetrahedronVolume(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
+        {
+            // Vecteurs du tï¿½traï¿½dre
+            Vector3 AB = B - A;
+            Vector3 AC = C - A;
+            Vector3 AD = D - A;
+
+            // Produit vectoriel AC x AD
+            Vector3 crossProduct = Vector3.Cross(AC, AD);
+
+            // Produit scalaire AB . (AC x AD)
+            float scalarTripleProduct = Vector3.Dot(AB, crossProduct);
+
+            // Volume du tï¿½traï¿½dre
+            float volume = Mathf.Abs(scalarTripleProduct) / 6.0f;
+
+            return volume;
+        }
+
+        private static Vector3 GenerateRandomPosInTetrahedron(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
+        {
+            Vector4 randomBarycentricPos = new Vector4(Random.value, Random.value, Random.value, Random.value);
+
+            float toDivide = randomBarycentricPos.x + randomBarycentricPos.y + randomBarycentricPos.z + randomBarycentricPos.w;
+
+            randomBarycentricPos.x /= toDivide;
+            randomBarycentricPos.y /= toDivide;
+            randomBarycentricPos.z /= toDivide;
+            randomBarycentricPos.w /= toDivide;
+
+            return randomBarycentricPos.FromBarycentricCoords(A, B, C, D);
+        }
+
+        #endregion
 
         #endregion
 
