@@ -8,6 +8,7 @@ namespace UPDB.Data.PerformanceDebugger
     [CreateAssetMenu(fileName = "new Capture Asset", menuName = NamespaceID.DataPath + "/" + NamespaceID.PerformanceDebugger + "/PerformanceDebugger Capture Asset")]
     public class PerformanceDebuggerCaptureAsset : ScriptableObject
     {
+#if UNITY_EDITOR
         [SerializeField, Tooltip("capture fps and average fps at a certain time to make precise tests")]
         private List<CapturedExperience> _captureExperiences;
 
@@ -35,6 +36,7 @@ namespace UPDB.Data.PerformanceDebugger
         public void CreateNewExperience()
         {
             _captureExperiences.Add(new CapturedExperience("experience #" + _captureExperiences.Count.ToString()));
-        }
+        } 
+#endif
     }
 }

@@ -240,7 +240,9 @@ namespace UPDB.Data.UPDBSpawner
 
         public void SceneViewUpdate()
         {
-            SceneView.lastActiveSceneView.Repaint();
+#if UNITY_EDITOR
+            SceneView.lastActiveSceneView.Repaint(); 
+#endif
         }
 
         private void OnSpawnObjects()
