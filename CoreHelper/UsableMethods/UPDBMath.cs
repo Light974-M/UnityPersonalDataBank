@@ -45,9 +45,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// </summary>
         /// <param name="probability"> probability of operation </param>
         /// <returns></returns>
-        public static int Proba(float probability)
+        public static bool Proba(float probability)
         {
-            return UnityEngine.Random.Range(0f, 1f) <= probability ? 1 : 0;
+            return UnityEngine.Random.Range(0f, 1f) <= probability ? true : false;
         }
 
         /// <summary>
@@ -84,8 +84,6 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             return new Vector2(-vec.y, vec.x);
         }
-
-        
 
         public static float ToDegrees(float radianValue)
         {
@@ -343,7 +341,9 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
-        
+
+        #region Custom Clamp
+
         /// <summary>
         /// make a clamp with vector2
         /// </summary>
@@ -399,7 +399,7 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             float clampedValue = 0;
 
-            if(value >= (min + ((max - min) / 2)))
+            if (value >= (min + ((max - min) / 2)))
                 clampedValue = Mathf.Clamp(Mathf.Clamp(value, -Mathf.Infinity, min), max, Mathf.Infinity);
             else
                 clampedValue = Mathf.Clamp(Mathf.Clamp(value, max, Mathf.Infinity), -Mathf.Infinity, min);
@@ -460,6 +460,38 @@ namespace UPDB.CoreHelper.UsableMethods
         {
             return InvertClamp(value, Vector3.zero, Vector3.one);
         }
+
+        /// <summary>
+        /// make the value given "clamp" but instead of clamping to borders, it is looping, so it's clamping with "inverse borns" usefull when using arrays and want to loop without going outside the bounds
+        /// </summary>
+        /// <param name="value">value to clamp</param>
+        /// <param name="min">min born(0 for a list)</param>
+        /// <param name="max">max born(length - 1 for a list)</param>
+        /// <returns>loop and clamped value</returns>
+        public static int LoopClamp(int value, int min, int max)
+        {
+            bool isLastValueOutbound = value > max;
+            bool isFirstValueOutboud = value < min;
+
+            if (isLastValueOutbound)
+            {
+                return min;
+            }
+
+            if (isFirstValueOutboud)
+            {
+                return max;
+            }
+
+            if (!isFirstValueOutboud && !isLastValueOutbound)
+            {
+                return value;
+            }
+
+            return value;
+        }
+
+        #endregion
 
         #region Constants
 

@@ -150,7 +150,7 @@ namespace UPDB.Physic.PlacementTools
             {
                 for (int j = 0; j < length; j++)
                 {
-                    bool hitted = Physics.Raycast(posLists[i][j], posLists[i][LoopClamp(j + 1, 0, length - 1)] - posLists[i][j], out RaycastHit hit, _stickRange, _includeLayers);
+                    bool hitted = Physics.Raycast(posLists[i][j], posLists[i][UPDBMath.LoopClamp(j + 1, 0, length - 1)] - posLists[i][j], out RaycastHit hit, _stickRange, _includeLayers);
 
                     if (hitted && !_excludeColliders.Contains(hit.collider))
                     {
@@ -283,7 +283,7 @@ namespace UPDB.Physic.PlacementTools
 
             for (int i = 0; i < length; i++)
                 for (int j = 0; j < length; j++)
-                    Debug.DrawRay(posLists[i][j], posLists[i][LoopClamp(j + 1, 0, length - 1)] - posLists[i][j], Color.red);
+                    Debug.DrawRay(posLists[i][j], posLists[i][UPDBMath.LoopClamp(j + 1, 0, length - 1)] - posLists[i][j], Color.red);
 
             for (int i = 0; i < length - 1; i++)
                 for (int j = 0; j < length; j++)

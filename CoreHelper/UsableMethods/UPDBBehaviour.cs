@@ -124,36 +124,6 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         /// <summary>
-        /// make the value given "clamp" but instead of clamping to borders, it is looping, so it's clamping with "inverse borns" usefull when using arrays and want to loop without going outside the bounds
-        /// </summary>
-        /// <param name="value">value to clamp</param>
-        /// <param name="min">min born(0 for a list)</param>
-        /// <param name="max">max born(length - 1 for a list)</param>
-        /// <returns>loop and clamped value</returns>
-        public static int LoopClamp(int value, int min, int max)
-        {
-            bool isLastValueOutbound = value > max;
-            bool isFirstValueOutboud = value < min;
-
-            if (isLastValueOutbound)
-            {
-                return min;
-            }
-
-            if (isFirstValueOutboud)
-            {
-                return max;
-            }
-
-            if (!isFirstValueOutboud && !isLastValueOutbound)
-            {
-                return value;
-            }
-
-            return value;
-        }
-
-        /// <summary>
         /// make a (not really optimized) find object of type, but for generic classes, it will search if any object in scene are derived from the class<T> given
         /// </summary>
         /// <typeparam name="T">parent class, if none, put System.Object</typeparam>
@@ -200,28 +170,6 @@ namespace UPDB.CoreHelper.UsableMethods
                 }
             }
             return layers;
-        }
-        
-        /// <summary>
-        /// get the rotation locally from another rotation
-        /// </summary>
-        /// <param name="worldRotation">rotation to calculate</param>
-        /// <param name="parentRotation">parent rotation considered as the origin</param>
-        /// <returns>the local rotation</returns>
-        public static Quaternion GetLocalRotation(Quaternion worldRotation, Quaternion parentRotation)
-        {
-            return Quaternion.Inverse(parentRotation) * worldRotation;
-        }
-        
-        /// <summary>
-        /// get the rotation in world rotation, given a local rotation
-        /// </summary>
-        /// <param name="localRotation">rotation to calculate</param>
-        /// <param name="parentRotation">parent rotation considered as the origin</param>
-        /// <returns>the world rotation</returns>
-        public static Quaternion GetWorldRotation(Quaternion localRotation, Quaternion parentRotation)
-        {
-            return localRotation * parentRotation;
         }
 
         /// <summary>
@@ -4141,7 +4089,7 @@ namespace UPDB.CoreHelper.UsableMethods
             //link loop edges
             for (int j = 0; j < (drawLoops ? ringBaseVertices.Count : Mathf.Clamp(ringBaseVertices.Count, 0, 1)); j++)
                 for (int i = 0; i < ringBaseVertices[j].Count; i++)
-                    Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j][LoopClamp(i + 1, 0, ringBaseVertices[j].Count - 1)], color);
+                    Debug.DrawLine(ringBaseVertices[j][i], ringBaseVertices[j][UPDBMath.LoopClamp(i + 1, 0, ringBaseVertices[j].Count - 1)], color);
 
 
             Vector3 GetConeBaseVertex(Vector3 forward, float angle)
