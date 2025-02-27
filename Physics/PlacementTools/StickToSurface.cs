@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UPDB.CoreHelper;
-using UPDB.CoreHelper.Usable;
+using UPDB.CoreHelper.Usable.ObjectsLibrary;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Physic.PlacementTools

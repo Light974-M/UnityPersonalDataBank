@@ -7,6 +7,9 @@ namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
 {
     public class MaterialAutoTilling : UPDBBehaviour
     {
+        [SerializeField, Tooltip("material used to create material instance of tilling")]
+        private Material _referenceMaterial;
+
         [SerializeField, Tooltip("scale to maintain")]
         private Vector2 _scale = Vector2.one;
 
@@ -18,27 +21,48 @@ namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
 
         private MeshRenderer _renderer = null;
 
-        private MeshRenderer Renderer
+        private Material _objectMaterial;
+
+        #region Public API
+
+        public MeshRenderer Renderer
         {
             get
             {
                 return MakeNonNullable(ref _renderer, gameObject);
             }
         }
-
-        private Material _objectMaterial;
-
-        #region Public API
-
         public Material ObjectMaterial
         {
             get
             {
                 if (_objectMaterial)
-                    return _objectMaterial;
+                {
+                    if (Renderer.sharedMaterial == _objectMaterial)
+                    {
+                        return _objectMaterial;
+                    }
+                    else
+                    {
+                        _referenceMaterial = Renderer.sharedMaterial;
+                        Material newMat = new Material(Renderer.sharedMaterial);
+                        Renderer.sharedMaterial = newMat;
+                        _objectMaterial = newMat;
+
+                        return _objectMaterial;
+                    }
+                }
+
+                if(_referenceMaterial)
+                {
+                    Material newMat = new Material(_referenceMaterial);
+                    Renderer.sharedMaterial = newMat;
+                    return _objectMaterial = newMat;
+                }
 
                 if (Renderer.sharedMaterial)
                 {
+                    _referenceMaterial = Renderer.sharedMaterial;
                     Material newMat = new Material(Renderer.sharedMaterial);
                     Renderer.sharedMaterial = newMat;
                     return _objectMaterial = newMat;
@@ -52,7 +76,7 @@ namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
             {
                 _objectMaterial = value;
             }
-        } 
+        }
         public Vector2 Scale
         {
             get => _scale;
@@ -68,18 +92,19 @@ namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
             get => _yTillingLinkedScale;
             set => _yTillingLinkedScale = value;
         }
-
-        public enum Axis
+        public Material ReferenceMaterial
         {
-            X,
-            Y,
-            Z,
+            get => _referenceMaterial;
+            set => _referenceMaterial = value;
         }
 
         #endregion
 
         protected override void OnScene()
         {
+            if (ObjectMaterial == null)
+                return;
+
             List<Transform> parentsList = new List<Transform>();
             parentsList.Add(transform);
             int autoBreak = 0;
@@ -93,11 +118,37 @@ namespace UPDB.CoreHelper.Usable.CustomFieldsAndStructs
             Vector3 scale = Vector3.one;
 
             foreach (Transform parent in parentsList)
-            {
                 scale = UPDBMath.VecTime(scale, parent.localScale);
-            }
 
-            ObjectMaterial.mainTextureScale = new Vector2(scale.x * _scale.x, scale.z * _scale.y);
+            Vector2 scaleToApply = Vector2.one;
+
+            if (XTillingLinkedScale == Axis.X)
+                scaleToApply.x = scale.x * _scale.x;
+
+            if (XTillingLinkedScale == Axis.Y)
+                scaleToApply.x = scale.y * _scale.x;
+
+            if (XTillingLinkedScale == Axis.Z)
+                scaleToApply.x = scale.z * _scale.x;
+
+            if (YTillingLinkedScale == Axis.X)
+                scaleToApply.y = scale.x * _scale.y;
+
+            if (YTillingLinkedScale == Axis.Y)
+                scaleToApply.y = scale.y * _scale.y;
+
+            if (YTillingLinkedScale == Axis.Z)
+                scaleToApply.y = scale.z * _scale.y;
+
+
+            ObjectMaterial.mainTextureScale = scaleToApply;
         }
+    }
+
+    public enum Axis
+    {
+        X,
+        Y,
+        Z,
     }
 }

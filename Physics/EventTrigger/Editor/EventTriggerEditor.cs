@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UPDB.CoreHelper.Usable;
-using UPDB.CoreHelper.UsableMethods;
+using UPDB.CoreHelper.Usable.ObjectsLibrary;
 
 namespace UPDB.Physic.EventTrigger
 {
