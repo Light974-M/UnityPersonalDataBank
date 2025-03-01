@@ -118,8 +118,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
                 {
                     _rb = gameObject.AddComponent<Rigidbody>();
                     _rb.constraints = RigidbodyConstraints.FreezeRotation;
-                    _rb.angularDrag = 0;
-                    _rb.drag = 10;
+                    _rb.angularDamping = 0;
+                    _rb.linearDamping = 10;
                 }
 
             }
@@ -159,14 +159,14 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
             float speedMultiplier = (_speed * 5000);
 
             _rb.AddForce(move * speedMultiplier * Time.deltaTime);
-            _rb.AddForce(-_rb.velocity.x * _smoothness, 0, -_rb.velocity.z * _smoothness);
+            _rb.AddForce(-_rb.linearVelocity.x * _smoothness, 0, -_rb.linearVelocity.z * _smoothness);
 
             //_rb.drag = Mathf.Clamp(_rb.drag, 0, 50);
         }
 
         private void AnimationMove()
         {
-            _meshList[1].position = _meshList[0].position + _rb.velocity;
+            _meshList[1].position = _meshList[0].position + _rb.linearVelocity;
             _meshList[0].LookAt(_meshList[1]);
             _meshList[0].eulerAngles = new Vector3(0, _meshList[0].eulerAngles.y, 0);
         }

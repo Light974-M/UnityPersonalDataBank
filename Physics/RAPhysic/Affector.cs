@@ -367,7 +367,7 @@ namespace UPDB.Physic.RAPhysic
 
             //if object is in range and affector has atmosphere and affected object can detect air Resistance, apply air forces.
             if (isInRange && _atmosphereEnabled && detectAirResistance)
-                affectedObj._rb.AddForce(-affectedObj._rb.velocity * _airDensity);
+                affectedObj._rb.AddForce(-affectedObj._rb.linearVelocity * _airDensity);
         }
 
         /// <summary>
