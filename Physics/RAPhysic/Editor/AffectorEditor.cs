@@ -35,7 +35,6 @@ namespace UPDB.Physic.RAPhysic
                     GUILayout.Space(20);
                     {
                         myTarget.Rb = (Rigidbody)EditorGUILayout.ObjectField("Rb", myTarget.Rb, typeof(Rigidbody), true);
-                        myTarget.Collider = (Collider)EditorGUILayout.ObjectField("Collider", myTarget.Collider, typeof(Collider), true);
                         myTarget.PhysicEnabled = EditorGUILayout.Toggle(new GUIContent("Physic Enabled", "determine if object is in the list and is detected"), myTarget.PhysicEnabled);
                         myTarget.PhysicAffectorEnabled = EditorGUILayout.Toggle(new GUIContent("Physic Affector Enabled", "determine if object generate gravity and apply it to other object"), myTarget.PhysicAffectorEnabled);
                     }

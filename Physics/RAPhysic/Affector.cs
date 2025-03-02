@@ -27,9 +27,6 @@ namespace UPDB.Physic.RAPhysic
         [SerializeField, Tooltip("rigidbody used to calculate physics for current object")]
         private Rigidbody _rb;
 
-        [SerializeField, Tooltip("collider used by object")]
-        private Collider _collider;
-
 
         /****** AIR RESISTANCE ******/
 
@@ -128,14 +125,6 @@ namespace UPDB.Physic.RAPhysic
         {
             get { return _rb; }
             set { _rb = value; }
-        }
-
-
-        /// <inheritdoc cref="_collider"/>
-        public Collider Collider
-        {
-            get { return _collider; }
-            set { _collider = value; }
         }
 
 
@@ -312,11 +301,6 @@ namespace UPDB.Physic.RAPhysic
                     _globalValues = new GameObject("GlobalValuesManager").AddComponent<GlobalValuesManager>();
                     _globalValues.AffectorsAsset = new AffectorsList();
                 }
-
-            //collider Exceptions Manager
-            if (_collider == null)
-                if (!TryGetComponent(out _collider))
-                    _collider = gameObject.AddComponent<SphereCollider>();
         }
 
         #region Forces Calculation And Apply
