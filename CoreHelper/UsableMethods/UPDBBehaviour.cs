@@ -5517,5 +5517,28 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region Custom Rigidbody Methods
+
+        public static Vector3 AddForce(Vector3 velocity, float valueX, float valueY, float valueZ, float mass)
+        {
+            return velocity += (new Vector3(valueX, valueY, valueZ) / mass) * Time.fixedDeltaTime;
+        }
+
+        public static Vector3 AddForce(Vector3 velocity, Vector3 value, float mass)
+        {
+            return velocity += (value / mass) * Time.fixedDeltaTime;
+        }
+
+        public static Vector3 AddRelativeForce(Transform space, Vector3 velocity, Vector3 value, float mass)
+        {
+            float massMultiplier = 1 / mass;
+            Vector3 vel = space.InverseTransformDirection(velocity);
+            vel += value * massMultiplier * Time.fixedDeltaTime;
+            vel = space.TransformDirection(vel);
+            return vel;
+        }
+
+        #endregion
+
     }
 }
