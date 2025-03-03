@@ -46,7 +46,6 @@ namespace UPDB.Physic.RAPhysic
                         if (myTarget.UsedPhysicSystemBase == PhysicType.Native || myTarget.UsedPhysicSystemBase == PhysicType.Dynamic)
                             myTarget.CustomRb = (CustomRigidbody)EditorGUILayout.ObjectField("Custom Rigidbody", myTarget.CustomRb, typeof(CustomRigidbody), true);
 
-                        myTarget.Collider = (Collider)EditorGUILayout.ObjectField("Collider", myTarget.Collider, typeof(Collider), true);
                         myTarget.PhysicEnabled = EditorGUILayout.Toggle(new GUIContent("Physic Enabled", "determine if object is in the list and is detected"), myTarget.PhysicEnabled);
                         myTarget.PhysicAffectorEnabled = EditorGUILayout.Toggle(new GUIContent("Physic Affector Enabled", "determine if object generate gravity and apply it to other object"), myTarget.PhysicAffectorEnabled);
                         myTarget.RotationDeformation = EditorGUILayout.Toggle(new GUIContent("Rotation Deformation", "if enabled, planets will flatten compare to their rotation speed"), myTarget.RotationDeformation);

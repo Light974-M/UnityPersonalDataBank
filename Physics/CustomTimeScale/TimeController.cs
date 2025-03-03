@@ -16,7 +16,7 @@ namespace UPDB.Physic.CustomTimeScale
         [SerializeField, Tooltip("")]
         private Rigidbody _rb;
 
-        [SerializeField, Range(-10, 10), Tooltip("")]
+        [SerializeField, Tooltip("")]
         private float _timeScale = 1;
 
         [SerializeField, Tooltip("")]
