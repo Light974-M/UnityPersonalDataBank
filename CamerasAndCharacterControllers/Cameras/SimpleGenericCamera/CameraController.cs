@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 #endif
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Templates;
 using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -296,7 +297,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.SimpleGenericCamera
         {
             CursorModesUpdate();
 
-            if (GameManager.Instance.IsPaused)
+            if (TemplateLevelManager.Instance.IsPaused)
                 return;
 
             if (GameManager.Instance.IsCharacterControllable)
