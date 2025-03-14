@@ -1,5 +1,6 @@
 using UnityEngine;
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Templates;
 using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -41,7 +42,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.TpsCamera
 
         private void Update()
         {
-            if (!GameManager.Instance.IsCharacterControllable || GameManager.Instance.IsPaused)
+            if (!GameManager.Instance.IsCharacterControllable || TemplateLevelManager.Instance.IsPaused)
                 return;
 
             Look();
