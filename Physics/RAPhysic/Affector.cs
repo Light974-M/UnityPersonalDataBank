@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -470,8 +471,10 @@ namespace UPDB.Physic.RAPhysic
         /// <summary>
         /// called when unity draw gismos in scene window, only if gameObject is selected in inspector
         /// </summary>
-        private void OnDrawGizmosSelected()
+        protected override void OnDrawGizmosSelected()
         {
+            base.OnDrawGizmosSelected();
+
             if (_usedPhysicSystem == PhysicType.Native)
                 OnDrawGizmosSelectedNative();
             else if (_usedPhysicSystem == PhysicType.Rigidbody)
@@ -480,11 +483,14 @@ namespace UPDB.Physic.RAPhysic
                 OnDrawGizmosSelectedCharaController();
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// called when unity draw gismos in scene window
         /// </summary>
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             UsedPhysicSystemValueUpdate();
             InitVariables();
 
@@ -494,7 +500,8 @@ namespace UPDB.Physic.RAPhysic
                 OnDrawGizmosRb();
             else if (_usedPhysicSystem == PhysicType.CharacterController)
                 OnDrawGizmosCharaController();
-        }
+        } 
+#endif
 
 
         /*****************************NATIVE METHODS SPLIT********************************/
@@ -688,6 +695,7 @@ namespace UPDB.Physic.RAPhysic
             }
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// called in OnDrawGizmos when CharacterController system is used
         /// </summary>
@@ -708,7 +716,8 @@ namespace UPDB.Physic.RAPhysic
 
             if (!Application.isPlaying)
                 PlanetScalePreview();
-        }
+        } 
+#endif
 
         #endregion
 

@@ -50,7 +50,7 @@ namespace UPDB.CamerasAndCharacterControllers.Cameras.Smooth25DCameraController
         private void Awake()
         {
             if (cameraList.Count == 0)
-                cameraList.Add(FindObjectOfType<Camera>());
+                cameraList.Add(FindFirstObjectByType<Camera>());
         }
 
         private void Update()

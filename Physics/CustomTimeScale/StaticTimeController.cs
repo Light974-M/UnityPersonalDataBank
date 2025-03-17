@@ -53,7 +53,7 @@ namespace UPDB.Physic.CustomTimeScale
 
         private void Awake()
         {
-            objectList = FindObjectsOfType<GameObject>();
+            objectList = FindObjectsByType<GameObject>(FindObjectsSortMode.InstanceID);
 
             if (_rb == null)
                 if (!TryGetComponent(out _rb))

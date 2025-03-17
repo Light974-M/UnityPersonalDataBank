@@ -10,9 +10,6 @@ namespace UPDB.CoreHelper.Usable
     public class GameManager : PersistentSingleton<GameManager>
     {
         [SerializeField, Tooltip("tell if the game is in pause or not")]
-        private bool _isPaused = false;
-
-        [SerializeField, Tooltip("tell if the game is in pause or not")]
         private bool _isGameOver = false;
 
         [SerializeField, Tooltip("tell if player can control character")]

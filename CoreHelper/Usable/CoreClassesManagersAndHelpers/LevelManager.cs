@@ -72,6 +72,12 @@ namespace UPDB.CoreHelper.Usable
             set { _isPaused = value; }
         }
 
+        public GameObject Player
+        {
+            get => _player;
+            set => _player = value;
+        }
+
         [Serializable]
         public class LevelStartInfo
         {
@@ -205,12 +211,12 @@ namespace UPDB.CoreHelper.Usable
 
             _isPausedMemo = _isPaused;
 
-            if(_isPaused && _setInGameCursorModes)
+            if (_isPaused && _setInGameCursorModes)
             {
                 Cursor.visible = _pauseCursorVisible;
                 Cursor.lockState = _pauseCursorLockState;
             }
-            if(!_isPaused && _setPauseCursorModes)
+            if (!_isPaused && _setPauseCursorModes)
             {
                 Cursor.visible = _inGameCursorVisible;
                 Cursor.lockState = _inGameCursorLockState;
@@ -311,7 +317,7 @@ namespace UPDB.CoreHelper.Usable
                 if (_setInGameCursorModes)
                 {
                     Cursor.visible = _pauseCursorVisible;
-                    Cursor.lockState = _pauseCursorLockState; 
+                    Cursor.lockState = _pauseCursorLockState;
                 }
             }
             else
@@ -321,7 +327,7 @@ namespace UPDB.CoreHelper.Usable
                 if (_setPauseCursorModes)
                 {
                     Cursor.visible = _inGameCursorVisible;
-                    Cursor.lockState = _inGameCursorLockState; 
+                    Cursor.lockState = _inGameCursorLockState;
                 }
             }
         }

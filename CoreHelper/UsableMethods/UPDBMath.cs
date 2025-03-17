@@ -691,6 +691,15 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
+
+        #region Proba Tools
+
+        public static Vector2 Vector2Range(Vector2 min, Vector2 max)
+        {
+            return new Vector2(Random.Range(min.x, max.x), Random.Range(min.y, max.y));
+        }
+
+        #endregion
     }
 
 }

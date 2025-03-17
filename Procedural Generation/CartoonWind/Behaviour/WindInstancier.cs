@@ -240,7 +240,7 @@ namespace UPDB.ProceduralGeneration.CartoonWind
 
         public void ClearConfig()
         {
-            WindManager[] windManagers = FindObjectsOfType<WindManager>();
+            WindManager[] windManagers = FindObjectsByType<WindManager>(FindObjectsSortMode.InstanceID);
 
             foreach (WindManager wind in windManagers)
                 if (wind.gameObject.activeSelf)

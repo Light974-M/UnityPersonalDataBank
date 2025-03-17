@@ -142,9 +142,9 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
 
             if (_camera == null)
             {
-                _camera = FindObjectOfType<Camera>();
+                _camera = FindFirstObjectByType<Camera>();
 
-                if (FindObjectOfType<Camera>() == null)
+                if (FindFirstObjectByType<Camera>() == null)
                 {
                     _camera = new GameObject().AddComponent<Camera>();
                     _camera.gameObject.transform.SetParent(transform);

@@ -7,8 +7,8 @@ public class TimeScaleController : UPDBBehaviour
     [SerializeField, Tooltip("time scale value")]
     private float _timeScale = 1;
 
-    [SerializeField, Tooltip("frame to be based on")]
-    private float _fps = 60;
+    //[SerializeField, Tooltip("frame to be based on")]
+    //private float _fps = 60;
 
     [SerializeField, Tooltip("tell if script control time scale")]
     private bool _useTimeScale = true;

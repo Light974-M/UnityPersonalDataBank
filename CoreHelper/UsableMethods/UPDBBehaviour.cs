@@ -60,7 +60,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the state of searching, true if object was found, false if no objects were found</returns>
         public static bool TryFindObjectOfType<T>(out T variable) where T : Object
         {
-            variable = FindObjectOfType<T>();
+            variable = FindFirstObjectByType<T>();
             return variable != null;
         }
 
@@ -131,7 +131,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the generic class found</returns>
         public static T[] FindObjectsOfTypeGeneric<T>(System.Type type) where T : Object
         {
-            T[] objList = FindObjectsOfType<T>();
+            T[] objList = FindObjectsByType<T>(FindObjectsSortMode.InstanceID);
             List<T> matchList = new List<T>();
 
             foreach (T obj in objList)
@@ -247,6 +247,50 @@ namespace UPDB.CoreHelper.UsableMethods
         public static bool IsInRange(float value, float min, float max)
         {
             return value >= min && value <= max;
+        }
+
+        public static bool IsLayerInLayerMask(int layer, LayerMask layerMask)
+        {
+            return (layerMask & (1 << layer)) != 0;
+        }
+
+        public static T PickRandomPointInList<T>(T[] array)
+        {
+            int i = Random.Range(0, array.Length);
+            return array[i];
+        }
+
+        public static int GetWeightedRandomIndex(List<float> weights)
+        {
+            if (weights == null || weights.Count == 0)
+            {
+                Debug.LogError("La liste des poids ne peut pas être vide");
+                return 0;
+            }
+
+            float totalWeight = 0;
+            foreach (float weight in weights)
+            {
+                if (weight < 0)
+                {
+                    Debug.LogError("Les poids doivent être positifs.");
+                    return 0;
+                }
+
+                totalWeight += weight;
+            }
+
+            float randomValue = Random.Range(0f, totalWeight);
+            float cumulativeWeight = 0;
+
+            for (int i = 0; i < weights.Count; i++)
+            {
+                cumulativeWeight += weights[i];
+                if (randomValue <= cumulativeWeight)
+                    return i;
+            }
+
+            return weights.Count - 1; // Sécurité (ne devrait jamais arriver)
         }
 
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
