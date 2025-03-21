@@ -503,6 +503,11 @@ namespace UPDB.CoreHelper.UsableMethods
             get { return 2147483647; }
         }
 
+        public static float Infinity
+        {
+            get { return 340282356779733661637539395458142568447.99999999f; }
+        }
+
         /// <summary>
         /// return square root of 2
         /// </summary>
@@ -697,6 +702,11 @@ namespace UPDB.CoreHelper.UsableMethods
         public static Vector2 Vector2Range(Vector2 min, Vector2 max)
         {
             return new Vector2(Random.Range(min.x, max.x), Random.Range(min.y, max.y));
+        }
+
+        public static Vector3 Vector3Range(Vector3 min, Vector3 max)
+        {
+            return new Vector3(Random.Range(min.x, max.x), Random.Range(min.y, max.y), Random.Range(min.z, max.z));
         }
 
         #endregion

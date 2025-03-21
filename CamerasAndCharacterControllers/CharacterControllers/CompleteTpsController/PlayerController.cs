@@ -630,7 +630,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             if (_inputValue.magnitude != 0)
             {
                 //make a smoothed value of input direction
-                _smoothedInputValue = AutoLerp(_rotationLerpStart, _inputValue, _currentRotationSpeed, ref _rotationLerpTimer, ref _rotationShape);
+                _smoothedInputValue = AutoLerp(_rotationLerpStart, _inputValue, _currentRotationSpeed, ref _rotationLerpTimer, _rotationShape);
 
 #if INPUT_SYSTEM_PRESENT
                 //if player is on keyboard, use a function to prevent rotation from clipping by adding a square function to input dir
