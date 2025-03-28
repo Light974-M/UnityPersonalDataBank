@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 #endif
 using UPDB.CoreHelper;
+using UPDB.CoreHelper.Templates;
 using UPDB.CoreHelper.Usable;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -534,7 +535,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         private void FixedUpdate()
         {
             //if game is not paused, make game run
-            if (_workingWithoutGameManager || !GameManager.Instance.IsPaused)
+            if (_workingWithoutGameManager || !TemplateLevelManager.Instance.IsPaused)
             {
                 //is character controllable
                 if (_workingWithoutGameManager || GameManager.Instance.IsCharacterControllable)
@@ -1044,7 +1045,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
 
             //if game is not paused and character is controllable
-            if (_workingWithoutGameManager || (!GameManager.Instance.IsPaused && GameManager.Instance.IsCharacterControllable))
+            if (_workingWithoutGameManager || (!TemplateLevelManager.Instance.IsPaused && GameManager.Instance.IsCharacterControllable))
             {
                 //apply different code depending on jump mode
                 if (_jumpMode == JumpModeAction.PressToJumpAndReleaseToControl)
@@ -1107,7 +1108,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             bool isGrounded = _useNativeIsgrounded ? _controller.isGrounded : _isGrounded;
 
             //if game is not paused and character is controllable, and player is not sprinting
-            if (_workingWithoutGameManager || (!GameManager.Instance.IsPaused && !_isSprinting && GameManager.Instance.IsCharacterControllable))
+            if (_workingWithoutGameManager || (!TemplateLevelManager.Instance.IsPaused && !_isSprinting && GameManager.Instance.IsCharacterControllable))
             {
                 //if character is on ground, perform normal input reading, if character is in air, perform trigger updates
                 if (isGrounded)

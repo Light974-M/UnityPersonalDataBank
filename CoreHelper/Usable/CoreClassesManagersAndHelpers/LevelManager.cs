@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UPDB.CoreHelper.Templates;
 
 namespace UPDB.CoreHelper.Usable
 {
@@ -18,15 +19,38 @@ namespace UPDB.CoreHelper.Usable
         [SerializeField, Tooltip("unique index of level")]
         protected int _levelIndex = 0;
 
+        [SerializeField, Tooltip("set pause state in game")]
+        private bool _isPaused = false;
+
         [SerializeField, Tooltip("instance of player in this level, null means there is no player")]
         protected GameObject _player;
 
         [SerializeField, Tooltip("base parameters of level start")]
         protected LevelStartInfo _baseStartInfo;
 
-        [SerializeField]
+        [SerializeField, Tooltip("help restart physiced objects if they pass a certain point")]
         private ClippingPass[] _clippingPreventionPasses;
 
+        [SerializeField, Tooltip("if enabled, will use values under to set cursor modes in game")]
+        private bool _setInGameCursorModes = true;
+
+        [SerializeField, Tooltip("if enabled, will use values under to set cursor modes in pause")]
+        private bool _setPauseCursorModes = true;
+
+        [SerializeField, Tooltip("if disabled, will hide the cursor while focused in game")]
+        private bool _inGameCursorVisible = false;
+
+        [SerializeField, Tooltip("type of constraint for mouse in game")]
+        private CursorLockMode _inGameCursorLockState = CursorLockMode.Locked;
+
+        [SerializeField, Tooltip("if disabled, will hide the cursor while focused while paused")]
+        private bool _pauseCursorVisible = true;
+
+        [SerializeField, Tooltip("type of constraint for mouse while paused")]
+        private CursorLockMode _pauseCursorLockState = CursorLockMode.Confined;
+
+        private bool _isPausedMemo = false;
+        private float _timeScaleDuringPauseSave = 0;
 
         #region Public API
 
@@ -40,6 +64,12 @@ namespace UPDB.CoreHelper.Usable
         {
             get { return _levelIndex; }
             set { _levelIndex = value; }
+        }
+
+        public bool IsPaused
+        {
+            get { return _isPaused; }
+            set { _isPaused = value; }
         }
 
         [Serializable]
@@ -173,6 +203,19 @@ namespace UPDB.CoreHelper.Usable
         {
             base.Awake();
 
+            _isPausedMemo = _isPaused;
+
+            if(_isPaused && _setInGameCursorModes)
+            {
+                Cursor.visible = _pauseCursorVisible;
+                Cursor.lockState = _pauseCursorLockState;
+            }
+            if(!_isPaused && _setPauseCursorModes)
+            {
+                Cursor.visible = _inGameCursorVisible;
+                Cursor.lockState = _inGameCursorLockState;
+            }
+
             Init();
 
             LoadLevel();
@@ -185,6 +228,11 @@ namespace UPDB.CoreHelper.Usable
 
         protected virtual void Update()
         {
+            if (_isPaused != _isPausedMemo)
+                OnSwitchPauseAction();
+
+            _isPausedMemo = _isPaused;
+
             if (_player)
                 PlayerBasedFunctionalities();
         }
@@ -248,6 +296,34 @@ namespace UPDB.CoreHelper.Usable
         public void LoadSceneByIndex(int index)
         {
             SceneManager.LoadScene(index);
+        }
+
+        /// <summary>
+        /// switch pause state of game
+        /// </summary>
+        protected virtual void OnSwitchPauseAction()
+        {
+            if (_isPaused)
+            {
+                _timeScaleDuringPauseSave = Time.timeScale;
+                Time.timeScale = 0;
+
+                if (_setInGameCursorModes)
+                {
+                    Cursor.visible = _pauseCursorVisible;
+                    Cursor.lockState = _pauseCursorLockState; 
+                }
+            }
+            else
+            {
+                Time.timeScale = _timeScaleDuringPauseSave;
+
+                if (_setPauseCursorModes)
+                {
+                    Cursor.visible = _inGameCursorVisible;
+                    Cursor.lockState = _inGameCursorLockState; 
+                }
+            }
         }
 
         #region Start Level Behaviours
@@ -324,7 +400,7 @@ namespace UPDB.CoreHelper.Usable
 
         private void PauseSetValue()
         {
-            GameManager.Instance.IsPaused = _baseStartInfo.PauseState;
+            TemplateLevelManager.Instance.IsPaused = _baseStartInfo.PauseState;
         }
 
         private void CharacterControllableSetValue()
@@ -389,7 +465,7 @@ namespace UPDB.CoreHelper.Usable
         {
             if (callback.started)
             {
-                GameManager.Instance.IsPaused = !GameManager.Instance.IsPaused;
+                TemplateLevelManager.Instance.IsPaused = !TemplateLevelManager.Instance.IsPaused;
             }
         }
 

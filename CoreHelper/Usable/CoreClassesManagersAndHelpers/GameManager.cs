@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 namespace UPDB.CoreHelper.Usable
@@ -17,16 +18,19 @@ namespace UPDB.CoreHelper.Usable
         [SerializeField, Tooltip("tell if player can control character")]
         private bool _isCharacterControllable = true;
 
-        private bool _isPausedMemo = false;
-        private float _timeScaleDuringPauseSave = 0;
+        [SerializeField, Tooltip("main volume mixer")]
+        private AudioMixer _volumeMainMixer;
+
+        [SerializeField, Tooltip("if enabled, will use values under to set cursor modes at start")]
+        private bool _setCursorModes = false;
+
+        [SerializeField, Tooltip("if disabled, will hide the cursor while focused at start")]
+        private bool _startCursorVisible = true;
+
+        [SerializeField, Tooltip("type of constraint for mouse at start")]
+        private CursorLockMode _startCursorLockState = CursorLockMode.Confined;
 
         #region Public API
-
-        public bool IsPaused
-        {
-            get { return _isPaused; }
-            set { _isPaused = value; }
-        }
 
         public bool IsGameOver
         {
@@ -40,6 +44,12 @@ namespace UPDB.CoreHelper.Usable
             set { _isCharacterControllable = value; }
         }
 
+        public AudioMixer VolumeMainMixer
+        {
+            get => _volumeMainMixer;
+            set { _volumeMainMixer = value; }
+        }
+
         #endregion
 
 
@@ -49,16 +59,15 @@ namespace UPDB.CoreHelper.Usable
         protected override void Awake()
         {
             base.Awake();
-
-            _isPausedMemo = _isPaused;
         }
 
-        protected virtual void Update()
+        private void Start()
         {
-            if (_isPaused != _isPausedMemo)
-                OnSwitchPauseAction();
-
-            _isPausedMemo = _isPaused;
+            if(_setCursorModes)
+            {
+                Cursor.visible = _startCursorVisible;
+                Cursor.lockState = _startCursorLockState;
+            }
         }
 
         protected override void OnDrawGizmos()
@@ -69,19 +78,6 @@ namespace UPDB.CoreHelper.Usable
                 hideFlags = HideFlags.HideInInspector;
             else
                 hideFlags = HideFlags.None;
-        }
-
-        protected virtual void OnSwitchPauseAction()
-        {
-            if(_isPaused)
-            {
-                _timeScaleDuringPauseSave = Time.timeScale;
-                Time.timeScale = 0;
-            }
-            else
-            {
-                Time.timeScale = _timeScaleDuringPauseSave;
-            }
         }
     }
 
