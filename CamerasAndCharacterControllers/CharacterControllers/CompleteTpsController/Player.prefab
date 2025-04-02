@@ -46,9 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11557a6695f1b9c43a77776e3c0d9053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inputSystem: 1
   _lookSpeed: {x: 0.2, y: 0.2}
   _verticalBorders: {x: -89, y: 89}
-  _inputSystem: 1
+  _horizontalPivot: {fileID: 0}
+  _verticalPivot: {fileID: 0}
+  _hideCursor: 1
+  _cursorLockState: 1
   _cameraFXTarget: {fileID: 3617838550731505851}
   _fOVSystem: 1
   _defaultFOV: 60
@@ -174,7 +178,13 @@ MonoBehaviour:
   _playerInput: {fileID: 3617838550692299024}
   _controller: {fileID: 3617838550692299029}
   _playerTargetPivot: {fileID: 3617838550441132144}
-  _linkedCameraPivot: {fileID: 3617838549553102027}
+  _linkedCamera: {fileID: 3617838550731505848}
+  _isCharacterControllable: 1
+  _canMove: 1
+  _canSprint: 1
+  _canWalk: 1
+  _canJump: 1
+  _canCrouch: 1
   _rotationMode: 0
   _rotationSpeed: 0.1
   _rotationShape:
@@ -207,6 +217,7 @@ MonoBehaviour:
   _speedLerpTime: 1
   _smoothVelocityFallDown: 0.9
   _smoothVelocityGetHigh: 0.9
+  _useNativeIsgrounded: 0
   _gravityUsed: 0
   _playerLayer:
     serializedVersion: 2
@@ -243,9 +254,11 @@ MonoBehaviour:
   _rotationAirControl: 0
   _isGroundedPosition: {x: 0, y: -0.9, z: 0}
   _isGroundedScale: 0.25
+  _playerBaseHeight: 1
   _normalHeight: 1.777
   _crouchHeight: 1
   _crouchTime: 0.5
+  _heightOffset: 0
   _actionLaunchTime:
     _sprintBegin: 0
     _sprintEnd: 0
