@@ -16,7 +16,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
     /// </summary>
     [HelpURL(URL.baseURL + "/tree/main/CamerasAndCharacterControllers/CharacterControllers/CompleteTpsController/README.md")]
     [AddComponentMenu(NamespaceID.CharacterControllersPath + "/" + NamespaceID.CompleteTpsController + "/Complete Tps Controller")]
-    public class PlayerController : Singleton<PlayerController>
+    public class PlayerController : UPDBBehaviour
     {
         #region Serialized API
 
@@ -490,10 +490,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
         /// <summary>
         /// awake is called when script instance is being loaded
         /// </summary>
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
-
             Init();
 
             //set height goal to normal height
