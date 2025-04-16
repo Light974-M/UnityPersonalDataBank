@@ -53,7 +53,7 @@ namespace UPDB.Physic.CustomTimeScale
 
         private void Awake()
         {
-            objectList = FindObjectsOfType<GameObject>();
+            objectList = FindObjectsByType<GameObject>(FindObjectsSortMode.InstanceID);
 
             if (_rb == null)
                 if (!TryGetComponent(out _rb))
@@ -97,7 +97,7 @@ namespace UPDB.Physic.CustomTimeScale
                 {
                     if (_posList.Count != 0 && _rotList.Count != 0)
                     {
-                        //ne capture pas si immobile(donc décale par rapport aux autres objets
+                        //ne capture pas si immobile(donc dï¿½cale par rapport aux autres objets
                         //if (transform.position != _posList[_posList.Count - 1] || transform.rotation != _rotList[_posList.Count - 1])
                         //{
 
@@ -130,25 +130,25 @@ namespace UPDB.Physic.CustomTimeScale
                 {
                     if (_timeScale == 0)
                     {
-                        _memoVelocity = _rb.velocity;
+                        _memoVelocity = _rb.linearVelocity;
                         _memoAngularVelocity = _rb.angularVelocity;
                     }
 
                     if (_memoTimeScale == 0)
                     {
-                        _rb.velocity = _memoVelocity * _timeScale;
+                        _rb.linearVelocity = _memoVelocity * _timeScale;
                         _rb.angularVelocity = _memoAngularVelocity * _timeScale;
                     }
 
                     if (_timeScale != 0)
                     {
-                        _memoVelocity = _rb.velocity;
+                        _memoVelocity = _rb.linearVelocity;
                         _memoAngularVelocity = _rb.angularVelocity;
                     }
 
                     if (_memoTimeScale != 0)
                     {
-                        _rb.velocity = _rb.velocity * (_timeScale / _memoTimeScale);
+                        _rb.linearVelocity = _rb.linearVelocity * (_timeScale / _memoTimeScale);
                         _rb.angularVelocity = _rb.angularVelocity * (_timeScale / _memoTimeScale);
                     }
                 }

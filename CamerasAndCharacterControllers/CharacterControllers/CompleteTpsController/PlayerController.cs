@@ -614,8 +614,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             {
                 if (Camera.main)
                     _linkedCamera = Camera.main.transform;
-                else if (FindObjectOfType<Camera>())
-                    _linkedCamera = FindObjectOfType<Camera>().transform;
+                else if (FindFirstObjectByType<Camera>())
+                    _linkedCamera = FindFirstObjectByType<Camera>().transform;
                 else
                     _linkedCamera = transform;
             }

@@ -64,7 +64,7 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
 
         private void Awake()
         {
-            _gameCamera = FindObjectOfType<Camera>();
+            _gameCamera = FindFirstObjectByType<Camera>();
 
             _gameCamera.transform.position = new Vector3((Level.Width / 2f - 0.5f) * transform.localScale.x, (Level.Height / 2f - 0.5f) * transform.localScale.y, -100) + transform.position;
             _gameCamera.orthographicSize = (Level.Width + Level.Height) / 4f;
@@ -85,7 +85,7 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
         protected override void OnScene()
         {
             if (_gameCamera == null)
-                _gameCamera = FindObjectOfType<Camera>();
+                _gameCamera = FindFirstObjectByType<Camera>();
 
             if (_cellsParentObject == null)
             {
@@ -140,7 +140,7 @@ namespace UPDB.Data.NativeTools.SimpleGridLevel
 
         public void GraphicsUpdate()
         {
-            CellRenderer[] cellRendererArray = FindObjectsOfType<CellRenderer>();
+            CellRenderer[] cellRendererArray = FindObjectsByType<CellRenderer>(FindObjectsSortMode.InstanceID);
 
             foreach (CellRenderer cellRenderer in cellRendererArray)
                 cellRenderer.GraphicUpdate();

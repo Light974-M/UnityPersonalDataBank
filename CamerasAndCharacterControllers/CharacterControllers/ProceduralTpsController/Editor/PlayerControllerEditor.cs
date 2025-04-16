@@ -16,7 +16,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
             if (!Application.isPlaying)
                 myTarget.InitVariables();
 
-            myTarget.Rb.drag = Mathf.Clamp(myTarget.Rb.drag, 0, 50);
+            myTarget.Rb.linearDamping = Mathf.Clamp(myTarget.Rb.linearDamping, 0, 50);
         }
 
         private void DrawCustomInspector(PlayerController myTarget)
@@ -27,7 +27,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.ProceduralTps
             myTarget.Speed = EditorGUILayout.FloatField(new GUIContent("Speed"), myTarget.Speed);
 
             if (myTarget.Rb != null)
-                myTarget.Rb.drag = EditorGUILayout.FloatField(new GUIContent("Drag"), myTarget.Rb.drag);
+                myTarget.Rb.linearDamping = EditorGUILayout.FloatField(new GUIContent("Drag"), myTarget.Rb.linearDamping);
         }
     }
 }

@@ -180,7 +180,7 @@ namespace UPDB.Data.UPDBSpawner
         [InitializeOnLoadMethod]
         private static void OnProjectLoad()
         {
-            SpawnerTool[] spawners = FindObjectsOfType<SpawnerTool>();
+            SpawnerTool[] spawners = FindObjectsByType<SpawnerTool>(FindObjectsSortMode.InstanceID);
 
             for (int i = 0; i < spawners.Length; i++)
                 spawners[i].EventSubcribeTrigger = true;

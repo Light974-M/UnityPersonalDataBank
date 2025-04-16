@@ -73,7 +73,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
             else
                 Debug.LogWarning("warning : there is no rigidbody attached to this Component");
 
-             _rb.drag = Mathf.Clamp(_rb.drag, 0, 50);
+             _rb.linearDamping = Mathf.Clamp(_rb.linearDamping, 0, 50);
         }
 
         public void InitVariables()
@@ -84,8 +84,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.RbFpsControll
                 {
                     _rb = gameObject.AddComponent<Rigidbody>();
                     _rb.constraints = RigidbodyConstraints.FreezeRotation;
-                    _rb.angularDrag = 0;
-                    _rb.drag = 10;
+                    _rb.angularDamping = 0;
+                    _rb.linearDamping = 10;
                 }
 
             }

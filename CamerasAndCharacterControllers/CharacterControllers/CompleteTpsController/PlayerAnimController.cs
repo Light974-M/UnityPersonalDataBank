@@ -121,8 +121,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
 
             if (!_player)
                 if (!TryGetComponent(out _player))
-                    if (FindObjectOfType<PlayerController>())
-                        _player = FindObjectOfType<PlayerController>();
+                    if (FindFirstObjectByType<PlayerController>())
+                        _player = FindFirstObjectByType<PlayerController>();
 
             if (_walkBlendCurve.keys.Length < 2)
                 _walkBlendCurve = AnimationCurve.Linear(0, 0, 1, 1);
