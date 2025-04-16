@@ -112,7 +112,7 @@ namespace UPDB.Sound.AmbianceMixer
             if (RandomClipConfig.Count == 0)
             {
                 //get every randomizer in scene, and create a list of config that will handle randomizers
-                AudioRandomizer[] randomClipMixer = FindObjectsOfType<AudioRandomizer>();
+                AudioRandomizer[] randomClipMixer = FindObjectsByType<AudioRandomizer>(FindObjectsSortMode.InstanceID);
                 List<AudioRandomizerConfig> audioSettingsFinder = new List<AudioRandomizerConfig>();
 
                 //for every randomizer found, add it to config list

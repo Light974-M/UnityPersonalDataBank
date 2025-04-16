@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UPDB.CoreHelper;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -41,9 +42,6 @@ namespace UPDB.Physic.RAPhysic
         [SerializeField, Tooltip("custom Rigidbody used for calculations")]
         private CustomRigidbody _customRb;
 
-        [SerializeField, Tooltip("collider used by object")]
-        private Collider _collider;
-
 
         /****** AIR RESISTANCE ******/
 
@@ -82,7 +80,7 @@ namespace UPDB.Physic.RAPhysic
         [SerializeField, Tooltip("radius of the planet at equator level(in m), differ from average radius if _rotationDeformation is enabled")]
         private float _equatorialRadius;
 
-        [SerializeField, Tooltip("radius of the planet at the pôles(in m), differ from average radius if _rotationDeformation is enabled")]
+        [SerializeField, Tooltip("radius of the planet at the pï¿½les(in m), differ from average radius if _rotationDeformation is enabled")]
         private float _polarRadius;
 
         [SerializeField, Tooltip("determine if object should have maximum force strength to apply to other objects")]
@@ -195,13 +193,6 @@ namespace UPDB.Physic.RAPhysic
         {
             get { return _rb; }
             set { _rb = value; }
-        }
-
-        /// <inheritdoc cref="_collider"/>
-        public Collider Collider
-        {
-            get { return _collider; }
-            set { _collider = value; }
         }
 
         /// <inheritdoc cref="_atmosphereEnabled"/>
@@ -480,8 +471,10 @@ namespace UPDB.Physic.RAPhysic
         /// <summary>
         /// called when unity draw gismos in scene window, only if gameObject is selected in inspector
         /// </summary>
-        private void OnDrawGizmosSelected()
+        protected override void OnDrawGizmosSelected()
         {
+            base.OnDrawGizmosSelected();
+
             if (_usedPhysicSystem == PhysicType.Native)
                 OnDrawGizmosSelectedNative();
             else if (_usedPhysicSystem == PhysicType.Rigidbody)
@@ -490,11 +483,14 @@ namespace UPDB.Physic.RAPhysic
                 OnDrawGizmosSelectedCharaController();
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// called when unity draw gismos in scene window
         /// </summary>
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
+
             UsedPhysicSystemValueUpdate();
             InitVariables();
 
@@ -504,7 +500,8 @@ namespace UPDB.Physic.RAPhysic
                 OnDrawGizmosRb();
             else if (_usedPhysicSystem == PhysicType.CharacterController)
                 OnDrawGizmosCharaController();
-        }
+        } 
+#endif
 
 
         /*****************************NATIVE METHODS SPLIT********************************/
@@ -698,6 +695,7 @@ namespace UPDB.Physic.RAPhysic
             }
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// called in OnDrawGizmos when CharacterController system is used
         /// </summary>
@@ -718,7 +716,8 @@ namespace UPDB.Physic.RAPhysic
 
             if (!Application.isPlaying)
                 PlanetScalePreview();
-        }
+        } 
+#endif
 
         #endregion
 
@@ -880,11 +879,6 @@ namespace UPDB.Physic.RAPhysic
         /// </summary>
         private void GenerateComponents()
         {
-            //generate collider
-            if (_collider == null)
-                if (!TryGetComponent(out _collider))
-                    _collider = gameObject.AddComponent<SphereCollider>();
-
             //generate rigidbody
             if (_rb == null)
                 if (!TryGetComponent(out _rb))
@@ -987,7 +981,7 @@ namespace UPDB.Physic.RAPhysic
             if (affectedObj.UsedPhysicSystem == PhysicType.Rigidbody)
             {
                 //apply air forces.
-                Vector3 objVelocity = affectedObj.Rb.velocity;
+                Vector3 objVelocity = affectedObj.Rb.linearVelocity;
                 float ObjDistance = Vector3.Distance(_rb.transform.TransformPoint(_rb.centerOfMass), affectedObj.Rb.transform.TransformPoint(affectedObj.Rb.centerOfMass));
 
                 float lerpT = _graduateAtmosphere ? 1 - Mathf.Clamp((ObjDistance - _averageRadius) / (_atmosphereRange - _averageRadius), 0, 1) : 1;
@@ -1092,7 +1086,7 @@ namespace UPDB.Physic.RAPhysic
             if (affectedObj.UsedPhysicSystem == PhysicType.Rigidbody)
             {
                 //apply air forces.
-                Vector3 objVelocity = affectedObj.Rb.velocity;
+                Vector3 objVelocity = affectedObj.Rb.linearVelocity;
                 float ObjDistance = Vector3.Distance(_rb.transform.TransformPoint(_rb.centerOfMass), affectedObj.Rb.transform.TransformPoint(affectedObj.Rb.centerOfMass));
 
                 float lerpT = _graduateAtmosphere ? 1 - Mathf.Clamp((ObjDistance - _averageRadius) / (_atmosphereRange - _averageRadius), 0, 1) : 1;

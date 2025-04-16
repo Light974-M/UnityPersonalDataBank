@@ -79,7 +79,7 @@ namespace UPDB.Physic.CustomPhysicMaterial
         {
             if (_physicMaterial.BounceCombine == BounceCombineMode.NormalizedCollidedObjectVelocity)
             {
-                collidedRb.AddForce(collidedRb.velocity.normalized * _physicMaterial.Bounciness);
+                collidedRb.AddForce(collidedRb.linearVelocity.normalized * _physicMaterial.Bounciness);
                 return;
             }
         }

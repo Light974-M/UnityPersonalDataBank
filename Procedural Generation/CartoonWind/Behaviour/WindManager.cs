@@ -131,7 +131,7 @@ namespace UPDB.ProceduralGeneration.CartoonWind
 
             if (_windInstancier == null)
                 if (!transform.parent.gameObject.TryGetComponent(out _windInstancier))
-                    _windInstancier = FindObjectOfType<WindInstancier>();
+                    _windInstancier = FindFirstObjectByType<WindInstancier>();
 
             SetWindAttributes();
         }

@@ -10,12 +10,14 @@ public class InputSystemChecker
     private const string InputSystemDefine = "INPUT_SYSTEM_PRESENT";
 
     // Constructeur statique, appelé automatiquement par Unity à l'initialisation
+    [System.Obsolete]
     static InputSystemChecker()
     {
         CheckAndSetInputSystemDefine();
     }
 
     // Vérifie et définit le symbole de compilation conditionnelle
+    [System.Obsolete]
     private static void CheckAndSetInputSystemDefine()
     {
         // Obtient tous les packages installés

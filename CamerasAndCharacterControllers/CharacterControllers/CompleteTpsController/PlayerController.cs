@@ -612,8 +612,8 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             {
                 if (Camera.main)
                     _linkedCamera = Camera.main.transform;
-                else if (FindObjectOfType<Camera>())
-                    _linkedCamera = FindObjectOfType<Camera>().transform;
+                else if (FindFirstObjectByType<Camera>())
+                    _linkedCamera = FindFirstObjectByType<Camera>().transform;
                 else
                     _linkedCamera = transform;
             }
@@ -628,7 +628,7 @@ namespace UPDB.CamerasAndCharacterControllers.CharacterControllers.CompleteTpsCo
             if (_inputValue.magnitude != 0)
             {
                 //make a smoothed value of input direction
-                _smoothedInputValue = AutoLerp(_rotationLerpStart, _inputValue, _currentRotationSpeed, ref _rotationLerpTimer, ref _rotationShape);
+                _smoothedInputValue = AutoLerp(_rotationLerpStart, _inputValue, _currentRotationSpeed, ref _rotationLerpTimer, _rotationShape);
 
 #if INPUT_SYSTEM_PRESENT
                 //if player is on keyboard, use a function to prevent rotation from clipping by adding a square function to input dir
