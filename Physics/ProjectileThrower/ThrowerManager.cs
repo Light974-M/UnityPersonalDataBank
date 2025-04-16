@@ -100,7 +100,7 @@ public class ThrowerManager : UPDBBehaviour
         Rigidbody targetRb = null;
         MakeNonNullable(ref targetRb, _activeTarget.gameObject);
 
-        _lastIntersectionPoint = CalculateInterceptionPoint(_bulletSpawnPoint.position, _activeTarget.position, targetRb.velocity, bulletManager.Speed);
+        _lastIntersectionPoint = CalculateInterceptionPoint(_bulletSpawnPoint.position, _activeTarget.position, targetRb.linearVelocity, bulletManager.Speed);
 
         _lastImprecisionRadius = Mathf.Lerp(_imprecisionRadius, _imprecisionRadius * (Vector3.Distance(_bulletSpawnPoint.position, _activeTarget.position) * _imprecisionDistanceMultiplier), _imprecisionDistancePercentage);
         _lastAimedPoint = _lastIntersectionPoint + (Random.insideUnitSphere * _lastImprecisionRadius);
@@ -110,17 +110,17 @@ public class ThrowerManager : UPDBBehaviour
         else
             _lastShootDirection = CalculateLaunchVelocity(_bulletSpawnPoint.position, _lastAimedPoint, Vector3.Distance(_bulletSpawnPoint.position, _lastAimedPoint) / bulletManager.Speed);
 
-        bulletManager.Rb.velocity = _lastShootDirection;
+        bulletManager.Rb.linearVelocity = _lastShootDirection;
     }
 
     /// <summary>
-    /// Calcule la direction à tirer pour intercepter une cible en mouvement.
+    /// Calcule la direction ï¿½ tirer pour intercepter une cible en mouvement.
     /// </summary>
-    /// <param name="A">Point de départ du projectile</param>
+    /// <param name="A">Point de dï¿½part du projectile</param>
     /// <param name="B">Position actuelle de la cible</param>
     /// <param name="vB">Vitesse de la cible (direction * vitesse en m/s)</param>
     /// <param name="projectileSpeed">Vitesse constante du projectile (en m/s)</param>
-    /// <returns>Vecteur direction normalisé de la trajectoire du projectile, ou Vector3.zero si pas de solution</returns>
+    /// <returns>Vecteur direction normalisï¿½ de la trajectoire du projectile, ou Vector3.zero si pas de solution</returns>
     private Vector3 CalculateInterceptionPoint(Vector3 A, Vector3 B, Vector3 vB, float projectileSpeed)
     {
         Vector3 D = B - A;
