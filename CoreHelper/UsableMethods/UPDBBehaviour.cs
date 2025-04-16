@@ -231,7 +231,7 @@ namespace UPDB.CoreHelper.UsableMethods
             Component[] components = obj.GetComponents<Component>();
 
             foreach (Component component in components)
-                if(component != obj.transform && component != exclude)
+                if (component != obj.transform && component != exclude)
                     return false;
 
             return true;
@@ -438,14 +438,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns>the value of lerp with the current time</returns>
-        public static float AutoLerp(float a, float b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
+        public static float AutoLerp(float a, float b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
         {
             float value = 0;
 
             if (timer < lerpTime)
             {
                 float timerNormalized = (timer / lerpTime);
-                value = Mathf.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
+                value = Mathf.Lerp(a, b, GetShapedTime(timerNormalized, smoothTimer));
 
                 timer += Time.deltaTime;
             }
@@ -467,7 +467,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns>the value of lerp with the current time</returns>
-        public static Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
+        public static Vector2 AutoLerp(Vector2 a, Vector2 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
         {
             //create a null vector 2
             Vector2 value = Vector2.zero;
@@ -476,7 +476,7 @@ namespace UPDB.CoreHelper.UsableMethods
             if (timer < lerpTime)
             {
                 float timerNormalized = (timer / lerpTime);
-                value = Vector2.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
+                value = Vector2.Lerp(a, b, GetShapedTime(timerNormalized, smoothTimer));
 
                 //update timer value
                 timer += Time.deltaTime;
@@ -500,14 +500,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns>the value of lerp with the current time</returns>
-        public static Vector3 AutoLerp(Vector3 a, Vector3 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
+        public static Vector3 AutoLerp(Vector3 a, Vector3 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
         {
             Vector3 value = Vector3.zero;
 
             if (timer < lerpTime)
             {
                 float timerNormalized = (timer / lerpTime);
-                value = Vector3.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
+                value = Vector3.Lerp(a, b, GetShapedTime(timerNormalized, smoothTimer));
 
                 timer += Time.deltaTime;
             }
@@ -529,14 +529,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns>the value of lerp with the current time</returns>
-        public static Vector4 AutoLerp(Vector4 a, Vector4 b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
+        public static Vector4 AutoLerp(Vector4 a, Vector4 b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
         {
             Vector4 value = Vector4.zero;
 
             if (timer < lerpTime)
             {
                 float timerNormalized = (timer / lerpTime);
-                value = Vector4.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
+                value = Vector4.Lerp(a, b, GetShapedTime(timerNormalized, smoothTimer));
 
                 timer += Time.deltaTime;
             }
@@ -558,14 +558,14 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="timer">timer to store lerp progression</param>
         /// /// <param name="smoothTimer">curve to offset timer and make things smooth(min and max time and value doesn't do anything, just focus on curve shape)</param>
         /// <returns>the value of lerp with the current time</returns>
-        public static Quaternion AutoLerp(Quaternion a, Quaternion b, float lerpTime, ref float timer, ref AnimationCurve smoothTimer)
+        public static Quaternion AutoLerp(Quaternion a, Quaternion b, float lerpTime, ref float timer, AnimationCurve smoothTimer)
         {
             Quaternion value = Quaternion.identity;
 
             if (timer < lerpTime)
             {
                 float timerNormalized = (timer / lerpTime);
-                value = Quaternion.Lerp(a, b, GetShapedTime(timerNormalized, ref smoothTimer));
+                value = Quaternion.Lerp(a, b, GetShapedTime(timerNormalized, smoothTimer));
 
                 timer += Time.deltaTime;
             }
@@ -592,7 +592,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value at t read from shape curve</returns>
         public static float CurveLerp(float a, float b, float t, ref AnimationCurve shape)
         {
-            return Mathf.Lerp(a, b, GetShapedTime(t, ref shape));
+            return Mathf.Lerp(a, b, GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -605,7 +605,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value at t read from shape curve</returns>
         public static Vector2 CurveLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape)
         {
-            return Vector2.Lerp(a, b, GetShapedTime(t, ref shape));
+            return Vector2.Lerp(a, b, GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -618,7 +618,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value at t read from shape curve</returns>
         public static Vector3 CurveLerp(Vector3 a, Vector3 b, float t, ref AnimationCurve shape)
         {
-            return Vector3.Lerp(a, b, GetShapedTime(t, ref shape));
+            return Vector3.Lerp(a, b, GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -631,7 +631,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value at t read from shape curve</returns>
         public static Vector4 CurveLerp(Vector4 a, Vector4 b, float t, ref AnimationCurve shape)
         {
-            return Vector4.Lerp(a, b, GetShapedTime(t, ref shape));
+            return Vector4.Lerp(a, b, GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -644,7 +644,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value at t read from shape curve</returns>
         public static Quaternion CurveLerp(Quaternion a, Quaternion b, float t, ref AnimationCurve shape)
         {
-            return Quaternion.Lerp(a, b, GetShapedTime(t, ref shape));
+            return Quaternion.Lerp(a, b, GetShapedTime(t, shape));
         }
 
         #endregion
@@ -708,7 +708,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value</returns>
         public static float UnboundedLerp(float a, float b, float t, ref AnimationCurve shape)
         {
-            return a + ((b - a) * GetShapedTime(t, ref shape));
+            return a + ((b - a) * GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -720,7 +720,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value</returns>
         public static Vector2 UnboundedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape)
         {
-            return a + ((b - a) * GetShapedTime(t, ref shape));
+            return a + ((b - a) * GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -732,7 +732,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value</returns>
         public static Vector3 UnboundedLerp(Vector3 a, Vector3 b, float t, ref AnimationCurve shape)
         {
-            return a + ((b - a) * GetShapedTime(t, ref shape));
+            return a + ((b - a) * GetShapedTime(t, shape));
         }
 
         /// <summary>
@@ -744,7 +744,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>the lerp value</returns>
         public static Vector4 UnboundedLerp(Vector4 a, Vector4 b, float t, ref AnimationCurve shape)
         {
-            return a + ((b - a) * GetShapedTime(t, ref shape));
+            return a + ((b - a) * GetShapedTime(t, shape));
         }
 
         #endregion
@@ -777,7 +777,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns></returns>
         public static Vector2 UnboundedShapedLerp(Vector2 a, Vector2 b, float t, ref AnimationCurve shape, ref AnimationCurve valueShape)
         {
-            Vector2 value = a + ((b - a) * GetShapedTime(t, ref shape));
+            Vector2 value = a + ((b - a) * GetShapedTime(t, shape));
 
             return GetShapedValue(a, b, value, t, ref valueShape);
         }
@@ -869,7 +869,7 @@ namespace UPDB.CoreHelper.UsableMethods
         public static float UnboundedInverseLerp(float a, float b, float value, ref AnimationCurve shape)
         {
             float t = (value - a) / (b - a);
-            return GetShapedTime(t, ref shape);
+            return GetShapedTime(t, shape);
         }
 
         /// <summary>
@@ -890,7 +890,7 @@ namespace UPDB.CoreHelper.UsableMethods
                 return 0;
             }
 
-            return GetShapedTime(time.x, ref shape);
+            return GetShapedTime(time.x, shape);
         }
 
         /// <summary>
@@ -911,7 +911,7 @@ namespace UPDB.CoreHelper.UsableMethods
                 return 0;
             }
 
-            return GetShapedTime(time.x, ref shape);
+            return GetShapedTime(time.x, shape);
         }
 
         /// <summary>
@@ -932,7 +932,7 @@ namespace UPDB.CoreHelper.UsableMethods
                 return 0;
             }
 
-            return GetShapedTime(time.x, ref shape);
+            return GetShapedTime(time.x, shape);
         }
 
         #endregion
@@ -997,7 +997,7 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <param name="t">time value between 0 and 1(usually)</param>
         /// <param name="shape">curve to read from</param>
         /// <returns>the time read in shape curve</returns>
-        public static float GetShapedTime(float t, ref AnimationCurve shape)
+        public static float GetShapedTime(float t, AnimationCurve shape)
         {
             //if curve isn't readable or null, create a linear curve
             if (shape == null || shape.keys.Length < 2)
@@ -4423,6 +4423,226 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region Camera Intersection Debug
+
+        /// <summary>
+        /// draw a square representing camera's field of view intersection with an object(at beginning, made only for flat objects)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="affectedLayers"></param>
+        /// <param name="color"></param>
+        public void DrawCameraIntersection(Camera cam, LayerMask affectedLayers, Color color)
+        {
+            DrawCameraIntersection(cam, affectedLayers, color, Vector2Int.one * 2);
+        }
+
+        /// <summary>
+        /// draw a square representing camera's field of view intersection with an object(at beginning, made only for flat objects)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="affectedLayers"></param>
+        /// <param name="color"></param>
+        public void DrawCameraIntersection(Camera cam, LayerMask affectedLayers)
+        {
+            DrawCameraIntersection(cam, affectedLayers, Color.white, Vector2Int.one * 2);
+        }
+
+        /// <summary>
+        /// draw a square representing camera's field of view intersection with an object(at beginning, made only for flat objects)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="affectedLayers"></param>
+        /// <param name="color"></param>
+        public void DrawCameraIntersection(Camera cam)
+        {
+            DrawCameraIntersection(cam, ~0, Color.white, Vector2Int.one * 2);
+        }
+
+        /// <summary>
+        /// draw a square representing camera's field of view intersection with an object(at beginning, made only for flat objects)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="affectedLayers"></param>
+        /// <param name="color"></param>
+        public void DrawCameraIntersection(Camera cam, LayerMask affectedLayers, Vector2Int verticeNumber)
+        {
+            DrawCameraIntersection(cam, affectedLayers, Color.white, verticeNumber);
+        }
+
+        /// <summary>
+        /// draw a square representing camera's field of view intersection with an object(at beginning, made only for flat objects)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="affectedLayers"></param>
+        /// <param name="color"></param>
+        public void DrawCameraIntersection(Camera cam, Vector2Int verticeNumber)
+        {
+            DrawCameraIntersection(cam, ~0, Color.white, verticeNumber);
+        }
+
+        /// <summary>
+        /// draw a square representing camera's field of view intersection with an object
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="affectedLayers"></param>
+        /// <param name="color"></param>
+        public void DrawCameraIntersection(Camera cam, LayerMask affectedLayers, Color color, Vector2Int verticeNumber)
+        {
+            if (cam.orthographic)
+            {
+                List<bool> isHitList = new List<bool>();
+                List<Vector3> hitPosList = new List<Vector3>();
+                List<Vector3> startPosList = new List<Vector3>();
+                bool firstInvalid = false;
+
+                OrthographicCoordsDefil();
+
+                for (int i = 0; i < hitPosList.Count - 1; i++)
+                    Debug.DrawLine(hitPosList[i], hitPosList[i + 1], color);
+
+                void OrthographicCoordsDefil()
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        for (int j = 0; j < 2; j++)
+                        {
+                            int verticeNum = j == 0 ? verticeNumber.x : verticeNumber.y;
+                            int increment = k == 0 ? 1 : -1;
+
+                            for (int i = k == 0 ? 0 : verticeNum - 1; (k == 0 && i < verticeNum) || (k != 0 && i >= 0); i += increment)
+                            {
+                                float defilSide = -1 + (i * (2f / ((float)verticeNum - 1f)));
+                                float x = j == 0 ? defilSide : k == 0 ? 1 : -1;
+                                float y = j == 0 ? k == 0 ? -1 : 1 : defilSide;
+
+                                Vector3 start = GetOrtographicCoords(cam, new Vector2(x, y));
+
+                                bool isHit = Physics.Raycast(start, cam.transform.forward, out RaycastHit hit, Mathf.Infinity, affectedLayers);
+
+                                if (isHit)
+                                {
+                                    if (firstInvalid)
+                                    {
+                                        isHitList = new List<bool>();
+                                        hitPosList = new List<Vector3>();
+                                        startPosList = new List<Vector3>();
+                                        firstInvalid = false;
+
+                                        hitPosList.Add(hit.point);
+                                        startPosList.Add(start);
+
+                                        OrthographicCoordsDefil();
+
+                                        return;
+                                    }
+
+                                    hitPosList.Add(hit.point);
+                                }
+                                else
+                                {
+                                    if (hitPosList.Count != 0 && startPosList.Count != 0)
+                                    {
+                                        hitPosList.Add(start + (cam.transform.forward * (hitPosList[hitPosList.Count - 1] - startPosList[startPosList.Count - 1]).magnitude));
+
+                                        if (k == 0 && j == 0 && i == 0)
+                                        {
+                                            startPosList.RemoveAt(0);
+                                            hitPosList.RemoveAt(0);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        firstInvalid = true;
+                                    }
+                                }
+
+                                isHitList.Add(isHit);
+                                startPosList.Add(start);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                List<bool> isHitList = new List<bool>();
+                List<Vector3> hitPosList = new List<Vector3>();
+                List<Vector3> startPosList = new List<Vector3>();
+                bool firstInvalid = false;
+
+                PerspectiveCoordsDefil();
+
+                for (int i = 0; i < hitPosList.Count - 1; i++)
+                    Debug.DrawLine(hitPosList[i], hitPosList[i + 1], color);
+
+                void PerspectiveCoordsDefil()
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        for (int j = 0; j < 2; j++)
+                        {
+                            int verticeNum = j == 0 ? verticeNumber.x : verticeNumber.y;
+                            int increment = k == 0 ? 1 : -1;
+
+                            for (int i = k == 0 ? 0 : verticeNum - 1; (k == 0 && i < verticeNum) || (k != 0 && i >= 0); i += increment)
+                            {
+                                float defilSide = -1 + (i * (2f / ((float)verticeNum - 1f)));
+                                float x = j == 0 ? defilSide : k == 0 ? 1 : -1;
+                                float y = j == 0 ? k == 0 ? -1 : 1 : defilSide;
+
+                                Vector3 start = GetPerspectiveCoords(cam, new Vector3(x, y), false, false);
+                                Vector3 dirPos = GetPerspectiveCoords(cam, new Vector3(x, y, 1), false, false);
+
+                                bool isHit = Physics.Raycast(start, dirPos - start, out RaycastHit hit, Mathf.Infinity, affectedLayers);
+
+                                if (isHit)
+                                {
+                                    if (firstInvalid)
+                                    {
+                                        isHitList = new List<bool>();
+                                        hitPosList = new List<Vector3>();
+                                        startPosList = new List<Vector3>();
+                                        firstInvalid = false;
+
+                                        hitPosList.Add(hit.point);
+                                        startPosList.Add(start);
+
+                                        PerspectiveCoordsDefil();
+
+                                        return;
+                                    }
+
+                                    hitPosList.Add(hit.point);
+                                }
+                                else
+                                {
+                                    if (hitPosList.Count != 0 && startPosList.Count != 0)
+                                    {
+                                        hitPosList.Add(start + ((dirPos - start).normalized * (hitPosList[hitPosList.Count - 1] - startPosList[startPosList.Count - 1]).magnitude));
+
+                                        if (k == 0 && j == 0 && i == 0)
+                                        {
+                                            startPosList.RemoveAt(0);
+                                            hitPosList.RemoveAt(0);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        firstInvalid = true;
+                                    }
+                                }
+
+                                isHitList.Add(isHit);
+                                startPosList.Add(start);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
 
@@ -5047,16 +5267,19 @@ namespace UPDB.CoreHelper.UsableMethods
         #region Make Non Nullable
 
         /// <summary>
-        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// make sure value of reference is never null, by searching, and if needed, creating new components(and giving feedback for it)
         /// </summary>
         /// <typeparam name="T">type of reference tested</typeparam>
         /// <typeparam name="W">type of object to Add if no object exist</typeparam>
         /// <param name="component">reference to test</param>
         /// <param name="targetObj">object to search in and create component</param>
         /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <param name="isNewGenerated">if nothing is found and method has to generate new component, set the bool to true as feedback</param>
         /// <returns>component after assuring it's not null</returns>
-        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal) where T : Component where W : T
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal, out bool isNewGenerated) where T : Component where W : T
         {
+            isNewGenerated = false;
+
             //if reference is not null
             if (component)
                 return component;
@@ -5068,8 +5291,37 @@ namespace UPDB.CoreHelper.UsableMethods
             if (isGlobal && TryFindObjectOfType(out component))
                 return component;
 
-            //no component exist, method has to generate one
+            //no component exist, method has to generate one, and set the bool isNewGenerated to true
+            isNewGenerated = true;
             return component = targetObj ? targetObj.AddComponent<W>() : new GameObject(component.name).AddComponent<W>();
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj, bool isGlobal) where T : Component where W : T
+        {
+            return MakeNonNullable<T, W>(ref component, targetObj, isGlobal, out bool isNewGenerated);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components(and giving feedback for it)
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <typeparam name="W">type of object to Add if no object exist</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isNewGenerated">if nothing is found and method has to generate new component, set the bool to true as feedback</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj, out bool isNewGenerated) where T : Component where W : T
+        {
+            return MakeNonNullable<T, W>(ref component, targetObj, false, out isNewGenerated);
         }
 
         /// <summary>
@@ -5082,7 +5334,21 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>component after assuring it's not null</returns>
         public static T MakeNonNullable<T, W>(ref T component, GameObject targetObj) where T : Component where W : T
         {
-            return MakeNonNullable<T, W>(ref component, targetObj, false);
+            return MakeNonNullable<T, W>(ref component, targetObj, false, out bool isNewGenerated);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components(and giving feedback for it)
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isGlobal">is the method searching in all the scene with FindObjectOfType ? use this for unique classes only</param>
+        /// <param name="isNewGenerated">if nothing is found and method has to generate new component, set the bool to true as feedback</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal, out bool isNewGenerated) where T : Component
+        {
+            return MakeNonNullable<T, T>(ref component, targetObj, isGlobal, out isNewGenerated);
         }
 
         /// <summary>
@@ -5095,7 +5361,20 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>component after assuring it's not null</returns>
         public static T MakeNonNullable<T>(ref T component, GameObject targetObj, bool isGlobal) where T : Component
         {
-            return MakeNonNullable<T, T>(ref component, targetObj, isGlobal);
+            return MakeNonNullable<T, T>(ref component, targetObj, isGlobal, out bool isNewGenerated);
+        }
+
+        /// <summary>
+        /// make sure value of reference is never null, by searching, and if needed, creating new components(and giving feedback for it)
+        /// </summary>
+        /// <typeparam name="T">type of reference tested</typeparam>
+        /// <param name="component">reference to test</param>
+        /// <param name="targetObj">object to search in and create component</param>
+        /// <param name="isNewGenerated">if nothing is found and method has to generate new component, set the bool to true as feedback</param>
+        /// <returns>component after assuring it's not null</returns>
+        public static T MakeNonNullable<T>(ref T component, GameObject targetObj, out bool isNewGenerated) where T : Component
+        {
+            return MakeNonNullable<T, T>(ref component, targetObj, false, out isNewGenerated);
         }
 
         /// <summary>
@@ -5107,8 +5386,9 @@ namespace UPDB.CoreHelper.UsableMethods
         /// <returns>component after assuring it's not null</returns>
         public static T MakeNonNullable<T>(ref T component, GameObject targetObj) where T : Component
         {
-            return MakeNonNullable<T, T>(ref component, targetObj, false);
+            return MakeNonNullable<T, T>(ref component, targetObj, false, out bool isNewGenerated);
         }
+        
 
         #endregion
 
@@ -5581,6 +5861,80 @@ namespace UPDB.CoreHelper.UsableMethods
             vel = space.TransformDirection(vel);
             return vel;
         }
+
+        #endregion
+
+        #region Manual Camera To World Calculations
+
+        #region Orthographic
+
+        /// <summary>
+        /// return coordinates in world space of camera screen coords(between -1 and 1)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <returns></returns>
+        public static Vector3 GetOrtographicCoords(Camera cam, Vector2 coords)
+        {
+            if (!cam.orthographic)
+            {
+                Debug.LogError("ERROR : camera must be orthographic to proceed calculations");
+                return Vector3.zero;
+            }
+
+            return cam.transform.TransformPoint(new Vector3(cam.aspect * coords.x, 1 * coords.y, cam.nearClipPlane / cam.orthographicSize) * cam.orthographicSize);
+        }
+
+        #endregion
+
+        #region Perspective
+
+        /// <summary>
+        /// return coordinates in world space of camera screen coords(between -1 and 1)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="coords"></param>
+        /// <param name="clipPlaneConstraints"></param>
+        /// <param name="adaptClipPlane"></param>
+        /// <returns></returns>
+        public static Vector3 GetPerspectiveCoords(Camera cam, Vector3 coords, bool clipPlaneConstraints, bool adaptClipPlane)
+        {
+            if (cam.orthographic)
+            {
+                Debug.LogError("ERROR : camera must not be orthographic to proceed calculations");
+                return Vector3.zero;
+            }
+
+            if (clipPlaneConstraints)
+            {
+                if (adaptClipPlane)
+                    coords = new Vector3(coords.x, coords.y, Mathf.Lerp(cam.nearClipPlane, cam.farClipPlane, coords.z));
+                else
+                    coords = new Vector3(coords.x, coords.y, Mathf.Clamp(coords.z, cam.nearClipPlane, cam.farClipPlane));
+            }
+
+            float heightFOVMultiplier = 2f * coords.z * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            float widthFOVMultiplier = heightFOVMultiplier * cam.aspect;
+
+            return cam.transform.TransformPoint(new Vector3(coords.x * widthFOVMultiplier * 0.5f, coords.y * heightFOVMultiplier * 0.5f, coords.z));
+        }
+
+        public static Vector3 GetPerspectiveCoords(Camera cam, Vector3 coords, bool adaptClipPlane)
+        {
+            return GetPerspectiveCoords(cam, coords, true, adaptClipPlane);
+        }
+
+        /// <summary>
+        /// return coordinates in world space of camera screen coords(between -1 and 1)
+        /// </summary>
+        /// <param name="cam"></param>
+        /// <param name="coords"></param>
+        /// <returns></returns>
+        public static Vector3 GetPerspectiveCoords(Camera cam, Vector3 coords)
+        {
+            return GetPerspectiveCoords(cam, coords, true, true);
+        }
+
+        #endregion
 
         #endregion
 
