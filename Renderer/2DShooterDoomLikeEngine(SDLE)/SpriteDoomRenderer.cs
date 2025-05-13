@@ -23,7 +23,7 @@ namespace UPDB.Renderers.ShooterDoomLikeRenderer
             
         }
 
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
             transform.LookAt(Camera.current.transform.position);
             _gameRenderer.transform.LookAt(Camera.main.transform.position);

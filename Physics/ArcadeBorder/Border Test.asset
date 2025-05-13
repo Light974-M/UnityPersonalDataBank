@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aa8e1650faeec2469b3fc19b63b313f, type: 3}
+  m_Name: Border Test
+  m_EditorClassIdentifier: 
+  _loopMinRect: {x: -5, y: -5}
+  _loopMaxRect: {x: 5, y: 5}
+  _cloneMinRect: {x: -4, y: -4}
+  _cloneMaxRect: {x: 4, y: 4}
+  _borderMinRect: {x: -3, y: -3}
+  _borderMaxRect: {x: 3, y: 3}
+  _visibilityBorderMinRect: {x: -2, y: -2}
+  _visibilityBorderMaxRect: {x: 2, y: 2}
+  _enemySimulationMinRect: {x: -6, y: -6}
+  _enemySimulationMaxRect: {x: 6, y: 6}
+  _playerSimulationMinRect: {x: -7, y: -7}
+  _playerSimulationMaxRect: {x: 7, y: 7}
+  _bordersEnableMatrix:
+    _loopX: 1
+    _loopY: 1
+    _borderMinX: 1
+    _borderMinY: 1
+    _borderMaxX: 1
+    _borderMaxY: 1

@@ -95,7 +95,7 @@ namespace UPDB.Ai.StateMachineTool
             _stateMachine.UpdateMachine();
         }
 
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
             if (!Application.isPlaying)
             {

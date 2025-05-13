@@ -16,7 +16,7 @@ namespace UPDB.CustomInput.RotationDetector
         private Vector2 _previousVector = Vector2.zero;
         private Vector3 _cross;
 
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
             Vector2 direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             direction.Normalize();
