@@ -491,6 +491,36 @@ namespace UPDB.CoreHelper.UsableMethods
             return value;
         }
 
+        /// <summary>
+        /// make the value given "clamp" but instead of clamping to borders, it is looping, so it's clamping with "inverse borns" usefull when using arrays and want to loop without going outside the bounds
+        /// </summary>
+        /// <param name="value">value to clamp</param>
+        /// <param name="min">min born(0 for a list)</param>
+        /// <param name="max">max born(length - 1 for a list)</param>
+        /// <returns>loop and clamped value</returns>
+        public static float LoopClamp(float value, float min, float max)
+        {
+            bool isLastValueOutbound = value > max;
+            bool isFirstValueOutboud = value < min;
+
+            if (isLastValueOutbound)
+            {
+                return min;
+            }
+
+            if (isFirstValueOutboud)
+            {
+                return max;
+            }
+
+            if (!isFirstValueOutboud && !isLastValueOutbound)
+            {
+                return value;
+            }
+
+            return value;
+        }
+
         #endregion
 
         #region Constants
