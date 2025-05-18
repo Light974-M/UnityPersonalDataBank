@@ -47,6 +47,24 @@ namespace UPDB.CoreHelper.Usable
             set { _volumeMainMixer = value; }
         }
 
+        public bool SetCursorModes
+        {
+            get => _setCursorModes;
+            set => _setCursorModes = value;
+        }
+
+        public bool StartCursorVisible
+        {
+            get => _startCursorVisible;
+            set => _startCursorVisible = value;
+        }
+
+        public CursorLockMode StartCursorLockState
+        {
+            get => _startCursorLockState;
+            set => _startCursorLockState = value;
+        }
+
         #endregion
 
 
