@@ -35,12 +35,14 @@ public class GrabScreenFeatureU6 : ScriptableRendererFeature
             this.cameraTarget = cameraTarget;
         }
 
+        [Obsolete]
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             cmd.GetTemporaryRT(Shader.PropertyToID(tempColorTargetNew.name), cameraTextureDescriptor);
             cmd.SetGlobalTexture(settings.TextureName, tempColorTargetNew.nameID);
         }
 
+        [Obsolete]
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get();
@@ -80,6 +82,7 @@ public class GrabScreenFeatureU6 : ScriptableRendererFeature
             m_RenderStateBlock = new RenderStateBlock(RenderStateMask.Nothing);
         }
 
+        [Obsolete]
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get();

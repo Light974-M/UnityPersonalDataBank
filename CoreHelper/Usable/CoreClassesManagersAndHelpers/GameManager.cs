@@ -15,9 +15,6 @@ namespace UPDB.CoreHelper.Usable
         [SerializeField, Tooltip("tell if player can control character")]
         private bool _isCharacterControllable = true;
 
-        [SerializeField, Tooltip("main volume mixer")]
-        private AudioMixer _volumeMainMixer;
-
         [SerializeField, Tooltip("if enabled, will use values under to set cursor modes at start")]
         private bool _setCursorModes = false;
 
@@ -39,12 +36,6 @@ namespace UPDB.CoreHelper.Usable
         {
             get { return _isCharacterControllable; }
             set { _isCharacterControllable = value; }
-        }
-
-        public AudioMixer VolumeMainMixer
-        {
-            get => _volumeMainMixer;
-            set { _volumeMainMixer = value; }
         }
 
         public bool SetCursorModes
@@ -78,7 +69,7 @@ namespace UPDB.CoreHelper.Usable
 
         private void Start()
         {
-            if(_setCursorModes)
+            if (_setCursorModes)
             {
                 Cursor.visible = _startCursorVisible;
                 Cursor.lockState = _startCursorLockState;
