@@ -2919,6 +2919,21 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #endregion
 
+        #region RotateVector
+
+        public static Vector2 RotateVector(Vector2 original, float angleDegrees)
+        {
+            float radians = angleDegrees * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(radians);
+            float sin = Mathf.Sin(radians);
+
+            float x = original.x * cos - original.y * sin;
+            float y = original.x * sin + original.y * cos;
+
+            return new Vector2(x, y);
+        }
+
+        #endregion
 
         //DEBUG TOOLS
 

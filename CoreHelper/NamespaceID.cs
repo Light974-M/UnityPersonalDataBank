@@ -13,6 +13,7 @@ namespace UPDB.CoreHelper
         public const string Data = nameof(Data);
         public const string Physic = nameof(Physic);
         public const string ProceduralGeneration = nameof(ProceduralGeneration);
+        public const string Renderer = nameof(Renderer);
         public const string Shaders = nameof(Shaders);
         public const string Sound = nameof(Sound);
 
@@ -57,6 +58,8 @@ namespace UPDB.CoreHelper
         public const string TextureNanite = nameof(TextureNanite);
         public const string LODTextureGenerator = nameof(LODTextureGenerator);
 
+        public const string Raycast25DEngine = nameof(Raycast25DEngine);
+
         public const string AmbianceMixer = nameof(AmbianceMixer);
         public const string EngineGear = nameof(EngineGear);
 
@@ -70,6 +73,7 @@ namespace UPDB.CoreHelper
         public const string ProceduralTpsController = nameof(ProceduralTpsController);
         public const string RbFpsController = nameof(RbFpsController);
         public const string SpriteTpsController = nameof(SpriteTpsController);
+        public const string RaycastFpsController = nameof(RaycastFpsController);
 
         public const string CustomPropertyAttributes = nameof(CustomPropertyAttributes);
         public const string CustomFieldsAndStructs = nameof(CustomFieldsAndStructs);
