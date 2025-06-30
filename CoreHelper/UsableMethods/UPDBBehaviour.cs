@@ -293,6 +293,19 @@ namespace UPDB.CoreHelper.UsableMethods
             return weights.Count - 1; // Sécurité (ne devrait jamais arriver)
         }
 
+        public static AnimationCurve GetInverseAnimationCurve(AnimationCurve curve)
+        {
+            AnimationCurve inverseCurve = new AnimationCurve();
+
+            for (int i = 0; i < curve.length; i++)
+            {
+                Keyframe inverseKey = new Keyframe(curve.keys[i].value, curve.keys[i].time);
+                inverseCurve.AddKey(inverseKey);
+            }
+
+            return inverseCurve;
+        }
+
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
 
         //LERP TOOLS
