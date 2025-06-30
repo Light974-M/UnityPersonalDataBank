@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UPDB.CoreHelper.Usable;
@@ -37,6 +38,8 @@ namespace UPDB.Renderers.Raycast25DEngine
         [SerializeField]
         private bool _createCollider = false;
 
+        private bool _callMouseDownSwitch = false;
+
         #region Public API
 
         public LevelData LevelData
@@ -47,7 +50,7 @@ namespace UPDB.Renderers.Raycast25DEngine
         public CellDataBase DataBase
         {
             get => _cellDataBase;
-        } 
+        }
 
         #endregion
 
@@ -55,9 +58,21 @@ namespace UPDB.Renderers.Raycast25DEngine
         {
             base.OnDrawGizmos();
 
+            DrawDebugGrid();
+
+            LevelEditorFeatures();
+
+            SaveAndLoadMethod();
+        }
+
+        private void DrawDebugGrid()
+        {
             if (!_debug)
                 return;
-            
+
+            if (!_levelData)
+                return;
+
             for (int y = 0; y < _levelData.LevelSize.y; y++)
             {
                 for (int x = 0; x < _levelData.LevelSize.x; x++)
@@ -81,7 +96,7 @@ namespace UPDB.Renderers.Raycast25DEngine
 
                     Color colorToSet = Color.red;
 
-                    if(_levelData.LevelArray[x, y].CellType.Id == CellID.BrickWallTall)
+                    if (_levelData.LevelArray[x, y].CellType.Id == CellID.BrickWallTall)
                         colorToSet = new Color(0.5f, 0, 0);
 
                     Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), colorToSet);
@@ -90,6 +105,34 @@ namespace UPDB.Renderers.Raycast25DEngine
                     Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), colorToSet);
                 }
             }
+
+            for (int y = 0; y < _levelData.LevelSize.y; y++)
+            {
+                for (int x = 0; x < _levelData.LevelSize.x; x++)
+                {
+                    Vector2 mousePos = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+                    int xMousePos = (int)mousePos.x;
+                    int yMousePos = (int)mousePos.y;
+
+                    bool isSelected = x == xMousePos && y == yMousePos;
+
+                    if (isSelected)
+                    {
+                        Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), Color.blue);
+                        Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), Color.blue);
+                        Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), Color.blue);
+                        Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), Color.blue);
+
+                        SceneView.lastActiveSceneView.Repaint();
+                    }
+                }
+            }
+        }
+
+        private void LevelEditorFeatures()
+        {
+            if (Application.isPlaying)
+                return;
 
             if (_setCellType)
             {
@@ -101,11 +144,59 @@ namespace UPDB.Renderers.Raycast25DEngine
                 {
                     GameObject obj = Instantiate(_cellColliderPrefab, transform);
                     obj.transform.position = new Vector3(_operationCoords.x, _operationCoords.y, 0);
-                    obj.GetComponent<CellCollisionRenderer>().LinkedCellPos = _operationCoords; 
+                    obj.GetComponent<CellCollisionRenderer>().LinkedCellPos = _operationCoords;
                 }
             }
 
-            if(_saveLevel)
+            if ((Event.current.type == EventType.ExecuteCommand && Event.current.button == 0) || _callMouseDownSwitch)
+            {
+                _callMouseDownSwitch = false;
+
+                Vector2 mousePos = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+                int x = (int)mousePos.x;
+                int y = (int)mousePos.y;
+
+                if (x < 0 || y < 0 || x >= _levelData.LevelSize.x || y >= _levelData.LevelSize.y)
+                {
+                    _callMouseDownSwitch = true;
+                    return;
+                }
+
+                Cell selectedCell = _levelData.LevelArray[x, y];
+
+                selectedCell.CellType = _cellToSet;
+
+                if (!_createCollider)
+                    return;
+
+                bool isAlreadyCell = false;
+
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    Vector2 pos = transform.GetChild(i).transform.position;
+
+                    if ((int)pos.x == x && (int)pos.y == y)
+                    {
+                        isAlreadyCell = true;
+                        break;
+                    }
+                }
+
+                if (!isAlreadyCell)
+                {
+                    GameObject obj = Instantiate(_cellColliderPrefab, transform);
+                    obj.transform.position = new Vector3(x, y, 0);
+                    obj.GetComponent<CellCollisionRenderer>().LinkedCellPos = _operationCoords;
+                }
+            }
+        }
+
+        private void SaveAndLoadMethod()
+        {
+            if (Application.isPlaying)
+                return;
+
+            if (_saveLevel)
             {
                 _saveLevel = false;
 
@@ -118,11 +209,6 @@ namespace UPDB.Renderers.Raycast25DEngine
 
                 _levelData.Load();
             }
-        }
-
-        private void OnValidate()
-        {
-            _levelData.Load();
         }
     }
 }

@@ -86,7 +86,7 @@ namespace UPDB.Data.PerformanceDebugger
 
         private void Start()
         {
-            if (_experiencesSaves.CreateExperience)
+            if (_experiencesSaves && _experiencesSaves.CreateExperience)
                 _experiencesSaves.CreateNewExperience();
         }
 

@@ -19,11 +19,13 @@ namespace UPDB.Renderers.Raycast25DEngine
         [SerializeField, HideInInspector]
         private Vector2Int _savedSize;
 
+        private Vector2Int _levelSizeMemo = Vector2Int.zero;
+
         public Cell[,] LevelArray
         {
             get
             {
-                if (_levelArray == null)
+                if (_levelArray == null || _levelArray.Length != _levelSize.x * _levelSize.y)
                 {
                     _levelArray = new Cell[_levelSize.x, _levelSize.y];
 
@@ -70,6 +72,16 @@ namespace UPDB.Renderers.Raycast25DEngine
                 int y = i / _levelSize.x;
                 LevelArray[x, y] = _levelArraySavable[i];
             }
+        }
+
+        private void OnValidate()
+        {
+            if (_levelSizeMemo != _levelSize)
+                Save();
+
+            Load();
+
+            _levelSizeMemo = _levelSize;
         }
     }
 }
