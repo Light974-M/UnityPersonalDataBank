@@ -9,17 +9,46 @@ namespace UPDB.Renderers.Raycast25DEngine
 		private CellID _id;
 
 		[SerializeField]
-		private Texture2D _texture;
+		private bool _hasGround = false;
 
-		[SerializeField]
-		private float _height;
+        [SerializeField]
+        private bool _hasRoof = false;
+
+        [SerializeField]
+        private bool _hasWall = false;
+
+        [SerializeField]
+        private Texture2D _groundTexture;
+
+        [SerializeField]
+        private Texture2D _roofTexture;
+
+        [SerializeField]
+		private Texture2D _wallTexture;
+
+        [SerializeField]
+        private float _groundHeight;
+
+        [SerializeField]
+        private float _roofHeight;
+
+        [SerializeField]
+		private float _wallHeight;
 
 		#region Public API
 
 		public CellID Id => _id; 
-		public Texture2D Texture => _texture;
+		public bool HasGround => _hasGround;
+		public bool HasRoof => _hasRoof;
+		public bool HasWall => _hasWall;
 
-		public float Height => _height;
+		public Texture2D GroundTexture => _groundTexture;
+		public Texture2D RoofTexture => _roofTexture;
+		public Texture2D WallTexture => _wallTexture;
+
+		public float GroundHeight => _groundHeight;
+		public float RoofHeight => _roofHeight;
+		public float WallHeight => _wallHeight;
 
 		#endregion
 	} 

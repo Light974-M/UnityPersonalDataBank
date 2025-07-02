@@ -13,4 +13,12 @@ MonoBehaviour:
   m_Name: blankGround
   m_EditorClassIdentifier: 
   _id: 0
-  _texture: {fileID: 2800000, guid: e5e945e51d73bda449f8de079095db76, type: 3}
+  _hasGround: 1
+  _hasRoof: 0
+  _hasWall: 0
+  _groundTexture: {fileID: 2800000, guid: e5e945e51d73bda449f8de079095db76, type: 3}
+  _roofTexture: {fileID: 0}
+  _wallTexture: {fileID: 0}
+  _groundHeight: 0
+  _roofHeight: 0
+  _wallHeight: 0

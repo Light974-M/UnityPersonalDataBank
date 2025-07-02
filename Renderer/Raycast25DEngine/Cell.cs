@@ -2,12 +2,13 @@ using UnityEngine;
 
 namespace UPDB.Renderers.Raycast25DEngine
 {
-    [System.Serializable]
     public class Cell
     {
         private Vector2Int _position;
 
         private CellData _cellType;
+
+        public Vector2Int Position => _position;
 
         public CellData CellType
         {
@@ -24,8 +25,17 @@ namespace UPDB.Renderers.Raycast25DEngine
 
         public Cell(Vector2Int position, CellID id)
         {
+            if (!Raycast2DLevelBuilder.Instance.DataBase)
+                return;
+
             _position = position;
-            _cellType = Raycast2DLevelBuilder.Instance.DataBase.CellsDictionary[id];
+            Raycast2DLevelBuilder.Instance.DataBase.CellsDictionary.TryGetValue(id, out _cellType);
+        }
+
+        public Cell(CellSavable cellSavable)
+        {
+            _position = cellSavable.Position;
+            _cellType = cellSavable.CellType;
         }
     }
 

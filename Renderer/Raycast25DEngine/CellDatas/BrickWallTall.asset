@@ -13,5 +13,12 @@ MonoBehaviour:
   m_Name: BrickWallTall
   m_EditorClassIdentifier: 
   _id: 2
-  _texture: {fileID: 2800000, guid: 1599ea2a3f13e4f4cbc8b6587dd8d911, type: 3}
-  _height: 2
+  _hasGround: 0
+  _hasRoof: 0
+  _hasWall: 1
+  _groundTexture: {fileID: 0}
+  _roofTexture: {fileID: 0}
+  _wallTexture: {fileID: 2800000, guid: 8d797c9cded2ea84d80173903ed741c5, type: 3}
+  _groundHeight: 0
+  _roofHeight: 0
+  _wallHeight: 1

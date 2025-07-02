@@ -36,6 +36,11 @@ namespace UPDB.CoreHelper.Usable
         {
             get
             {
+                if (_instance != null && _instance == null)
+                {
+                    Debug.LogWarning("L'instance Singleton existe encore dans la mémoire statique, mais elle a été détruite dans la scène.");
+                }
+
                 //if instance is null and no instance was found in scene, create a new obj to contain singleton
                 if (_instance == null && !TryFindObjectOfType(out _instance))
                 {

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace UPDB.Renderers.Raycast25DEngine
@@ -14,7 +15,7 @@ namespace UPDB.Renderers.Raycast25DEngine
         private Cell[,] _levelArray;
 
         [SerializeField, HideInInspector]
-        private List<Cell> _levelArraySavable;
+        private List<CellSavable> _levelArraySavable;
 
         [SerializeField, HideInInspector]
         private Vector2Int _savedSize;
@@ -49,34 +50,32 @@ namespace UPDB.Renderers.Raycast25DEngine
 
         public void Save()
         {
-            _levelArraySavable = new List<Cell>();
+            _levelArraySavable = new List<CellSavable>();
             _savedSize = _levelSize;
 
             for (int y = 0; y < _levelSize.y; y++)
-            {
                 for (int x = 0; x < _levelSize.x; x++)
-                {
-                    _levelArraySavable.Add(LevelArray[x, y]);
-                }
-            }
+                    _levelArraySavable.Add(new CellSavable(LevelArray[x, y]));
+
+            EditorUtility.SetDirty(this);
         }
 
         public void Load()
         {
             _levelSize = _savedSize;
-            _levelArray = null;
+            _levelArray = new Cell[_levelSize.x, _levelSize.y];
 
             for (int i = 0; i < _levelArraySavable.Count; i++)
             {
                 int x = i % _levelSize.x;
                 int y = i / _levelSize.x;
-                LevelArray[x, y] = _levelArraySavable[i];
+                _levelArray[x, y] = new Cell(_levelArraySavable[i]);
             }
         }
 
         private void OnValidate()
         {
-            if (_levelSizeMemo != _levelSize)
+            if (_levelSizeMemo != _levelSize && _levelArray != null)
                 Save();
 
             Load();

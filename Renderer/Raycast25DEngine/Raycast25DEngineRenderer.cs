@@ -1,13 +1,11 @@
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.UI;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Renderers.Raycast25DEngine
 {
-    ///<summary>
-    /// 
-    ///</summary>
-    [AddComponentMenu("UPDB/Renderer/ShooterDoomLikeRenderer/SpriteDoomRenderer")]
     public class Raycast25DEngineRenderer : UPDBBehaviour
     {
         [SerializeField]
@@ -97,13 +95,17 @@ namespace UPDB.Renderers.Raycast25DEngine
             if (_player.RaysList == null || _player.RaysList.Count == 0)
                 return;
 
-           // Color[] mainTextureToApplyColor = new Color[];
+            // Color[] mainTextureToApplyColor = new Color[];
+            float screenMiddle = _raycastRenderTexture.height / 2f;
+            int horizonOffset = (int)_player.VerticalLookingValue;
+            float playerYPos = _player.CPUCameraPosOffset.y - 0.5f;
+            float horizon = screenMiddle - horizonOffset;
 
             for (int x = 0; x < _raycastRenderTexture.width; x++)
             {
                 int height = _player.RaysList[x] ? (int)(_raycastRenderTexture.height / _player.RaysList[x].distance) : 0;
                 height = (int)(height * _player.CPUVerticalPixelNumbers) / _player.CPUVerticalPixelNumbers;
-                int baseHeight = ((_raycastRenderTexture.height - height) / 2) - ((int)_player.VerticalLookingValue);
+                int baseHeight = (((_raycastRenderTexture.height - height) / 2) - horizonOffset) + (int)(height * (-playerYPos));
 
                 Vector2 collidedPos = Vector2.zero;
                 Vector2Int collidedWall = Vector2Int.zero;
@@ -119,21 +121,57 @@ namespace UPDB.Renderers.Raycast25DEngine
                     collidedWall = new Vector2Int((int)(collidedPos.x), (int)(collidedPos.y));
 
                     collidedCellData = Raycast2DLevelBuilder.Instance.LevelData.LevelArray[collidedWall.x, collidedWall.y].CellType;
-                    cellTexture = collidedCellData.Texture;
+                    cellTexture = collidedCellData.WallTexture;
 
                     textureCoords = (_player.RaysList[x].point - collidedPos) * cellTexture.width;
                     textureXPos = (int)(textureCoords.x) + (int)(textureCoords.y);
 
-                    multipliedHeight = (int)(height * collidedCellData.Height);
+                    multipliedHeight = (int)(height * collidedCellData.WallHeight);
                 }
 
                 float invMultipliedHeight = 1f / (float)multipliedHeight;
+
+                Vector2 floorDir = (_player.RaysList[x].point - (Vector2)_player.transform.position).normalized;
+                float minDy = (horizon - baseHeight) / horizon;
+                float maxBase = 1f / minDy;
 
                 for (int y = 0; y < _raycastRenderTexture.height; y++)
                 {
                     if (y < baseHeight)
                     {
-                        _raycastRenderTexture.SetPixel(x, y, Color.grey);
+                        float dy = (horizon - y) / horizon;
+
+                        float rawBase = 1f / dy;
+                        float t = (rawBase - 1f) / (maxBase - 1f);
+
+                        if (_player.CPUCameraPosOffset.y + 0.5f >= maxBase)
+                        {
+                            _raycastRenderTexture.SetPixel(x, y, Color.grey);
+                            continue;
+                        }
+
+                        float rowDistance = (Mathf.Lerp(_player.CPUCameraPosOffset.y + 0.5f, maxBase, t) / horizon) * screenMiddle;
+
+                        Vector2 worldPos = (Vector2)_player.transform.position + floorDir * rowDistance;
+
+                        Vector2Int mapCoords = new Vector2Int(Mathf.FloorToInt(worldPos.x), Mathf.FloorToInt(worldPos.y));
+
+                        if (mapCoords.x < 0 || mapCoords.y < 0 || mapCoords.x >= Raycast2DLevelBuilder.Instance.LevelData.LevelSize.x || mapCoords.y >= Raycast2DLevelBuilder.Instance.LevelData.LevelSize.y)
+                        {
+                            _raycastRenderTexture.SetPixel(x, y, Color.grey);
+                            continue;
+                        }
+
+                        CellData cellFloor = Raycast2DLevelBuilder.Instance.LevelData.LevelArray[mapCoords.x, mapCoords.y].CellType;
+
+                        if (!cellFloor.GroundTexture)
+                        {
+                            _raycastRenderTexture.SetPixel(x, y, Color.grey);
+                            continue;
+                        }
+
+                        Vector2Int currentFloorTextureCoords = new Vector2Int(Mathf.FloorToInt(Mathf.Repeat(worldPos.x, 1) * cellFloor.GroundTexture.width), Mathf.FloorToInt(Mathf.Repeat(worldPos.y, 1) * cellFloor.GroundTexture.height));
+                        _raycastRenderTexture.SetPixel(x, y, cellFloor.GroundTexture.GetPixel(currentFloorTextureCoords.x, currentFloorTextureCoords.y));
                     }
                     else if (y >= multipliedHeight + baseHeight)
                     {

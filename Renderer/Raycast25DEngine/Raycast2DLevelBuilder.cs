@@ -67,17 +67,14 @@ namespace UPDB.Renderers.Raycast25DEngine
 
         private void DrawDebugGrid()
         {
-            if (!_debug)
-                return;
-
-            if (!_levelData)
+            if (!_debug || !_levelData)
                 return;
 
             for (int y = 0; y < _levelData.LevelSize.y; y++)
             {
                 for (int x = 0; x < _levelData.LevelSize.x; x++)
                 {
-                    if (_levelData.LevelArray[x, y].CellType.Id != CellID.BlankGround)
+                    if (!ReferenceEquals(_levelData.LevelArray[x, y], null) && _levelData.LevelArray[x, y].CellType && _levelData.LevelArray[x, y].CellType.Id != CellID.BlankGround)
                         continue;
 
                     Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), Color.white);
@@ -91,7 +88,7 @@ namespace UPDB.Renderers.Raycast25DEngine
             {
                 for (int x = 0; x < _levelData.LevelSize.x; x++)
                 {
-                    if (_levelData.LevelArray[x, y].CellType.Id == CellID.BlankGround)
+                    if (ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType || _levelData.LevelArray[x, y].CellType.Id == CellID.BlankGround)
                         continue;
 
                     Color colorToSet = Color.red;
@@ -106,14 +103,14 @@ namespace UPDB.Renderers.Raycast25DEngine
                 }
             }
 
+            Vector2 mousePos = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+            int xMousePos = Mathf.FloorToInt(mousePos.x);
+            int yMousePos = Mathf.FloorToInt(mousePos.y);
+
             for (int y = 0; y < _levelData.LevelSize.y; y++)
             {
                 for (int x = 0; x < _levelData.LevelSize.x; x++)
                 {
-                    Vector2 mousePos = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
-                    int xMousePos = (int)mousePos.x;
-                    int yMousePos = (int)mousePos.y;
-
                     bool isSelected = x == xMousePos && y == yMousePos;
 
                     if (isSelected)
@@ -122,16 +119,17 @@ namespace UPDB.Renderers.Raycast25DEngine
                         Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), Color.blue);
                         Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), Color.blue);
                         Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), Color.blue);
-
-                        SceneView.lastActiveSceneView.Repaint();
                     }
                 }
             }
+
+            if (!Application.isPlaying)
+                SceneView.lastActiveSceneView.Repaint();
         }
 
         private void LevelEditorFeatures()
         {
-            if (Application.isPlaying)
+            if (!_debug && Application.isPlaying)
                 return;
 
             if (_setCellType)
@@ -144,7 +142,6 @@ namespace UPDB.Renderers.Raycast25DEngine
                 {
                     GameObject obj = Instantiate(_cellColliderPrefab, transform);
                     obj.transform.position = new Vector3(_operationCoords.x, _operationCoords.y, 0);
-                    obj.GetComponent<CellCollisionRenderer>().LinkedCellPos = _operationCoords;
                 }
             }
 
@@ -166,9 +163,6 @@ namespace UPDB.Renderers.Raycast25DEngine
 
                 selectedCell.CellType = _cellToSet;
 
-                if (!_createCollider)
-                    return;
-
                 bool isAlreadyCell = false;
 
                 for (int i = 0; i < transform.childCount; i++)
@@ -178,16 +172,21 @@ namespace UPDB.Renderers.Raycast25DEngine
                     if ((int)pos.x == x && (int)pos.y == y)
                     {
                         isAlreadyCell = true;
+
+                        if (!selectedCell.CellType.HasWall)
+                            IntelliDestroy(transform.GetChild(i).gameObject);
+
                         break;
                     }
                 }
 
-                if (!isAlreadyCell)
+                if (!isAlreadyCell && _cellColliderPrefab && selectedCell.CellType.HasWall)
                 {
                     GameObject obj = Instantiate(_cellColliderPrefab, transform);
                     obj.transform.position = new Vector3(x, y, 0);
-                    obj.GetComponent<CellCollisionRenderer>().LinkedCellPos = _operationCoords;
                 }
+
+                LevelData.Save();
             }
         }
 
