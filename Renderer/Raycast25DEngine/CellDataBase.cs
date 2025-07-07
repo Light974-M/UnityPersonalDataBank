@@ -33,8 +33,10 @@ namespace UPDB.Renderers.Raycast25DEngine
 
     public enum CellID
     {
-        BlankGround,
+        ClosedBrickGroundAndRoof,
+        OpenBrickGround,
         BrickWall,
 		BrickWallTall,
+		ClosedBrickGroundAndRoofWithTorch,
     }
 }

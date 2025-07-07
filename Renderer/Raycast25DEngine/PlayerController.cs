@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.Renderers.Raycast25DEngine
@@ -25,16 +26,19 @@ namespace UPDB.Renderers.Raycast25DEngine
         private int _tweakResSpeed = 10;
 
         [SerializeField]
+        private Vector3 _cameraPosOffset = new Vector3(0, 0.6f, 0);
+
+        [SerializeField]
         private float _walkingSineWaveWidth = 1f;
 
         [SerializeField]
         private Vector3 _walkingSineWaveAmplitude = Vector3.zero;
 
         [SerializeField]
-        private float _simulateZRotMultplier = 0;
+        private float _walkingZRotMultplier = 0;
 
         [SerializeField]
-        private float _cameraRotationSimulateZRotMultplier = 0;
+        private float _cameraRotationZRotMultplier = 0;
 
         [SerializeField]
         private float _camRotationZRotationTime = 1;
@@ -59,6 +63,9 @@ namespace UPDB.Renderers.Raycast25DEngine
         [SerializeField]
         private Material _rendererMat;
 
+        [SerializeField]
+        private UniversalRendererData _uRenderData;
+
         [Header("CPU Mode Parameters")]
         [SerializeField]
         private float _CPUFieldOfView = 45;
@@ -78,6 +85,12 @@ namespace UPDB.Renderers.Raycast25DEngine
         [SerializeField]
         private int _CPUTexturesMaxSize = 128;
 
+        [SerializeField]
+        private GameObject _CPURendererObj;
+
+        [SerializeField]
+        private bool _CPUModeEnabled = false;
+
         #region Non Serialized API
 
         private List<RaycastHit2D> _raysList = new List<RaycastHit2D>();
@@ -92,10 +105,15 @@ namespace UPDB.Renderers.Raycast25DEngine
         private Texture2DArray _texturesToUseArray = null;
         Texture2D _floorTypeMap = null;
         Texture2DArray _floorTexturesArray = null;
+        Texture2D _roofTypeMap = null;
+        Texture2DArray _roofTexturesArray = null;
+        Texture2D _cellsEnabledMap = null;
+        Texture2D _cellsLightSourceMap = null;
 
         private int _raysNumberMemo = 0;
         private int _verticalPixelsNumberMemo = 0;
         private Rigidbody2D _rb;
+        private float _FOVMemo = 70f;
 
         #endregion
 
@@ -174,14 +192,14 @@ namespace UPDB.Renderers.Raycast25DEngine
             }
         }
 
-        public float FieldOfView
+        public Vector2 FieldOfView
         {
             get
             {
                 if (!_rendererMat)
-                    return 0;
+                    return Vector2.zero;
 
-                return _rendererMat.GetFloat("_FieldOfView");
+                return _rendererMat.GetVector("_FieldOfView");
             }
 
             set
@@ -189,7 +207,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                 if (!_rendererMat)
                     return;
 
-                _rendererMat.SetFloat("_FieldOfView", value);
+                _rendererMat.SetVector("_FieldOfView", value);
             }
         }
 
@@ -219,16 +237,22 @@ namespace UPDB.Renderers.Raycast25DEngine
             get => _verticalLookingValue;
         }
 
-        public Vector3 CameraPosOffset
+        public float CellLightSourceMaxIntensity
         {
             get
             {
-                return _rendererMat.GetVector("_CameraPosOffset");
+                if (!_rendererMat)
+                    return 0;
+
+                return _rendererMat.GetFloat("_CellLightSourceMaxIntensity");
             }
 
             set
             {
-                _rendererMat.SetVector("_CameraPosOffset", value);
+                if (!_rendererMat)
+                    return;
+
+                _rendererMat.SetFloat("_CellLightSourceMaxIntensity", value);
             }
         }
 
@@ -238,11 +262,12 @@ namespace UPDB.Renderers.Raycast25DEngine
         {
             MakeNonNullable(ref _rb, gameObject);
 
+            _CPURendererObj.SetActive(_CPUModeEnabled);
+
             _raysNumberMemo = RayNumbers;
             _verticalPixelsNumberMemo = VerticalPixelsNumber;
 
-            if (Raycast2DLevelBuilder.Instance.LevelData)
-                GenerateFloorTypeMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
+            _FOVMemo = _rendererMat.GetFloat("_FOV");
 
             RebuildParameters();
         }
@@ -293,12 +318,12 @@ namespace UPDB.Renderers.Raycast25DEngine
 
             if (Input.GetKey(KeyCode.E))
             {
-                FieldOfView += _fovTweakSpeed * Time.fixedDeltaTime;
+                FieldOfView += new Vector2(_fovTweakSpeed * Time.fixedDeltaTime, 0);
             }
 
             if (Input.GetKey(KeyCode.Q))
             {
-                FieldOfView -= _fovTweakSpeed * Time.fixedDeltaTime;
+                FieldOfView -= new Vector2(_fovTweakSpeed * Time.fixedDeltaTime, 0);
             }
 
             if (Input.GetKey(KeyCode.J))
@@ -318,8 +343,10 @@ namespace UPDB.Renderers.Raycast25DEngine
 
         private void Update()
         {
-            //TrowAndStoreRaycastsCPUMode();
-            TrowAndStoreRaycastsGPUMode();
+            if (_CPUModeEnabled)
+                TrowAndStoreRaycastsCPUMode();
+            else
+                TrowAndStoreRaycastsGPUMode();
 
             if (_raysNumberMemo != RayNumbers || _verticalPixelsNumberMemo != VerticalPixelsNumber)
                 RebuildParameters();
@@ -370,8 +397,16 @@ namespace UPDB.Renderers.Raycast25DEngine
             }
         }
 
-        private void RebuildParameters()
+        public void RebuildParameters()
         {
+            if (Raycast2DLevelBuilder.Instance.LevelData)
+            {
+                GenerateFloorTypeMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
+                GenerateRoofTypeMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
+                GenerateCellsEnabledMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
+                GenerateCellsLightSourceMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
+            }
+
             _textureToDrawCoordsArray = new Texture2D(RayNumbers, 1, TextureFormat.RGBAFloat, false);
             _raycastAndHorizonParameters = new Texture2D(RayNumbers, 1, TextureFormat.RGBAFloat, false);
             _texturesToUseArray = new Texture2DArray(TexturesMaxSize, TexturesMaxSize, RayNumbers, TextureFormat.ARGB32, false);
@@ -382,8 +417,12 @@ namespace UPDB.Renderers.Raycast25DEngine
             _rendererMat.SetTexture("_textureToDrawCoords", _textureToDrawCoordsArray);
             _rendererMat.SetTexture("_raycastAndHorizonParameters", _raycastAndHorizonParameters);
             _rendererMat.SetTexture("_texturesToUseArray", _texturesToUseArray);
-            _rendererMat.SetTexture("_FloorTypeMap", _floorTypeMap);
-            _rendererMat.SetTexture("_FloorTexturesArray", _floorTexturesArray);
+            _rendererMat.SetTexture("_floorTypeMap", _floorTypeMap);
+            _rendererMat.SetTexture("_floorTexturesArray", _floorTexturesArray);
+            _rendererMat.SetTexture("_roofTypeMap", _roofTypeMap);
+            _rendererMat.SetTexture("_roofTexturesArray", _roofTexturesArray);
+            _rendererMat.SetTexture("_cellsEnabledMap", _cellsEnabledMap);
+            _rendererMat.SetTexture("_cellsLightSourceMap", _cellsLightSourceMap);
 
             if (Raycast2DLevelBuilder.Instance.LevelData)
                 _rendererMat.SetVector("_LevelMapSize", new Vector4(Raycast2DLevelBuilder.Instance.LevelData.LevelSize.x, Raycast2DLevelBuilder.Instance.LevelData.LevelSize.y, 0, 0));
@@ -430,6 +469,77 @@ namespace UPDB.Renderers.Raycast25DEngine
                     Graphics.CopyTexture(_groundTexturesList[i], 0, 0, _floorTexturesArray, i, 0);
         }
 
+        public void GenerateRoofTypeMap(Cell[,] levelArray, Vector2Int size)
+        {
+            Dictionary<Texture2D, int> textureToIndex = new Dictionary<Texture2D, int>();
+            List<Texture2D> _groundTexturesList = new List<Texture2D>();
+            _roofTypeMap = new Texture2D(size.x, size.y, TextureFormat.RG32, false);
+            _roofTypeMap.filterMode = FilterMode.Point;
+            _roofTypeMap.wrapMode = TextureWrapMode.Clamp;
+
+            for (int x = 0; x < size.x; x++)
+            {
+                for (int y = 0; y < size.y; y++)
+                {
+                    CellData cellData = levelArray[x, y].CellType;
+                    Texture2D floorTex = cellData.RoofTexture;
+
+                    if (!textureToIndex.TryGetValue(floorTex, out int index))
+                    {
+                        index = _groundTexturesList.Count;
+                        textureToIndex[floorTex] = index;
+                        _groundTexturesList.Add(floorTex);
+                    }
+                }
+            }
+
+            for (int x = 0; x < size.x; x++)
+                for (int y = 0; y < size.y; y++)
+                    _roofTypeMap.SetPixel(x, y, new Color(textureToIndex[levelArray[x, y].CellType.RoofTexture] / (float)(_groundTexturesList.Count - 1), 0, 0, 0));
+
+            _roofTypeMap.Apply();
+
+            // Crée le Texture2DArray à partir de la liste
+            _roofTexturesArray = new Texture2DArray(TexturesMaxSize, TexturesMaxSize, _groundTexturesList.Count, TextureFormat.ARGB32, false);
+
+            _roofTexturesArray.filterMode = FilterMode.Point;
+            _roofTexturesArray.wrapMode = TextureWrapMode.Repeat;
+
+            for (int i = 0; i < _groundTexturesList.Count; i++)
+                if (_groundTexturesList[i])
+                    Graphics.CopyTexture(_groundTexturesList[i], 0, 0, _roofTexturesArray, i, 0);
+        }
+
+        public void GenerateCellsEnabledMap(Cell[,] levelArray, Vector2Int size)
+        {
+            Dictionary<Texture2D, int> textureToIndex = new Dictionary<Texture2D, int>();
+            List<Texture2D> _groundTexturesList = new List<Texture2D>();
+            _cellsEnabledMap = new Texture2D(size.x, size.y, TextureFormat.ARGB32, false);
+            _cellsEnabledMap.filterMode = FilterMode.Point;
+            _cellsEnabledMap.wrapMode = TextureWrapMode.Clamp;
+
+            for (int x = 0; x < size.x; x++)
+                for (int y = 0; y < size.y; y++)
+                    _cellsEnabledMap.SetPixel(x, y, new Color(levelArray[x,y].CellType.HasGround ? 1 : 0, levelArray[x, y].CellType.HasWall ? 1 : 0, levelArray[x, y].CellType.HasRoof ? 1 : 0, 0));
+
+            _cellsEnabledMap.Apply();
+        }
+
+        public void GenerateCellsLightSourceMap(Cell[,] levelArray, Vector2Int size)
+        {
+            Dictionary<Texture2D, int> textureToIndex = new Dictionary<Texture2D, int>();
+            List<Texture2D> _groundTexturesList = new List<Texture2D>();
+            _cellsLightSourceMap = new Texture2D(size.x, size.y, TextureFormat.RGBAFloat, false);
+            _cellsLightSourceMap.filterMode = FilterMode.Point;
+            _cellsLightSourceMap.wrapMode = TextureWrapMode.Clamp;
+
+            for (int x = 0; x < size.x; x++)
+                for (int y = 0; y < size.y; y++)
+                    _cellsLightSourceMap.SetPixel(x, y, new Color(levelArray[x, y].CellType.LightSourcePosition.x, levelArray[x, y].CellType.LightSourcePosition.y, levelArray[x, y].CellType.LightSourcePosition.z, levelArray[x, y].CellType.LightSource / CellLightSourceMaxIntensity));
+
+            _cellsLightSourceMap.Apply();
+        }
+
         private void TrowAndStoreRaycastsCPUMode()
         {
             _raysList.Clear();
@@ -449,111 +559,50 @@ namespace UPDB.Renderers.Raycast25DEngine
             }
         }
 
-        //private void TrowAndStoreRaycastsGPUMode()
-        //{
-        //    if (!_rendererMat)
-        //        return;
-
-        //    float angleRotate = RayNumbers > 1 ? FieldOfView / 2f : 0;
-
-        //    for (int i = 0; i < RayNumbers; i++)
-        //    {
-        //        float simulateZAngleBaseDiagonal = ((i / (float)RayNumbers) - 0.5f) * 2;
-        //        float simulateZAngleWalkingSin = Mathf.Sin(_sineWaveXValue / 2f) * _simulateZRotMultplier * _simulateZRotLerpValue;
-        //        float simulateZAngleTurningValue = (_camRotationSimulateZRotValue * _camRotationZRotationCurve.Evaluate(Mathf.Abs(_camRotationSimulateZRotValue))) * _cameraRotationSimulateZRotMultplier;
-        //        float simulateZAngleValue = simulateZAngleBaseDiagonal * (simulateZAngleWalkingSin + simulateZAngleTurningValue);
-
-        //        Vector2 angle = RotateVector(transform.up, angleRotate);
-        //        float walkingMoveSinXOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.x;
-        //        float walkingMoveSinZOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.z;
-        //        Vector2 rayOrigin = transform.position + (transform.right * _cameraPosOffset.x) + (transform.up * _cameraPosOffset.z) + (transform.right * walkingMoveSinXOffset) + (transform.up * walkingMoveSinZOffset);
-
-        //        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, angle, RenderDistance, _rayLayerMask);
-
-        //        float height = hit ? (1 / (hit.distance)) : 0;
-
-        //        float baseHeightDefault = ((1 - height) / 2);
-        //        float yLookingValue = (float)_verticalLookingValue * Time.fixedDeltaTime;
-        //        float playerYPosition = _cameraPosOffset.y - 0.5f;
-        //        float walkingMoveSinYOffset = Mathf.Sin(_sineWaveXValue) * _walkingSineWaveAmplitude.y * _simulateZRotLerpValue;
-
-        //        float baseHeight = (baseHeightDefault - yLookingValue) + (height * -(playerYPosition + walkingMoveSinYOffset)) + simulateZAngleValue;
-
-        //        Vector2 collidedPos = Vector2.zero;
-        //        Vector2Int collidedWall = Vector2Int.zero;
-        //        CellData collidedCellData = null;
-        //        Texture2D cellTexture = null;
-        //        Vector2 textureCoords = Vector2Int.zero;
-        //        float textureXPos = 0;
-        //        float multipliedHeight = 0;
-
-        //        if (hit)
-        //        {
-        //            collidedPos = hit.transform.position;
-        //            collidedWall = new Vector2Int((int)(collidedPos.x), (int)(collidedPos.y));
-
-        //            collidedCellData = Raycast2DLevelBuilder.Instance.LevelData.LevelArray[collidedWall.x, collidedWall.y].CellType;
-        //            cellTexture = collidedCellData.WallTexture;
-
-        //            if (cellTexture && _texturesToUseArray.depth == RayNumbers)
-        //                Graphics.CopyTexture(cellTexture, 0, 0, _texturesToUseArray, i, 0);
-
-        //            textureCoords = hit.point - collidedPos;
-        //            textureXPos = (textureCoords.x) + (textureCoords.y);
-
-        //            multipliedHeight = (height * collidedCellData.WallHeight);
-        //        }
-
-        //        float invMultipliedHeight = 1f / (float)multipliedHeight;
-
-
-        //        _textureToDrawCoordsArray.SetPixel(i, 0, new Color(textureXPos, baseHeight, multipliedHeight, hit ? 1 : 0));
-        //        _distanceAndOtherParametersArray.SetPixel(i, 0, new Color(hit.distance / RenderDistance, (angle.x + 1) / 2, (angle.y + 1) / 2, 0));
-
-        //        if (_debugRays)
-        //            Debug.DrawRay(rayOrigin, RotateVector(transform.up, angleRotate) * (hit ? hit.distance : RenderDistance), Color.blue);
-
-        //        if (RayNumbers > 1)
-        //            angleRotate -= FieldOfView / (float)(RayNumbers - 1);
-        //    }
-
-        //    _textureToDrawCoordsArray.Apply();
-        //    _distanceAndOtherParametersArray.Apply();
-        //    _rendererMat.SetVector("_PlayerPos", new Vector4(transform.position.x, transform.position.y, 0, 0));
-        //}
-
         private void TrowAndStoreRaycastsGPUMode()
         {
             if (!_rendererMat)
                 return;
 
-            float angleRotate = RayNumbers > 1 ? FieldOfView / 2f : 0;
+            float fovValue = _rendererMat.GetFloat("_FOV");
+
+            if (_FOVMemo != fovValue)
+                _rendererMat.SetVector("_FieldOfView", new Vector2(fovValue, fovValue));
+
+            _FOVMemo = fovValue;
+
+            float angleRotate = RayNumbers > 1 ? FieldOfView.x / 2f : 0;
             float yLookingValue = (float)_verticalLookingValue * Time.fixedDeltaTime;
 
             float walkingMoveSinXOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.x * _walkingAndRotationEffectLerpValue;
             float walkingMoveSinZOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.z * _walkingAndRotationEffectLerpValue;
             float walkingMoveSinYOffset = Mathf.Sin(_sineWaveXValue) * _walkingSineWaveAmplitude.y * _walkingAndRotationEffectLerpValue;
 
-            Vector2 rayOrigin = transform.position + (transform.right * CameraPosOffset.x) + (transform.up * CameraPosOffset.z) + (transform.right * walkingMoveSinXOffset) + (transform.up * walkingMoveSinZOffset);
+            Vector2 rayOrigin = transform.position + (transform.right * _cameraPosOffset.x) + (transform.up * _cameraPosOffset.z) + (transform.right * walkingMoveSinXOffset) + (transform.up * walkingMoveSinZOffset);
             _rendererMat.SetVector("_RaycastOrigin", rayOrigin);
 
-            float playerYPosition = CameraPosOffset.y - 0.5f;
+            float playerYPosition = _cameraPosOffset.y - 0.5f;
+            _rendererMat.SetFloat("_playerHeight", playerYPosition + walkingMoveSinYOffset);
 
             for (int i = 0; i < RayNumbers; i++)
             {
                 float simulateZAngleBaseDiagonal = ((i / (float)RayNumbers) - 0.5f) * 2;
-                float simulateZAngleWalkingSin = Mathf.Sin(_sineWaveXValue / 2f) * _simulateZRotMultplier * _walkingAndRotationEffectLerpValue;
-                float simulateZAngleTurningValue = (_camRotationSimulateZRotValue * _camRotationZRotationCurve.Evaluate(Mathf.Abs(_camRotationSimulateZRotValue))) * _cameraRotationSimulateZRotMultplier;
+                float simulateZAngleWalkingSin = Mathf.Sin(_sineWaveXValue / 2f) * _walkingZRotMultplier * _walkingAndRotationEffectLerpValue;
+                float simulateZAngleTurningValue = (_camRotationSimulateZRotValue * _camRotationZRotationCurve.Evaluate(Mathf.Abs(_camRotationSimulateZRotValue))) * _cameraRotationZRotMultplier;
                 float simulateZAngleValue = simulateZAngleBaseDiagonal * (simulateZAngleWalkingSin + simulateZAngleTurningValue);
 
                 Vector2 angle = RotateVector(transform.up, angleRotate);
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, angle, RenderDistance, _rayLayerMask);
 
-                float height = hit ? (1 / (hit.distance)) : 0;
+                float height = hit ? ((100f / FieldOfView.y) / (hit.distance)) : 0;
                 float baseHeightDefault = ((1 - height) / 2);
 
-                float baseHeight = (baseHeightDefault - yLookingValue) + (height * -(playerYPosition + walkingMoveSinYOffset)) + simulateZAngleValue;
-                float horizon = (0.5f - yLookingValue) + (height * -(walkingMoveSinYOffset)) + simulateZAngleValue;
+                float baseHeightPlayerHeightOffset = (height * -(playerYPosition + walkingMoveSinYOffset));
+                float baseHeight = (baseHeightDefault - yLookingValue) + baseHeightPlayerHeightOffset + simulateZAngleValue;
+                float horizon = (0.5f - yLookingValue) + simulateZAngleValue;
+
+                float invertedBaseHeight = (baseHeightDefault + yLookingValue) - (baseHeightPlayerHeightOffset + simulateZAngleValue);
+                float invertedHorizon = (0.5f + yLookingValue) - simulateZAngleValue;
 
                 Vector2 collidedPos = Vector2.zero;
                 Vector2Int collidedWall = Vector2Int.zero;
@@ -589,7 +638,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                     Debug.DrawRay(rayOrigin, RotateVector(transform.up, angleRotate) * (hit ? hit.distance : RenderDistance), Color.blue);
 
                 if (RayNumbers > 1)
-                    angleRotate -= FieldOfView / (float)(RayNumbers - 1);
+                    angleRotate -= FieldOfView.x / (float)(RayNumbers - 1);
             }
 
             _textureToDrawCoordsArray.Apply();

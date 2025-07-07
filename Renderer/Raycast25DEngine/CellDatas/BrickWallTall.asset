@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ad2978f14576ea4c8f747e494b722a3, type: 3}
   m_Name: BrickWallTall
   m_EditorClassIdentifier: 
-  _id: 2
-  _hasGround: 0
-  _hasRoof: 0
+  _id: 3
+  _hasGround: 1
+  _hasRoof: 1
   _hasWall: 1
-  _groundTexture: {fileID: 0}
-  _roofTexture: {fileID: 0}
-  _wallTexture: {fileID: 2800000, guid: 8d797c9cded2ea84d80173903ed741c5, type: 3}
+  _groundTexture: {fileID: 2800000, guid: 5b99abd54aeb06c4e9d3e03346191016, type: 3}
+  _roofTexture: {fileID: 2800000, guid: 6eb7b072d54894a4c84e7708681c148c, type: 3}
+  _wallTexture: {fileID: 2800000, guid: d8c4c38dc44b9d24dac9fd10ef979dd0, type: 3}
   _groundHeight: 0
   _roofHeight: 0
-  _wallHeight: 1
+  _wallHeight: 2
+  _lightSource: 0
+  _lightSourcePosition: {x: 0, y: 0, z: 0}

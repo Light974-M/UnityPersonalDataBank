@@ -35,6 +35,12 @@ namespace UPDB.Renderers.Raycast25DEngine
         [SerializeField]
 		private float _wallHeight;
 
+		[SerializeField]
+		private float _lightSource;
+
+		[SerializeField]
+		private Vector3 _lightSourcePosition;
+
 		#region Public API
 
 		public CellID Id => _id; 
@@ -49,7 +55,17 @@ namespace UPDB.Renderers.Raycast25DEngine
 		public float GroundHeight => _groundHeight;
 		public float RoofHeight => _roofHeight;
 		public float WallHeight => _wallHeight;
+		public float LightSource => _lightSource;
+		public Vector3 LightSourcePosition => _lightSourcePosition;
 
-		#endregion
-	} 
+        #endregion
+
+        private void OnValidate()
+        {
+            if(Application.isPlaying)
+			{
+				GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().RebuildParameters();
+			}
+        }
+    } 
 }

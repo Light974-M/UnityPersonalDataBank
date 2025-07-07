@@ -74,13 +74,14 @@ namespace UPDB.Renderers.Raycast25DEngine
             {
                 for (int x = 0; x < _levelData.LevelSize.x; x++)
                 {
-                    if (!ReferenceEquals(_levelData.LevelArray[x, y], null) && _levelData.LevelArray[x, y].CellType && _levelData.LevelArray[x, y].CellType.Id != CellID.BlankGround)
+                    if (ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType || !_levelData.LevelArray[x, y].CellType.HasGround || _levelData.LevelArray[x, y].CellType.HasRoof || _levelData.LevelArray[x, y].CellType.LightSource != 0)
                         continue;
 
                     Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), Color.white);
                     Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), Color.white);
                     Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), Color.white);
                     Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), Color.white);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y + 1), Color.white);
                 }
             }
 
@@ -88,18 +89,61 @@ namespace UPDB.Renderers.Raycast25DEngine
             {
                 for (int x = 0; x < _levelData.LevelSize.x; x++)
                 {
-                    if (ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType || _levelData.LevelArray[x, y].CellType.Id == CellID.BlankGround)
+                    if (ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType || !_levelData.LevelArray[x, y].CellType.HasGround || !_levelData.LevelArray[x, y].CellType.HasRoof || _levelData.LevelArray[x, y].CellType.LightSource != 0)
                         continue;
 
-                    Color colorToSet = Color.red;
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), Color.grey);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), Color.grey);
+                    Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), Color.grey);
+                    Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), Color.grey);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y + 1), Color.grey);
+                }
+            }
 
-                    if (_levelData.LevelArray[x, y].CellType.Id == CellID.BrickWallTall)
-                        colorToSet = new Color(0.5f, 0, 0);
+            for (int y = 0; y < _levelData.LevelSize.y; y++)
+            {
+                for (int x = 0; x < _levelData.LevelSize.x; x++)
+                {
+                    if ((ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType) || !_levelData.LevelArray[x, y].CellType.HasWall || _levelData.LevelArray[x, y].CellType.WallHeight != 1 || _levelData.LevelArray[x, y].CellType.LightSource != 0)
+                        continue;
+
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), Color.red);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), Color.red);
+                    Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), Color.red);
+                    Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), Color.red);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y + 1), Color.red);
+                }
+            }
+
+            for (int y = 0; y < _levelData.LevelSize.y; y++)
+            {
+                for (int x = 0; x < _levelData.LevelSize.x; x++)
+                {
+                    if ((ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType) || !_levelData.LevelArray[x, y].CellType.HasWall || _levelData.LevelArray[x, y].CellType.WallHeight == 1 || _levelData.LevelArray[x, y].CellType.LightSource != 0)
+                        continue;
+
+                    Color colorToSet = new Color(0.5f, 0, 0);
 
                     Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), colorToSet);
                     Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), colorToSet);
                     Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), colorToSet);
                     Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), colorToSet);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y + 1), colorToSet);
+                }
+            }
+
+            for (int y = 0; y < _levelData.LevelSize.y; y++)
+            {
+                for (int x = 0; x < _levelData.LevelSize.x; x++)
+                {
+                    if ((ReferenceEquals(_levelData.LevelArray[x, y], null) || !_levelData.LevelArray[x, y].CellType) || _levelData.LevelArray[x, y].CellType.HasWall || _levelData.LevelArray[x, y].CellType.LightSource == 0)
+                        continue;
+
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y), Color.yellow);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x, y + 1), Color.yellow);
+                    Debug.DrawLine(new Vector2(x + 1, y), new Vector2(x + 1, y + 1), Color.yellow);
+                    Debug.DrawLine(new Vector2(x, y + 1), new Vector2(x + 1, y + 1), Color.yellow);
+                    Debug.DrawLine(new Vector2(x, y), new Vector2(x + 1, y + 1), Color.yellow);
                 }
             }
 

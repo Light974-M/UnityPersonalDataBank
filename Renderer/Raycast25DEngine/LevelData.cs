@@ -34,7 +34,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                     {
                         for (int x = 0; x < _levelSize.x; x++)
                         {
-                            _levelArray[x, y] = new Cell(new Vector2Int(x, y), CellID.BlankGround);
+                            _levelArray[x, y] = new Cell(new Vector2Int(x, y), CellID.OpenBrickGround);
                         }
                     }
                 }

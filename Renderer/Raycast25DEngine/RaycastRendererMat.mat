@@ -141,6 +141,8 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CellLightSourceMaxIntensity: 100
+    - _CellSourceLightSpreading: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -150,17 +152,19 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FieldOfView: 70
+    - _FOV: 70
+    - _FieldOfView: 100
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _InsideAmbianceLight: 0
     - _LightLevel: 10
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _PlayerLightDistribution: 1
     - _PlayerLightMinValue: 1
-    - _PlayerLightRange: 10
+    - _PlayerLightRange: 0
     - _PlayerLightSpreading: 0.2
     - _QueueOffset: 0
     - _RaysNumber: 2048
@@ -174,12 +178,15 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TEST: 1e+13
+    - _TESTTEST: 0
     - _TexturesMaxSize: 128
     - _UseScreenPixelHeight: 1
-    - _VerticalPixelsNumber: 200
+    - _VerticalPixelsNumber: 202
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _test: 1
+    - _test2: -25.76
+    - _test3: 1.89
     - _useScreenPixelHeight: 1
     - _verticalPixelNumber: 2048
     - _verticalPixelsNumber: 200
@@ -188,9 +195,11 @@ Material:
     - _CameraPosOffset: {r: 0, g: 0.5, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FieldOfView: {r: 70, g: 70, b: 0, a: 0}
     - _GroundColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
-    - _PlayerPos: {r: 6.857499, g: 17.022066, b: 0, a: 0}
+    - _PlayerPos: {r: 7.9628305, g: 8.491084, b: 0, a: 0}
     - _SkyColor: {r: 0, g: 0.71217537, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TEST: {r: 0.5, g: 0.5, b: 0.5, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

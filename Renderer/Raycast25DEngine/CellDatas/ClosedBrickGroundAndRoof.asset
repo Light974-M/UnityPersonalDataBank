@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ad2978f14576ea4c8f747e494b722a3, type: 3}
-  m_Name: blankGround
+  m_Name: ClosedBrickGroundAndRoof
   m_EditorClassIdentifier: 
   _id: 0
   _hasGround: 1
-  _hasRoof: 0
+  _hasRoof: 1
   _hasWall: 0
-  _groundTexture: {fileID: 2800000, guid: e5e945e51d73bda449f8de079095db76, type: 3}
-  _roofTexture: {fileID: 0}
+  _groundTexture: {fileID: 2800000, guid: 5b99abd54aeb06c4e9d3e03346191016, type: 3}
+  _roofTexture: {fileID: 2800000, guid: 6eb7b072d54894a4c84e7708681c148c, type: 3}
   _wallTexture: {fileID: 0}
   _groundHeight: 0
-  _roofHeight: 0
+  _roofHeight: 1
   _wallHeight: 0
+  _lightSource: 0
+  _lightSourcePosition: {x: 0, y: 0, z: 0}
