@@ -41,6 +41,9 @@ namespace UPDB.Renderers.Raycast25DEngine
 		[SerializeField]
 		private Vector3 _lightSourcePosition;
 
+		[SerializeField]
+		private Color _lightSourceColor = Color.white;
+
 		#region Public API
 
 		public CellID Id => _id; 
@@ -57,6 +60,7 @@ namespace UPDB.Renderers.Raycast25DEngine
 		public float WallHeight => _wallHeight;
 		public float LightSource => _lightSource;
 		public Vector3 LightSourcePosition => _lightSourcePosition;
+		public Color LightSourceColor => _lightSourceColor;
 
         #endregion
 

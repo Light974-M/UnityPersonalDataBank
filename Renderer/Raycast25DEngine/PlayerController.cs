@@ -109,6 +109,7 @@ namespace UPDB.Renderers.Raycast25DEngine
         Texture2DArray _roofTexturesArray = null;
         Texture2D _cellsEnabledMap = null;
         Texture2D _cellsLightSourceMap = null;
+        Texture2D _cellsLightSourceColorMap = null;
 
         private int _raysNumberMemo = 0;
         private int _verticalPixelsNumberMemo = 0;
@@ -405,6 +406,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                 GenerateRoofTypeMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
                 GenerateCellsEnabledMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
                 GenerateCellsLightSourceMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
+                GenerateCellsLightSourceColorMap(Raycast2DLevelBuilder.Instance.LevelData.LevelArray, Raycast2DLevelBuilder.Instance.LevelData.LevelSize);
             }
 
             _textureToDrawCoordsArray = new Texture2D(RayNumbers, 1, TextureFormat.RGBAFloat, false);
@@ -423,6 +425,7 @@ namespace UPDB.Renderers.Raycast25DEngine
             _rendererMat.SetTexture("_roofTexturesArray", _roofTexturesArray);
             _rendererMat.SetTexture("_cellsEnabledMap", _cellsEnabledMap);
             _rendererMat.SetTexture("_cellsLightSourceMap", _cellsLightSourceMap);
+            _rendererMat.SetTexture("_cellsLightSourceColorMap", _cellsLightSourceColorMap);
 
             if (Raycast2DLevelBuilder.Instance.LevelData)
                 _rendererMat.SetVector("_LevelMapSize", new Vector4(Raycast2DLevelBuilder.Instance.LevelData.LevelSize.x, Raycast2DLevelBuilder.Instance.LevelData.LevelSize.y, 0, 0));
@@ -538,6 +541,21 @@ namespace UPDB.Renderers.Raycast25DEngine
                     _cellsLightSourceMap.SetPixel(x, y, new Color(levelArray[x, y].CellType.LightSourcePosition.x, levelArray[x, y].CellType.LightSourcePosition.y, levelArray[x, y].CellType.LightSourcePosition.z, levelArray[x, y].CellType.LightSource / CellLightSourceMaxIntensity));
 
             _cellsLightSourceMap.Apply();
+        }
+
+        public void GenerateCellsLightSourceColorMap(Cell[,] levelArray, Vector2Int size)
+        {
+            Dictionary<Texture2D, int> textureToIndex = new Dictionary<Texture2D, int>();
+            List<Texture2D> _groundTexturesList = new List<Texture2D>();
+            _cellsLightSourceColorMap = new Texture2D(size.x, size.y, TextureFormat.RGBA32, false);
+            _cellsLightSourceColorMap.filterMode = FilterMode.Point;
+            _cellsLightSourceColorMap.wrapMode = TextureWrapMode.Clamp;
+
+            for (int x = 0; x < size.x; x++)
+                for (int y = 0; y < size.y; y++)
+                    _cellsLightSourceColorMap.SetPixel(x, y, levelArray[x, y].CellType.LightSourceColor);
+
+            _cellsLightSourceColorMap.Apply();
         }
 
         private void TrowAndStoreRaycastsCPUMode()

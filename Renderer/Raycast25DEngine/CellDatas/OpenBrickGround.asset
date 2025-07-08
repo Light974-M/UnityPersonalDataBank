@@ -24,3 +24,4 @@ MonoBehaviour:
   _wallHeight: 0
   _lightSource: 0
   _lightSourcePosition: {x: 0.5, y: 0.5, z: 0.5}
+  _lightSourceColor: {r: 1, g: 1, b: 1, a: 1}

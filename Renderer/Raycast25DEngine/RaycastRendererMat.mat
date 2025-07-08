@@ -45,6 +45,182 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CellSourceLight3LineIterationTest_00f7bf84416948d196d33936be231eed_CellsEnabledMap_2262577446_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLight3LineIterationTest_61a178150c824975b2ec2d21afc2e236_CellsEnabledMap_2262577446_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLight3LineIterationTest_9279c83de78c4ed5b6e6fbd9ce7ac551_CellsEnabledMap_2262577446_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLight3LineIterationTest_bdb43f3a5f8b4fe58527e9c1b3aca875_CellsEnabledMap_2262577446_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLight3LineIterationTest_f12bd92c5a0d4d0a9be8679ec544ff42_CellsEnabledMap_2262577446_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLight5LineIterationTest_7778cac7751e401c8962e2ae5a5806bf_CellsEnabledMap_4280551401_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLight5LineIterationTest_df8e1e3f7c554eb2925ef78a9a9cc664_CellsEnabledMap_4280551401_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_084f0e250e544f7caf678997ac324322_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_0c8c51d37a704d2b859053ae1efc0c65_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_17a83176e7a3404f9a1bf63d8d37ec02_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_31d942fe2cd440c6af49f56a03cc4ec9_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_39a94312aae34c9da787ab8ece530a8b_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_3f8be00dd4b14e978ffbc1400bee67e6_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_43d5399976c6457e88b785c5a4ba448c_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_4906c69043944852abe3b7b7e2a919f9_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_494755ef9efe4af3bda90c070cf7f036_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_50047c94a62d4a9a960e0b486d631344_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_7315a5eef2d94bd4a95af1b922931b3c_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_85fbd198c5014ec4851cddb7044d79df_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_8b14fa1bbc7045d4a7f6bb822c5db1c3_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_984cda61e0f8406eb1d3790ad1664a89_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_98c3fe16e2b348dc8722c3dda336c0d6_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_9ecb82f68c6b40ceb60d372a6615a279_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_a11be504152846049a6288b576ca7fd6_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_a3942a747df646fc85542830506dd748_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_a4c7ae36633e41018b9d5a9b87d48582_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_a68fe17828e84ccc83c08d641412acc6_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_ac65ec12d39d4a4dbd81c07dde06d62d_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_b6d75491b2fd4cd78abe2d4337a3eefe_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_baa3eafd31a34b2f883c5b35d8839664_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_c1d7a12806644c10a83600a3a6a221f5_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_c3a3b397e2864aca9321a108bc04df3e_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_c7c8efeb968749c2b9d390540d712b35_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_cb474d1c7dad452fbd2efe37f96756b7_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_cbe64d394bd24e60b41b34ccec24c324_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_d62c99b59e8c4443b29f8f821320e842_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_e1979a5b48f04c1cb4f48e19cfae7727_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_e4ddb87e85344dbf9522691b1ff9d21f_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_e81015f7d1ad416c863439be93eaf489_CellsEnabledMap_3350505283_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellSourceLightTest_f553545766ea4d5cbd5cafcba996b4c4_cellsLightSourceColorMap_266416449_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellsSourceLightIterationTests_1e524e0a0d8644858d65c5374262f4cf_cellsLightSourceColorMap_1593410545_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellsSourceLightIterationTests_2d829d75b501408aa31a8f5eff16cf03_CellsEnabledMap_3818906061_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellsSourceLightIterationTests_2d829d75b501408aa31a8f5eff16cf03_cellsLightSourceColorMap_1593410545_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CellsSourceLightIterationTests_cb0e513df80a43cf8cc804b5606af6b6_cellsLightSourceColorMap_1593410545_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -142,7 +318,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CellLightSourceMaxIntensity: 100
-    - _CellSourceLightSpreading: 1
+    - _CellSourceLightSpreading: 0.2
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -161,10 +337,11 @@ Material:
     - _LightLevel: 10
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _OutsideVoidLevel: 0
     - _Parallax: 0.005
     - _PlayerLightDistribution: 1
     - _PlayerLightMinValue: 1
-    - _PlayerLightRange: 0
+    - _PlayerLightRange: 10
     - _PlayerLightSpreading: 0.2
     - _QueueOffset: 0
     - _RaysNumber: 2048
@@ -177,7 +354,7 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _TEST: 1e+13
+    - _TEST: 1
     - _TESTTEST: 0
     - _TexturesMaxSize: 128
     - _UseScreenPixelHeight: 1
@@ -197,9 +374,12 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FieldOfView: {r: 70, g: 70, b: 0, a: 0}
     - _GroundColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
-    - _PlayerPos: {r: 7.9628305, g: 8.491084, b: 0, a: 0}
+    - _PlayerLightColor: {r: 1, g: 1, b: 0.6862745, a: 0}
+    - _PlayerPos: {r: 11.076978, g: 7.7962885, b: 0, a: 0}
     - _SkyColor: {r: 0, g: 0.71217537, b: 1, a: 1}
+    - _SkyLightColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _TEST: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _TEST: {r: -1, g: 0, b: 0, a: 0}
+    - _TEST2: {r: 2, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
