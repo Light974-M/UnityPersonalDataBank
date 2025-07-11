@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UPDB.CoreHelper.UsableMethods;
 
@@ -14,10 +15,13 @@ namespace UPDB.Renderers.Raycast25DEngine
         private float _speed = 5;
 
         [SerializeField]
-        private float _rotationSpeed = 5;
+        private Vector2 _rotationSpeed = new Vector2(150, 3);
 
         [SerializeField]
-        private int _verticalRotationSpeed = 5;
+        private Vector2 _verticalLookAngleConstraints = new Vector2(-90, 90);
+
+        [SerializeField]
+        private bool _useMouseLook = false;
 
         [SerializeField]
         private float _fovTweakSpeed = 5;
@@ -115,6 +119,10 @@ namespace UPDB.Renderers.Raycast25DEngine
         private int _verticalPixelsNumberMemo = 0;
         private Rigidbody2D _rb;
         private float _FOVMemo = 70f;
+        private Vector2 _moveInput = Vector2.zero;
+        private Vector2 _turnInput = Vector2.zero;
+        private bool _isMoving = false;
+        private bool _isTurningX = false;
 
         #endregion
 
@@ -275,47 +283,8 @@ namespace UPDB.Renderers.Raycast25DEngine
 
         private void FixedUpdate()
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                _rb.position += new Vector2(transform.up.x, transform.up.y) * _speed * Time.fixedDeltaTime;
-            }
-
-            if (Input.GetKey(KeyCode.S))
-            {
-                _rb.position -= new Vector2(transform.up.x, transform.up.y) * _speed * Time.fixedDeltaTime;
-            }
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                _rb.position -= new Vector2(transform.right.x, transform.right.y) * _speed * Time.fixedDeltaTime;
-            }
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                _rb.position += new Vector2(transform.right.x, transform.right.y) * _speed * Time.fixedDeltaTime;
-            }
-
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                transform.Rotate(transform.forward * _rotationSpeed * Time.fixedDeltaTime);
-            }
-
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                transform.Rotate(-transform.forward * _rotationSpeed * Time.fixedDeltaTime);
-            }
-
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                _verticalLookingValue += _verticalRotationSpeed;
-                _verticalLookingValue = Mathf.Clamp(_verticalLookingValue, -1 / Time.fixedDeltaTime, 1 / Time.fixedDeltaTime);
-            }
-
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                _verticalLookingValue -= _verticalRotationSpeed;
-                _verticalLookingValue = Mathf.Clamp(_verticalLookingValue, -1 / Time.fixedDeltaTime, 1 / Time.fixedDeltaTime);
-            }
+            MoveUpdate();
+            TurnUpdate();
 
             if (Input.GetKey(KeyCode.E))
             {
@@ -356,9 +325,24 @@ namespace UPDB.Renderers.Raycast25DEngine
             _verticalPixelsNumberMemo = VerticalPixelsNumber;
         }
 
+        private void MoveUpdate()
+        {
+            Vector2 up = new Vector2(transform.up.x, transform.up.y);
+            Vector2 right = new Vector2(transform.right.x, transform.right.y);
+            _rb.position += ((up * _moveInput.y) + (right * _moveInput.x)) * _speed * Time.fixedDeltaTime;
+        }
+
+        private void TurnUpdate()
+        {
+            transform.Rotate((-transform.forward * _turnInput.x) * _rotationSpeed.x * Time.fixedDeltaTime);
+
+            _verticalLookingValue += _turnInput.y * _rotationSpeed.y * Time.fixedDeltaTime;
+            _verticalLookingValue = Mathf.Clamp(_verticalLookingValue, _verticalLookAngleConstraints.x, _verticalLookAngleConstraints.y);
+        }
+
         private void PlayerMovementsEffectsLerps()
         {
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+            if (_isMoving)
             {
                 _sineWaveXValue += _walkingSineWaveWidth * Time.fixedDeltaTime;
 
@@ -376,15 +360,10 @@ namespace UPDB.Renderers.Raycast25DEngine
 
             float value = Time.fixedDeltaTime / _camRotationZRotationTime;
 
-            if (Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
+            if (_isTurningX)
             {
-                if (_camRotationSimulateZRotValue < 1)
-                    _camRotationSimulateZRotValue += value;
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow))
-            {
-                if (_camRotationSimulateZRotValue > -1)
-                    _camRotationSimulateZRotValue -= value;
+                float dir = _turnInput.x == Mathf.Abs(_turnInput.x) ? 1 : -1;
+                _camRotationSimulateZRotValue = Mathf.Clamp(_camRotationSimulateZRotValue + (value * dir), -1, 1);
             }
             else
             {
@@ -523,7 +502,7 @@ namespace UPDB.Renderers.Raycast25DEngine
 
             for (int x = 0; x < size.x; x++)
                 for (int y = 0; y < size.y; y++)
-                    _cellsEnabledMap.SetPixel(x, y, new Color(levelArray[x,y].CellType.HasGround ? 1 : 0, levelArray[x, y].CellType.HasWall ? 1 : 0, levelArray[x, y].CellType.HasRoof ? 1 : 0, 0));
+                    _cellsEnabledMap.SetPixel(x, y, new Color(levelArray[x, y].CellType.HasGround ? 1 : 0, levelArray[x, y].CellType.HasWall ? 1 : 0, levelArray[x, y].CellType.HasRoof ? 1 : 0, 0));
 
             _cellsEnabledMap.Apply();
         }
@@ -591,6 +570,7 @@ namespace UPDB.Renderers.Raycast25DEngine
 
             float angleRotate = RayNumbers > 1 ? FieldOfView.x / 2f : 0;
             float yLookingValue = (float)_verticalLookingValue * Time.fixedDeltaTime;
+            _rendererMat.SetFloat("_yLookingValue", yLookingValue);
 
             float walkingMoveSinXOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.x * _walkingAndRotationEffectLerpValue;
             float walkingMoveSinZOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.z * _walkingAndRotationEffectLerpValue;
@@ -616,6 +596,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                 float baseHeightDefault = ((1 - height) / 2);
 
                 float baseHeightPlayerHeightOffset = (height * -(playerYPosition + walkingMoveSinYOffset));
+
                 float baseHeight = (baseHeightDefault - yLookingValue) + baseHeightPlayerHeightOffset + simulateZAngleValue;
                 float horizon = (0.5f - yLookingValue) + simulateZAngleValue;
 
@@ -663,5 +644,56 @@ namespace UPDB.Renderers.Raycast25DEngine
             _raycastAndHorizonParameters.Apply();
             _rendererMat.SetVector("_PlayerPos", new Vector4(transform.position.x, transform.position.y, 0, 0));
         }
+
+        #region Event Callback
+
+        public void GetMove(InputAction.CallbackContext callback)
+        {
+            _moveInput = callback.ReadValue<Vector2>();
+
+            _isMoving = callback.started ? true : callback.canceled ? false : _isMoving;
+        }
+
+        public void GetTurn(InputAction.CallbackContext callback)
+        {
+            if (!_useMouseLook)
+            {
+                _turnInput = callback.ReadValue<Vector2>() * 50;
+
+                if (Cursor.lockState == CursorLockMode.Locked || !Cursor.visible)
+                {
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                }
+            }
+        }
+
+        public void GetIsHorizontalRotate(InputAction.CallbackContext callback)
+        {
+            if (!_useMouseLook)
+                _isTurningX = callback.started ? true : callback.canceled ? false : _isTurningX;
+        }
+
+        public void GetMouseTurn(InputAction.CallbackContext callback)
+        {
+            if (_useMouseLook)
+            {
+                _turnInput = callback.ReadValue<Vector2>();
+
+                if (Cursor.lockState != CursorLockMode.Locked || Cursor.visible)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+            }
+        }
+
+        public void GetIsMouseHorizontalRotate(InputAction.CallbackContext callback)
+        {
+            if (_useMouseLook)
+                _isTurningX = callback.started ? true : callback.canceled ? false : _isTurningX;
+        }
+
+        #endregion
     }
 }

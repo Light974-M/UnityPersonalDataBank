@@ -318,7 +318,8 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CellLightSourceMaxIntensity: 100
-    - _CellSourceLightSpreading: 0.2
+    - _CellSourceLightMinValueCut: 0
+    - _CellSourceLightSpreading: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -354,7 +355,9 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _TEST: 1
+    - _TEST: 0
+    - _TEST2: 1
+    - _TEST3: -0.35
     - _TESTTEST: 0
     - _TexturesMaxSize: 128
     - _UseScreenPixelHeight: 1
@@ -375,7 +378,7 @@ Material:
     - _FieldOfView: {r: 70, g: 70, b: 0, a: 0}
     - _GroundColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
     - _PlayerLightColor: {r: 1, g: 1, b: 0.6862745, a: 0}
-    - _PlayerPos: {r: 11.076978, g: 7.7962885, b: 0, a: 0}
+    - _PlayerPos: {r: 9.566959, g: 11.246806, b: 0, a: 0}
     - _SkyColor: {r: 0, g: 0.71217537, b: 1, a: 1}
     - _SkyLightColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

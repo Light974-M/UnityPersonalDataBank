@@ -92,6 +92,9 @@
         },
         {
             "m_Id": "2a7caf5a9ba448dba2f2e6defd7481ca"
+        },
+        {
+            "m_Id": "d64538ad73ff4df79addb85ddff0e4a7"
         }
     ],
     "m_Keywords": [],
@@ -5959,8 +5962,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2802.0,
-            "y": 1592.0,
+            "x": -2904.0,
+            "y": 1591.9998779296875,
             "width": 183.0,
             "height": 34.0
         }
@@ -6179,10 +6182,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -4936.7998046875,
-            "y": 1347.199951171875,
-            "width": 139.19970703125,
-            "height": 33.5999755859375
+            "x": -4706.00048828125,
+            "y": 1286.0001220703125,
+            "width": 139.0,
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -7166,10 +7169,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2753.0,
-            "y": 1738.0,
+            "x": -2855.0,
+            "y": 1737.9998779296875,
             "width": 162.0,
-            "height": 34.0001220703125
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -10377,10 +10380,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2571.0,
-            "y": 1557.0,
+            "x": -2673.0,
+            "y": 1556.9998779296875,
             "width": 321.0,
-            "height": 215.0001220703125
+            "height": 215.0
         }
     },
     "m_Slots": [
@@ -10789,6 +10792,9 @@
         },
         {
             "m_Id": "6bca8a1b2bfd426da26468d8b5a85660"
+        },
+        {
+            "m_Id": "d64538ad73ff4df79addb85ddff0e4a7"
         }
     ]
 }
@@ -10805,10 +10811,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1593.0,
-            "y": 1613.0001220703125,
+            "x": -1712.0001220703125,
+            "y": 1617.000244140625,
             "width": 140.0,
-            "height": 141.9998779296875
+            "height": 142.0
         }
     },
     "m_Slots": [
@@ -12078,10 +12084,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2844.0,
-            "y": 1625.0001220703125,
+            "x": -2946.0,
+            "y": 1624.9998779296875,
             "width": 224.0,
-            "height": 33.9998779296875
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -13475,8 +13481,8 @@
     "m_ObjectId": "496aa53dd9f94932a6303a55d1552886",
     "m_Title": "calculate floor player and sky light",
     "m_Position": {
-        "x": -2758.000244140625,
-        "y": 687.0000610351563
+        "x": -2758.0,
+        "y": 687.0
     }
 }
 
@@ -14527,8 +14533,8 @@
     "m_ObjectId": "52dec3113c3248c28e6a36813ed7fd23",
     "m_Title": "Smooth Cell Light Source",
     "m_Position": {
-        "x": -2174.0,
-        "y": 1491.0001220703125
+        "x": -2285.0,
+        "y": 1495.0
     }
 }
 
@@ -15252,10 +15258,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -5008.7998046875,
-            "y": 1279.199951171875,
-            "width": 232.7998046875,
-            "height": 33.5999755859375
+            "x": -4778.00048828125,
+            "y": 1218.0001220703125,
+            "width": 233.0,
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -19556,10 +19562,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1769.0,
-            "y": 1550.0,
+            "x": -1888.0001220703125,
+            "y": 1554.000244140625,
             "width": 126.0,
-            "height": 118.0001220703125
+            "height": 118.0
         }
     },
     "m_Slots": [
@@ -21240,10 +21246,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1842.0,
-            "y": 1668.0001220703125,
+            "x": -1961.0001220703125,
+            "y": 1672.000244140625,
             "width": 184.0,
-            "height": 33.9998779296875
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -23067,8 +23073,8 @@
     "m_ObjectId": "a19ed0b843c940ceb3e038026823ba25",
     "m_Title": "choose to render sky, ground, or wall",
     "m_Position": {
-        "x": -2552.000244140625,
-        "y": -51.99995803833008
+        "x": -2552.0,
+        "y": -52.0
     }
 }
 
@@ -23179,10 +23185,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2802.0,
-            "y": 1698.0,
+            "x": -2904.0,
+            "y": 1697.9998779296875,
             "width": 211.0,
-            "height": 34.0001220703125
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -23360,8 +23366,8 @@
     "m_ObjectId": "a459f50ab75842e7be03f79d2ddc3e33",
     "m_Title": "Calculate Floor Cell Light Source",
     "m_Position": {
-        "x": -2869.0,
-        "y": 1498.0001220703125
+        "x": -2971.0,
+        "y": 1498.0
     }
 }
 
@@ -28086,9 +28092,9 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1938.0,
-            "y": 1555.0,
-            "width": 126.0,
+            "x": -2049.000244140625,
+            "y": 1604.000244140625,
+            "width": 126.0001220703125,
             "height": 118.0
         }
     },
@@ -28631,6 +28637,34 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "d64538ad73ff4df79addb85ddff0e4a7",
+    "m_Guid": {
+        "m_GuidSerialized": "01cbafc4-dcdd-4259-bea1-1a4593b5229c"
+    },
+    "m_Name": "yLookingValue",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "yLookingValue",
+    "m_DefaultReferenceName": "_yLookingValue",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": false,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 0,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "d66bda9395d74227b28f9c501db2d8c5",
@@ -28915,7 +28949,7 @@
     "m_Title": "floor calculation",
     "m_Position": {
         "x": -5655.0,
-        "y": 997.0
+        "y": 997.0001220703125
     }
 }
 
@@ -30250,10 +30284,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -4756.0,
-            "y": 1238.39990234375,
-            "width": 332.7998046875,
-            "height": 142.4000244140625
+            "x": -4513.99951171875,
+            "y": 1186.9998779296875,
+            "width": 334.0,
+            "height": 143.0
         }
     },
     "m_Slots": [
@@ -31289,10 +31323,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2149.0,
-            "y": 1639.0001220703125,
+            "x": -2260.000244140625,
+            "y": 1688.000244140625,
             "width": 211.0,
-            "height": 33.9998779296875
+            "height": 34.0
         }
     },
     "m_Slots": [
