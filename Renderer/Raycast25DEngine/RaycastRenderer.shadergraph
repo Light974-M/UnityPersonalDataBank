@@ -27066,10 +27066,10 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "c9a34a70904d43fd94f6cb50bf5a7ff3",
     "m_Id": 1639945227,
-    "m_DisplayName": "Vector1",
+    "m_DisplayName": "YValueTroughHeight",
     "m_SlotType": 0,
     "m_Hidden": false,
-    "m_ShaderOutputName": "_Vector1",
+    "m_ShaderOutputName": "_YValueTroughHeight",
     "m_StageCapability": 2,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
@@ -28949,7 +28949,7 @@
     "m_Title": "floor calculation",
     "m_Position": {
         "x": -5655.0,
-        "y": 997.0001220703125
+        "y": 997.0
     }
 }
 

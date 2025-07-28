@@ -7,9 +7,9 @@ using UPDB.CoreHelper.UsableMethods;
 
 namespace UPDB.ProceduralGeneration.LODTextureGenerator
 {
-	[CustomEditor(typeof(DynamicPlaneManager))]
-	public class DynamicPlaneManagerEditor : Editor
-	{
+    [CustomEditor(typeof(DynamicPlaneManager))]
+    public class DynamicPlaneManagerEditor : Editor
+    {
         public override void OnInspectorGUI()
         {
             DynamicPlaneManager myTarget = (DynamicPlaneManager)target;
@@ -39,10 +39,10 @@ namespace UPDB.ProceduralGeneration.LODTextureGenerator
             // create a temporary camera
             GameObject cameraObject = new GameObject("SnapshotCamera");
             Camera camera = cameraObject.AddComponent<Camera>();
-            camera.backgroundColor = Color.clear; // clear background
             camera.orthographic = true;
             camera.orthographicSize = target.CameraTextureSize; // Ajustez selon la taille de l'objet
             camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = Color.clear; // clear background
 
             target.CameraDirectionsList = UPDBBehaviour.GetSphereVerticeDirections(target.ImagesNumber.x, target.ImagesNumber.y);
             target.TextureList = new Texture2D[target.CameraDirectionsList.Length][];
@@ -85,7 +85,7 @@ namespace UPDB.ProceduralGeneration.LODTextureGenerator
 
                     // Créer une RenderTexture
                     int textureSize = 512; // Taille de la texture
-                    RenderTexture renderTexture = new RenderTexture(textureSize, textureSize, 24);
+                    RenderTexture renderTexture = new RenderTexture(textureSize, textureSize, 24, RenderTextureFormat.ARGB32);
                     camera.targetTexture = renderTexture;
 
                     // Capturer l'image
@@ -137,5 +137,5 @@ namespace UPDB.ProceduralGeneration.LODTextureGenerator
             }
             return bounds;
         }
-    } 
+    }
 }

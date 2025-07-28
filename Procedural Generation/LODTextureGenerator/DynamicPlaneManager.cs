@@ -29,6 +29,7 @@ namespace UPDB.ProceduralGeneration.LODTextureGenerator
 
         private Texture2D[][] _textureList;
         private Vector3 _camPosMemo = Vector3.zero;
+
         private MeshFilter _meshFilterRef;
         private MeshRenderer _meshRendererRef;
         private Material _matRef;

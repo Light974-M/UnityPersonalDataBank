@@ -124,6 +124,9 @@ namespace UPDB.Renderers.Raycast25DEngine
         private bool _isMoving = false;
         private bool _isTurningX = false;
 
+        private List<Vector2> _raysDirList = new List<Vector2>();
+        private Vector2 _raycastOrigin = Vector2.zero;
+
         #endregion
 
         #region Public API
@@ -132,6 +135,12 @@ namespace UPDB.Renderers.Raycast25DEngine
         {
             get => _raysList;
             set => _raysList = value;
+        }
+
+        public List<Vector2> RaysDirList
+        {
+            get => _raysDirList;
+            set => _raysDirList = value;
         }
 
         public int CPUVerticalPixelNumbers
@@ -201,6 +210,25 @@ namespace UPDB.Renderers.Raycast25DEngine
             }
         }
 
+        public float PlayerHeight
+        {
+            get
+            {
+                if (!_rendererMat)
+                    return 0;
+
+                return _rendererMat.GetFloat("_playerHeight");
+            }
+
+            set
+            {
+                if (!_rendererMat)
+                    return;
+
+                _rendererMat.SetFloat("_playerHeight", value);
+            }
+        }
+
         public Vector2 FieldOfView
         {
             get
@@ -264,6 +292,10 @@ namespace UPDB.Renderers.Raycast25DEngine
                 _rendererMat.SetFloat("_CellLightSourceMaxIntensity", value);
             }
         }
+
+        public Texture2D TextureToDrawCoordsArray => _textureToDrawCoordsArray;
+        public Texture2D RaycastAndHorizonParameters => _raycastAndHorizonParameters;
+        public Vector2 RaycastOrigin => _raycastOrigin;
 
         #endregion
 
@@ -540,16 +572,20 @@ namespace UPDB.Renderers.Raycast25DEngine
         private void TrowAndStoreRaycastsCPUMode()
         {
             _raysList.Clear();
+            _raysDirList.Clear();
+
             float angleRotate = _CPURaysNumber > 1 ? -_CPUFieldOfView / 2f : 0;
 
             for (int i = 0; i < _CPURaysNumber; i++)
             {
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, RotateVector(transform.up, angleRotate), _CPURenderDistance, _rayLayerMask);
+                Vector2 rayAngle = RotateVector(transform.up, angleRotate);
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, rayAngle, _CPURenderDistance, _rayLayerMask);
 
                 _raysList.Add(hit);
+                _raysDirList.Add(rayAngle);
 
                 if (_debugRays)
-                    Debug.DrawRay(transform.position, RotateVector(transform.up, angleRotate) * (hit ? hit.distance : _CPURenderDistance), Color.blue);
+                    Debug.DrawRay(transform.position, rayAngle * (hit ? hit.distance : _CPURenderDistance), Color.blue);
 
                 if (_CPURaysNumber > 1)
                     angleRotate += _CPUFieldOfView / (float)(_CPURaysNumber - 1);
@@ -576,11 +612,11 @@ namespace UPDB.Renderers.Raycast25DEngine
             float walkingMoveSinZOffset = Mathf.Sin(_sineWaveXValue / 2f) * _walkingSineWaveAmplitude.z * _walkingAndRotationEffectLerpValue;
             float walkingMoveSinYOffset = Mathf.Sin(_sineWaveXValue) * _walkingSineWaveAmplitude.y * _walkingAndRotationEffectLerpValue;
 
-            Vector2 rayOrigin = transform.position + (transform.right * _cameraPosOffset.x) + (transform.up * _cameraPosOffset.z) + (transform.right * walkingMoveSinXOffset) + (transform.up * walkingMoveSinZOffset);
-            _rendererMat.SetVector("_RaycastOrigin", rayOrigin);
+            _raycastOrigin = transform.position + (transform.right * _cameraPosOffset.x) + (transform.up * _cameraPosOffset.z) + (transform.right * walkingMoveSinXOffset) + (transform.up * walkingMoveSinZOffset);
+            _rendererMat.SetVector("_RaycastOrigin", _raycastOrigin);
 
             float playerYPosition = _cameraPosOffset.y - 0.5f;
-            _rendererMat.SetFloat("_playerHeight", playerYPosition + walkingMoveSinYOffset);
+            PlayerHeight = playerYPosition + walkingMoveSinYOffset;
 
             for (int i = 0; i < RayNumbers; i++)
             {
@@ -590,7 +626,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                 float simulateZAngleValue = simulateZAngleBaseDiagonal * (simulateZAngleWalkingSin + simulateZAngleTurningValue);
 
                 Vector2 angle = RotateVector(transform.up, angleRotate);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, angle, RenderDistance, _rayLayerMask);
+                RaycastHit2D hit = Physics2D.Raycast(_raycastOrigin, angle, RenderDistance, _rayLayerMask);
 
                 float height = hit ? ((100f / FieldOfView.y) / (hit.distance)) : 0;
                 float baseHeightDefault = ((1 - height) / 2);
@@ -634,7 +670,7 @@ namespace UPDB.Renderers.Raycast25DEngine
                 _raycastAndHorizonParameters.SetPixel(i, 0, new Color(hit.distance / RenderDistance, (angle.x + 1) / 2, (angle.y + 1) / 2, horizon));
 
                 if (_debugRays)
-                    Debug.DrawRay(rayOrigin, RotateVector(transform.up, angleRotate) * (hit ? hit.distance : RenderDistance), Color.blue);
+                    Debug.DrawRay(_raycastOrigin, RotateVector(transform.up, angleRotate) * (hit ? hit.distance : RenderDistance), Color.blue);
 
                 if (RayNumbers > 1)
                     angleRotate -= FieldOfView.x / (float)(RayNumbers - 1);

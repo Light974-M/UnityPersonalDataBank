@@ -4657,6 +4657,40 @@ namespace UPDB.CoreHelper.UsableMethods
         #endregion
 
 
+        //ARRAY TOOLS
+
+        #region 1D 2D and 3D dimensions array conversions
+
+        /// <summary>
+        /// Convertit (x, y) vers un index 1D
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static int To1DIndex(int x, int y, int width)
+        {
+            return y * width + x;
+        }
+
+        /// <summary>
+        /// Convertit un index 1D vers (x, y)
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static Vector2Int To2DIndex(int index, int width, int height)
+        {
+            int y = index / width;
+            int x = index % width;
+            return new Vector2Int(x, y);
+        }
+
+        #endregion
+
+
         //OTHERS
 
         #region Binary Conversions
@@ -5946,6 +5980,15 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
+
+        #endregion
+
+        #region Date and Time System Methods
+
+        public static bool IsBisextil(int year)
+        {
+            return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        }
 
         #endregion
 
