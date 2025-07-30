@@ -49,6 +49,7 @@ namespace UPDB.CoreHelper
         public const string RAPhysic = nameof(RAPhysic);
         public const string SMPhysic = nameof(SMPhysic);
         public const string EventTrigger = nameof(EventTrigger);
+        public const string SoftLockPrevention = nameof(SoftLockPrevention);
 
         public const string CartoonWind = nameof(CartoonWind);
         public const string MazeGenerator = nameof(MazeGenerator);
