@@ -57,7 +57,9 @@ namespace UPDB.Renderers.Raycast25DEngine
                 for (int x = 0; x < _levelSize.x; x++)
                     _levelArraySavable.Add(new CellSavable(LevelArray[x, y]));
 
-            EditorUtility.SetDirty(this);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this); 
+#endif
         }
 
         public void Load()

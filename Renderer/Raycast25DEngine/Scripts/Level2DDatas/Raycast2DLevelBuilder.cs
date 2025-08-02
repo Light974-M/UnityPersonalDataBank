@@ -58,13 +58,16 @@ namespace UPDB.Renderers.Raycast25DEngine
         {
             base.OnDrawGizmos();
 
-            DrawDebugGrid();
-
+#if UNITY_EDITOR
+            DrawDebugGrid(); 
             LevelEditorFeatures();
+#endif
+
 
             SaveAndLoadMethod();
         }
 
+#if UNITY_EDITOR
         private void DrawDebugGrid()
         {
             if (!_debug || !_levelData)
@@ -170,7 +173,9 @@ namespace UPDB.Renderers.Raycast25DEngine
             if (!Application.isPlaying)
                 SceneView.lastActiveSceneView.Repaint();
         }
+#endif
 
+#if UNITY_EDITOR
         private void LevelEditorFeatures()
         {
             if (!_debug && Application.isPlaying)
@@ -232,7 +237,8 @@ namespace UPDB.Renderers.Raycast25DEngine
 
                 LevelData.Save();
             }
-        }
+        } 
+#endif
 
         private void SaveAndLoadMethod()
         {
