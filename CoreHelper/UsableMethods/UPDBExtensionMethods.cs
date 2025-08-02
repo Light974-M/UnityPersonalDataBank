@@ -1184,5 +1184,34 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
+
+        #region Vector Additional Methods
+
+        public static float Combined(this Vector3 vector)
+        {
+            return vector.x + vector.y + vector.z;
+        }
+
+        public static float Combined(this Vector2 vector)
+        {
+            return vector.x + vector.y;
+        }
+
+        public static float Average(this Vector3 vector)
+        {
+            return (vector.x + vector.y + vector.z) / 3f;
+        }
+
+        public static float Average(this Vector2 vector)
+        {
+            return (vector.x + vector.y) / 2f;
+        }
+
+        public static Vector3 Flatten(this Vector3 vector)
+        {
+            return new Vector3(vector.x, 0, vector.z);
+        }
+
+        #endregion
     }
 }

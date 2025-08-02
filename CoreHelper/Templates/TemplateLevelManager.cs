@@ -21,7 +21,7 @@ namespace UPDB.CoreHelper.Templates
         [Serializable]
         public class LevelTestStartInfo
         {
-            
+
         }
 
         #endregion
