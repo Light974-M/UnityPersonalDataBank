@@ -1208,5 +1208,14 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
+
+        #region Color Additional Methods
+
+        public static float Average(this Color col)
+        {
+            return ((col.r + col.g + col.b) / 3f) * col.a;
+        }
+
+        #endregion
     }
 }

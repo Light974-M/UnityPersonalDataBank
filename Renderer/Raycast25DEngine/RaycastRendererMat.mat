@@ -378,7 +378,7 @@ Material:
     - _FieldOfView: {r: 70, g: 70, b: 0, a: 0}
     - _GroundColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
     - _PlayerLightColor: {r: 1, g: 1, b: 0.6862745, a: 0}
-    - _PlayerPos: {r: 9.084653, g: 11.973747, b: 0, a: 0}
+    - _PlayerPos: {r: 10.726187, g: 11.866143, b: 0, a: 0}
     - _SkyColor: {r: 0, g: 0.71217537, b: 1, a: 1}
     - _SkyLightColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
