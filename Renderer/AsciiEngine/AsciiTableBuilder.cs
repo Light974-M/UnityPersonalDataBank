@@ -99,7 +99,7 @@ namespace UPDB.Renderers.AsciiEngine
                         {
                             Color charaPixelToSet = _asciiConfig.AsciiTextureBuildable.GetPixel(x2 + (x * _asciiConfig.TextureBuildableCharacterSize.x), y2 + (y * _asciiConfig.TextureBuildableCharacterSize.y));
 
-                            textureBrightness += charaPixelToSet.Average();
+                            textureBrightness += charaPixelToSet.BlackAndWhite();
 
                             characterToCreate.SetPixel(x2, y2, charaPixelToSet);
                         }

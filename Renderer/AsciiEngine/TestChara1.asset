@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba27877f794abd48a63633aa984adfc, type: 3}
   m_Name: TestChara1
   m_EditorClassIdentifier: 
-  _characterSize: {x: 230, y: 366}
+  _characterSize: {x: 12, y: 16}
   _buildMode: 0
-  _asciiTextureBuildable: {fileID: 2800000, guid: 3172ee2ff76294543bdc8f6f730db436, type: 3}
-  _textureBuildableCharacterSize: {x: 230, y: 366}
+  _asciiTextureBuildable: {fileID: 2800000, guid: d9a2592ab75a6514bb8625a47353c7b4, type: 3}
+  _textureBuildableCharacterSize: {x: 12, y: 16}
   _charactersList: []

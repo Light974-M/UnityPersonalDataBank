@@ -1,0 +1,33 @@
+#pragma kernel CSMain
+
+// Texture input
+Texture2D<float4> InputTexture;
+SamplerState samplerInput;
+
+// Output buffer : 4 uints = minX, minY, maxX, maxY
+RWStructuredBuffer<uint> MinMaxBuffer;
+
+// Texture dimensions
+cbuffer Params
+{
+    uint width;
+    uint height;
+};
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height)
+        return;
+
+    float4 pixel = InputTexture.Load(int3(id.xy, 0));
+    float alpha = pixel.a;
+
+    if (alpha > 0.001)
+    {
+        InterlockedMin(MinMaxBuffer[0], id.x); // minX
+        InterlockedMin(MinMaxBuffer[1], id.y); // minY
+        InterlockedMax(MinMaxBuffer[2], id.x); // maxX
+        InterlockedMax(MinMaxBuffer[3], id.y); // maxY
+    }
+}

@@ -1211,9 +1211,23 @@ namespace UPDB.CoreHelper.UsableMethods
 
         #region Color Additional Methods
 
-        public static float Average(this Color col)
+        public static float BlackAndWhite(this Color col)
         {
             return ((col.r + col.g + col.b) / 3f) * col.a;
+        }
+
+        public static Color Complementary(this Color col)
+        {
+            return new Color(1f - col.r, 1f - col.g, 1f - col.b, col.a);
+        }
+
+        public static float GetColorDistance(this Color col, Color col2)
+        {
+            float rDist = Mathf.Abs(col.r - col2.r);
+            float gDist = Mathf.Abs(col.g - col2.g);
+            float bDist = Mathf.Abs(col.b - col2.b);
+
+            return (rDist + gDist + bDist) / 3f;
         }
 
         #endregion
