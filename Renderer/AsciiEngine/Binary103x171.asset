@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cba27877f794abd48a63633aa984adfc, type: 3}
+  m_Name: Binary103x171
+  m_EditorClassIdentifier: 
+  _characterSize: {x: 103, y: 171}
+  _buildMode: 1
+  _asciiTextureBuildable: {fileID: 0}
+  _textureBuildableCharacterSize: {x: 103, y: 171}
+  _charactersList:
+  - {fileID: 2800000, guid: 3b56ddd499d5e6f49b7e4eb51fde4a72, type: 3}
+  - {fileID: 2800000, guid: d1ff8a5a57ba67d4e8b2c7213f04e7a2, type: 3}
+  - {fileID: 2800000, guid: 93c7bb5b429dc5b4682250f3f7a3d65e, type: 3}

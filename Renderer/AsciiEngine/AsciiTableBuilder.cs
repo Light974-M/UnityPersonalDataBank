@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UPDB.CoreHelper.CustomPropertyAttributes;
 using UPDB.CoreHelper.UsableMethods;
@@ -18,7 +19,7 @@ namespace UPDB.Renderers.AsciiEngine
         private Vector2 _charactersBrightnessRange = Vector2.right;
 
         [SerializeField]
-        private float _charactersBrightnessStepMin = 0;
+        private Vector2 _charactersBrightnessStepMin = Vector2.up;
 
         [SerializeField]
         private bool _getOneEmptySlotForBlack = true;
@@ -28,6 +29,9 @@ namespace UPDB.Renderers.AsciiEngine
 
         [SerializeField]
         private bool _build = false;
+
+        [SerializeField]
+        private bool _buildUnicodeTable = false;
 
         [SerializeField, ReadOnly]
         private float _minBrightness = 0;
@@ -40,6 +44,9 @@ namespace UPDB.Renderers.AsciiEngine
 
         [SerializeField, ReadOnly]
         private float _averageBrightnessStep = 0;
+
+        [SerializeField]
+        private string _unicodeTable;
 
         private Texture2DArray _asciiTableTextureArray;
 
@@ -56,6 +63,24 @@ namespace UPDB.Renderers.AsciiEngine
 
                 BuildTextureArray();
             }
+
+            if (_buildUnicodeTable)
+            {
+                _buildUnicodeTable = false;
+
+                _unicodeTable = string.Empty;
+
+                for (int i = 0; i < 40000; i++)
+                {
+                    string character = char.ConvertFromUtf32(i);
+
+                    // On ne garde que les caractères affichables
+                    if (!char.IsControl(character[0]))
+                    {
+                        _unicodeTable += character;
+                    }
+                }
+            }
         }
 
         private void BuildTextureArray()
@@ -63,8 +88,7 @@ namespace UPDB.Renderers.AsciiEngine
             if (_asciiConfig.BuildMode == AsciiTableBuildMode.SingleTexture)
             {
                 List<Texture2D> charactersListGenerated = new List<Texture2D>();
-                BuildTextureList(ref charactersListGenerated);
-                BuildTextureArrayFromList(charactersListGenerated);
+                BuildTextureArrayFromTexture(ref charactersListGenerated);
                 return;
             }
 
@@ -75,7 +99,7 @@ namespace UPDB.Renderers.AsciiEngine
             }
         }
 
-        private void BuildTextureList(ref List<Texture2D> charactersListToGenerate)
+        private void BuildTextureArrayFromTexture(ref List<Texture2D> charactersListToGenerate)
         {
             charactersListToGenerate = new List<Texture2D>();
             List<float> textureBrightnessList = new List<float>();
@@ -167,7 +191,7 @@ namespace UPDB.Renderers.AsciiEngine
             {
                 int toAddIndex = whileIndex + 1;
 
-                while (toAddIndex < charactersListToGenerate.Count - 1 && textureBrightnessList[toAddIndex] - textureBrightnessList[whileIndex] < _charactersBrightnessStepMin)
+                while (toAddIndex < charactersListToGenerate.Count - 1 && (textureBrightnessList[toAddIndex] - textureBrightnessList[whileIndex] < _charactersBrightnessStepMin.x || textureBrightnessList[toAddIndex] - textureBrightnessList[whileIndex] > _charactersBrightnessStepMin.y))
                     toAddIndex++;
 
                 brightnessList.Add(textureBrightnessList[toAddIndex]);
@@ -217,7 +241,118 @@ namespace UPDB.Renderers.AsciiEngine
 
         private void BuildTextureArrayFromList(List<Texture2D> listToCreateFrom)
         {
+            List<Texture2D> charactersListToGenerate = new List<Texture2D>();
+            List<float> textureBrightnessList = new List<float>();
 
+            for (int i = 0; i < listToCreateFrom.Count; i++)
+            {
+                float textureBrightness = 0;
+                Texture2D characterToCreate = new Texture2D(listToCreateFrom[i].width, listToCreateFrom[i].height, TextureFormat.ARGB32, false);
+                characterToCreate.filterMode = FilterMode.Point;
+
+                for (int y = 0; y < listToCreateFrom[i].height; y++)
+                {
+                    for (int x = 0; x < listToCreateFrom[i].width; x++)
+                    {
+                        textureBrightness += listToCreateFrom[i].GetPixel(x, y).BlackAndWhite();
+                        characterToCreate.SetPixel(x, y, listToCreateFrom[i].GetPixel(x, y));
+                    }
+                }
+
+                characterToCreate.Apply();
+                textureBrightness /= (listToCreateFrom[i].width * listToCreateFrom[i].height);
+
+                textureBrightnessList.Add(textureBrightness);
+                charactersListToGenerate.Add(characterToCreate);
+            }
+
+            //sort
+            for (int i = 0; i < textureBrightnessList.Count - 1; i++)
+            {
+                for (int j = 0; j < textureBrightnessList.Count - i - 1; j++)
+                {
+                    if (textureBrightnessList[j] > textureBrightnessList[j + 1])
+                    {
+                        float tempBrightness = textureBrightnessList[j];
+                        textureBrightnessList[j] = textureBrightnessList[j + 1];
+                        textureBrightnessList[j + 1] = tempBrightness;
+
+                        Texture2D tempText = listToCreateFrom[j];
+                        listToCreateFrom[j] = listToCreateFrom[j + 1];
+                        listToCreateFrom[j + 1] = tempText;
+                    }
+                }
+            }
+
+            //delete list elements that doesn't fit requirements
+            for (int i = listToCreateFrom.Count - 1; i >= 0; i--)
+            {
+                bool outsideOfBrightnessRange = textureBrightnessList[i] < _charactersBrightnessRange.x || textureBrightnessList[i] > _charactersBrightnessRange.y;
+
+                if (outsideOfBrightnessRange)
+                {
+                    listToCreateFrom.RemoveAt(i);
+                    textureBrightnessList.RemoveAt(i);
+                }
+            }
+
+            List<float> brightnessList = new List<float>();
+            List<Texture2D> charactersList = new List<Texture2D>();
+
+            brightnessList.Add(textureBrightnessList[0]);
+            charactersList.Add(listToCreateFrom[0]);
+
+            int whileIndex = 0;
+            while (whileIndex < listToCreateFrom.Count - 1)
+            {
+                int toAddIndex = whileIndex + 1;
+
+                while (toAddIndex < listToCreateFrom.Count - 1 && textureBrightnessList[toAddIndex] - textureBrightnessList[whileIndex] < _charactersBrightnessStepMin.x)
+                    toAddIndex++;
+
+                brightnessList.Add(textureBrightnessList[toAddIndex]);
+                charactersList.Add(listToCreateFrom[toAddIndex]);
+
+                if (toAddIndex >= listToCreateFrom.Count - 1)
+                    break;
+
+                whileIndex = toAddIndex;
+            }
+
+            textureBrightnessList = brightnessList;
+            listToCreateFrom = charactersList;
+
+            //display some interesting informations on readOnly
+            _minBrightness = textureBrightnessList[0];
+            _maxBrightness = textureBrightnessList[textureBrightnessList.Count - 1];
+
+            _averageBrightness = 0;
+            _averageBrightnessStep = 0;
+
+            for (int i = 0; i < textureBrightnessList.Count; i++)
+            {
+                _averageBrightness += textureBrightnessList[i];
+
+                if (i < textureBrightnessList.Count - 1)
+                    _averageBrightnessStep += textureBrightnessList[i + 1] - textureBrightnessList[i];
+            }
+
+            _averageBrightness /= textureBrightnessList.Count;
+            _averageBrightnessStep /= textureBrightnessList.Count - 1;
+
+            _asciiTableTextureArray = new Texture2DArray(_asciiConfig.CharacterSize.x, _asciiConfig.CharacterSize.y, charactersListToGenerate.Count, TextureFormat.ARGB32, false);
+
+            _asciiTableTextureArray.filterMode = FilterMode.Point;
+            _asciiTableTextureArray.wrapMode = TextureWrapMode.Repeat;
+
+            for (int i = 0; i < charactersListToGenerate.Count; i++)
+                if (charactersListToGenerate[i])
+                    Graphics.CopyTexture(charactersListToGenerate[i], 0, 0, _asciiTableTextureArray, i, 0);
+
+            _asciiTableTextureArray.Apply();
+
+            _asciiRendererMat.SetTexture("_AsciiTableTextureArray", _asciiTableTextureArray);
+            _asciiRendererMat.SetFloat("_asciiCharacterNumbers", charactersListToGenerate.Count);
         }
     }
 }

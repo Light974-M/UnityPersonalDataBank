@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Policy;
 using UnityEngine;
 using UPDB.CoreHelper.Usable.ObjectsLibrary;
 
@@ -86,7 +87,7 @@ namespace UPDB.CoreHelper.UsableMethods
         #region Triangle Barycentric coords to 2D Coords
 
         /// <summary>
-        /// convert barycentric coordinate system into 2D coords, wich means x and y are represented inside a triangle, and if the sum of x and y are below 0, the coordinates are inside the triangle
+        /// convert barycentric coordinate system into 2D coords, wich means x and y are represented inside a triangle, and if the sum of x and y are below 1, the coordinates are inside the triangle
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="a"></param>
@@ -1229,6 +1230,192 @@ namespace UPDB.CoreHelper.UsableMethods
 
             return (rDist + gDist + bDist) / 3f;
         }
+
+        public static Color Saturate(this Color col)
+        {
+            float max = Mathf.Max(col.r, Mathf.Max(col.g, col.b));
+
+            if (max > 0f)
+            {
+                col.r /= max;
+                col.g /= max;
+                col.b /= max;
+            }
+
+            return col;
+        }
+
+        public static Color[] ColorBrightnessSort(this Color[] list)
+        {
+            int n = list.Length;
+            bool swapped;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                swapped = false;
+
+                for (int j = 0; j < n - 1 - i; j++)
+                {
+                    if (list[j].BlackAndWhite() > list[j + 1].BlackAndWhite())
+                    {
+                        Color tmp = list[j];
+                        list[j] = list[j + 1];
+                        list[j + 1] = tmp;
+
+                        swapped = true;
+                    }
+                }
+
+                if (!swapped)
+                    break;
+            }
+
+            return list;
+        }
+
+        public static Color[] ColorSort(this Color[] list)
+        {
+            int n = list.Length;
+            bool swapped;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                swapped = false;
+
+                for (int j = 0; j < n - 1 - i; j++)
+                {
+                    Color colA = list[j];
+                    Color colB = list[j + 1];
+
+                    Color.RGBToHSV(colA, out float hA, out float sA, out float vA);
+                    Color.RGBToHSV(colB, out float hB, out float sB, out float vB);
+
+                    bool isHSame = hA == hB;
+                    bool isSSame = sA == sB;
+
+                    if (hA > hB || (isHSame && sA > sB) || (isHSame && isSSame && vA > vB))
+                    {
+                        Color tmp = list[j];
+                        list[j] = list[j + 1];
+                        list[j + 1] = tmp;
+
+                        swapped = true;
+                    }
+                }
+
+                if (!swapped)
+                    break;
+            }
+
+            return list;
+        }
+
+        public static Color[] ColorGreyLevelSort(this Color[] list)
+        {
+            int n = list.Length;
+            bool swapped;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                swapped = false;
+
+                for (int j = 0; j < n - 1 - i; j++)
+                {
+                    Color colA = list[j];
+                    Color colB = list[j + 1];
+
+                    Color.RGBToHSV(colA, out float hA, out float sA, out float vA);
+                    Color.RGBToHSV(colB, out float hB, out float sB, out float vB);
+
+                    bool isSSame = sA == sB;
+                    bool isVSame = vA == vB;
+
+                    if (sA > sB || (isSSame && vA > vB) || (isSSame && isVSame && hA > hB))
+                    {
+                        Color tmp = list[j];
+                        list[j] = list[j + 1];
+                        list[j + 1] = tmp;
+
+                        swapped = true;
+                    }
+                }
+
+                if (!swapped)
+                    break;
+            }
+
+            return list;
+        }
+
+        public static Color[] ColorHSVAverageSort(this Color[] list)
+        {
+            int n = list.Length;
+            bool swapped;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                swapped = false;
+
+                for (int j = 0; j < n - 1 - i; j++)
+                {
+                    Color colA = list[j];
+                    Color colB = list[j + 1];
+
+                    Color.RGBToHSV(colA, out float hA, out float sA, out float vA);
+                    Color.RGBToHSV(colB, out float hB, out float sB, out float vB);
+
+                    float ASum = hA + sA + vA;
+                    float BSum = hB + sB + vB;
+
+                    if (ASum > BSum)
+                    {
+                        Color tmp = list[j];
+                        list[j] = list[j + 1];
+                        list[j + 1] = tmp;
+
+                        swapped = true;
+                    }
+                }
+
+                if (!swapped)
+                    break;
+            }
+
+            return list;
+        }
+
+        #endregion
+
+        #region Sort Algorithms
+
+        public static float[] BubbleSort(this float[] list)
+        {
+            int n = list.Length;
+            bool swapped;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                swapped = false;
+
+                for (int j = 0; j < n - 1 - i; j++)
+                {
+                    if (list[j] > list[j + 1])
+                    {
+                        float tmp = list[j];
+                        list[j] = list[j + 1];
+                        list[j + 1] = tmp;
+
+                        swapped = true;
+                    }
+                }
+
+                if (!swapped)
+                    break;
+            }
+
+            return list;
+        }
+
 
         #endregion
     }

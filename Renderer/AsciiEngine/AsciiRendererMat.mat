@@ -99,14 +99,16 @@ Material:
     - _Brightness: 1
     - _BumpScale: 1
     - _CellHeight: 8
-    - _CellWidth: 6
-    - _CharacterDisplayNumber: 10
+    - _CellWidth: 8
+    - _CharacterDisplayNumber: 100000
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Colors: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DefilCharacterSpeed: 0
+    - _DepthFade: 0
+    - _DepthRange: 100
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -128,10 +130,12 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _Test: 30
+    - _Test2: 0
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
-    - _asciiCharacterNumbers: 96
+    - _asciiCharacterNumbers: 43
     - _test: 0
     - _test2: 2.28
     - _test3: 0
@@ -139,6 +143,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorFilter: {r: 1, g: 1, b: 1, a: 1}
     - _DefilCharacterPositionSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
