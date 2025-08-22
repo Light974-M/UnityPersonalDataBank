@@ -14,5 +14,10 @@ namespace UPDB.CoreHelper.CustomPropertyAttributes
             EditorGUI.PropertyField(position, property, label);
             GUI.enabled = true;
         }
-    } 
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, true);
+        }
+    }
 }
