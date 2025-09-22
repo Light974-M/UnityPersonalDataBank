@@ -48,6 +48,18 @@ namespace UPDB.CoreHelper.Usable
             }
         }
 
+        public static T PassiveInstance
+        {
+            get
+            {
+                //if instance is null and no instance was found in scene, create a new obj to contain singleton
+                if (_instance == null)
+                    TryFindObjectOfType(out _instance);
+
+                return _instance;
+            }
+        }
+
         #endregion
 
         /// <summary>

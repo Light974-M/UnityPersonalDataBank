@@ -293,6 +293,25 @@ namespace UPDB.CoreHelper.UsableMethods
             return weights.Count - 1; // Sécurité (ne devrait jamais arriver)
         }
 
+        public static T[,,] Rebuild3DArrayFromList<T>(List<T> sourceList, Vector3Int size)
+        {
+            T[,,] result = new T[size.x, size.y, size.z];
+            int index = 0;
+
+            for (int z = 0; z < size.z; z++)
+            {
+                for (int y = 0; y < size.y; y++)
+                {
+                    for (int x = 0; x < size.x; x++)
+                    {
+                        result[x, y, z] = sourceList[index++];
+                    }
+                }
+            }
+
+            return result;
+        }
+
         /************************************************UTILITY METHODS COLLECTIONS****************************************************/
 
         //LERP TOOLS
@@ -5935,6 +5954,50 @@ namespace UPDB.CoreHelper.UsableMethods
         }
 
         #endregion
+
+        #endregion
+
+        #region Custom Rigidbody Character Controller
+
+        public static bool TryStepUp(Vector3 move, float stepHeight, int stepRayCastNumber, Collider collider, LayerMask groundMask, float minStepWidth, Vector3 playerSize, Rigidbody rb)
+        {
+            Vector3 stepOrigin = rb.transform.position + Vector3.up * stepHeight;
+            Vector3 dir = move.normalized;
+
+            RaycastHit stepHit = new RaycastHit();
+            bool stepDetected = false;
+
+            for (int i = 0; i < stepRayCastNumber; i++)
+            {
+                if (Physics.Raycast(rb.transform.position + Vector3.up * ((i / (float)(stepRayCastNumber - 1)) * stepHeight), dir, out stepHit, collider.bounds.extents.x + 0.05f, groundMask))
+                {
+                    stepDetected = true;
+                    break;
+                }
+            }
+
+            // Vérifie s'il y a un obstacle à une distance donnée dans la direction du mouvement
+            if (stepDetected)
+            {
+                Vector3 stepHeightPos = new Vector3(stepHit.point.x, stepOrigin.y + 0.01f, stepHit.point.z);
+
+                if (Physics.Raycast(stepHeightPos, dir, out RaycastHit stepMaxHeightHit, minStepWidth + 0.01f, groundMask))
+                    return false;
+
+                if (!Physics.Raycast(stepHeightPos + (dir * minStepWidth), Vector3.down, out RaycastHit stepHeightHit, stepHeight + 0.05f, groundMask) || stepHeightHit.point.y - rb.transform.position.y > stepHeight)
+                    return false;
+
+                if (Physics.Raycast(stepHeightPos + (dir * minStepWidth), Vector3.up, out RaycastHit stepTopHeightHit, playerSize.y - 0.01f, groundMask))
+                    return false;
+
+
+                // Déplace le joueur juste au-dessus de l'obstacle pour simuler le franchissement de la marche
+                rb.MovePosition(stepHit.point + Vector3.up * 0.05f);
+                return true;
+            }
+
+            return false;
+        }
 
         #endregion
 
